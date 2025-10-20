@@ -3,51 +3,54 @@ import Image from "next/image";
 export default function Home() {
   return (
     <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+      <main className="flex flex-col gap-12 row-start-2 items-center text-center max-w-4xl">
+        <div className="flex flex-col gap-4">
+          <h1 className="text-5xl sm:text-6xl font-bold tracking-tight">
+            Welcome to <span className="text-blue-600 dark:text-blue-400">MindMesh</span>
+          </h1>
+          <p className="text-xl sm:text-2xl text-gray-600 dark:text-gray-300">
+            Your AI-driven workspace for knowledge management
+          </p>
+        </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+        <p className="text-lg text-gray-700 dark:text-gray-300 max-w-2xl leading-relaxed">
+          MindMesh combines knowledge management, project ideation, and document intelligence 
+          into a single platform. It automatically learns from your files, chats, and reports 
+          to build a semantic knowledge graph that connects ideas, documents, and people.
+        </p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full mt-4">
+          <div className="p-6 rounded-lg border border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-black/50">
+            <h3 className="font-semibold text-lg mb-2">Knowledge Management</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Organize and connect your ideas seamlessly
+            </p>
+          </div>
+          <div className="p-6 rounded-lg border border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-black/50">
+            <h3 className="font-semibold text-lg mb-2">Project Ideation</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Transform thoughts into actionable projects
+            </p>
+          </div>
+          <div className="p-6 rounded-lg border border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-black/50">
+            <h3 className="font-semibold text-lg mb-2">Document Intelligence</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              AI-powered insights from your documents
+            </p>
+          </div>
+        </div>
+
+        <div className="flex gap-4 items-center flex-col sm:flex-row mt-4">
+          <a className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-blue-600 text-white gap-2 hover:bg-blue-700 font-medium text-sm sm:text-base h-12 px-8 w-full sm:w-auto"
+              href="#get-started"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
+            Get Started
           </a>
           <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+        className="rounded-full border border-solid border-gray-300 dark:border-gray-700 transition-colors flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-900 font-medium text-sm sm:text-base h-12 px-8 w-full sm:w-auto"
+        href="#learn-more"
           >
-            Read our docs
+        Learn More
           </a>
         </div>
       </main>
