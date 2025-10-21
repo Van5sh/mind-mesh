@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import Sections from "@/components/component/Sections";
 import { Card } from "@/components/ui/card";
 import ChatPanel from "./components/ChatPanel";
-import FlowchartBuilder from "./components/FlowBuilder";
 import ProjectAnalysis from "./components/ProjectAnalysis";
+import FlowBuilder from "./components/FlowBuilder";
 
 const sectionData = [
   { title: "AI", description: "Brainstorm and generate project ideas" },
@@ -23,7 +23,7 @@ const ProjectPage: React.FC = () => {
       </header>
       <main className="flex-1 flex justify-center items-start p-6">
           {activeIndex === 0 && <ChatPanel />}
-          {activeIndex === 1 && <FlowchartBuilder />}
+          {activeIndex === 1 && <FlowBuilder />}
           {activeIndex === 2 && <ProjectAnalysis />}
       </main>
     </div>

@@ -22,8 +22,7 @@ const Sections: React.FC<SectionsProps> = ({ sections, onSelect }) => {
 
   return (
     <div className="w-full max-w-4xl mx-auto">
-      {/* Tab Navigation */}
-      <div className="flex flex-row gap-1 bg-gray-100 p-1.5 rounded-xl shadow-inner">
+      <div className="flex flex-row gap-1 bg-white p-2 rounded-xl shadow-inner">
         {sections.map((section, idx) => {
           const isSelected = selectedIndex === idx;
 
