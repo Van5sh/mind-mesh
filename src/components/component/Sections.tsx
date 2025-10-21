@@ -1,5 +1,5 @@
-"use client"
-import React, { useState } from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 
 interface SectionProps {
   title: string;
@@ -8,10 +8,17 @@ interface SectionProps {
 
 interface SectionsProps {
   sections: SectionProps[];
+  onSelect?: (index: number) => void;
 }
 
-const Sections: React.FC<SectionsProps> = ({ sections }) => {
+const Sections: React.FC<SectionsProps> = ({ sections, onSelect }) => {
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
+
+  useEffect(() => {
+    if (onSelect) {
+      onSelect(selectedIndex);
+    }
+  }, [selectedIndex, onSelect]);
 
   return (
     <div className="w-full max-w-4xl mx-auto">
@@ -32,7 +39,7 @@ const Sections: React.FC<SectionsProps> = ({ sections }) => {
                 }`}
             >
               {section.title}
-              
+
               {!isSelected && (
                 <span className="absolute left-1/2 -translate-x-1/2 top-full mt-3 hidden group-hover:block bg-gray-900 text-white text-xs rounded-lg px-3 py-2 shadow-xl whitespace-nowrap z-20 pointer-events-none">
                   {section.description}

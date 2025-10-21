@@ -1,12 +1,33 @@
-"use client"
+"use client";
+import React, { useState } from "react";
+import Sections from "@/components/component/Sections";
+import { Card } from "@/components/ui/card";
+import ChatPanel from "./components/ChatPanel";
+import FlowchartBuilder from "./components/FlowBuilder";
+import ProjectAnalysis from "./components/ProjectAnalysis";
 
-import React from "react";
+const sectionData = [
+  { title: "AI", description: "Brainstorm and generate project ideas" },
+  { title: "FlowCharts", description: "Visualize project structure" },
+  { title: "Project Analysis", description: "Analyze projects with AI" },
+];
 
-const ReportPage: React.FC = () => {
-    return (
-        <div className="flex justify-center items-center h-screen flex-col">
-        </div>
-    )
-}
+const ProjectPage: React.FC = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
 
-export default ReportPage;
+  return (
+    <div className="flex flex-col min-h-screen bg-gray-50">
+
+      <header className="flex flex-col justify-center items-center py-6 ">
+        <Sections sections={sectionData} onSelect={(idx) => setActiveIndex(idx)} />
+      </header>
+      <main className="flex-1 flex justify-center items-start p-6">
+          {activeIndex === 0 && <ChatPanel />}
+          {activeIndex === 1 && <FlowchartBuilder />}
+          {activeIndex === 2 && <ProjectAnalysis />}
+      </main>
+    </div>
+  );
+};
+
+export default ProjectPage;
