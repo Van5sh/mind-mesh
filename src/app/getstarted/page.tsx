@@ -1,3 +1,4 @@
+"use client"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -7,11 +8,59 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import React, { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Mail, Lock } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 export default function CardDemo() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setEmail(value);
+    if (!validateEmail(value)) {
+      setEmailError("Invalid email address");
+    } else {
+      setEmailError("");
+    }
+  };
+
+  const PasswordCheck = (password: string) => {
+    const passowordRegex=/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    return passowordRegex.test(password);
+  };
+  const onPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if(!PasswordCheck(value)){
+      setPasswordError("Password must be at least 8 characters long and contain at least one letter and one number");
+    }else {
+      setPasswordError("Valid Password");
+    }
+    setPassword(value);
+  }
+
+  const onSubmit = () => {
+    if (!email || !password) {
+      alert("Please fill in all the fields");
+      return;
+    }
+    if (!validateEmail(email)) {
+      alert("Please enter a valid email");
+      return;
+    }
+    router.push("./landingpage");
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 p-4">
       <Card className="w-full max-w-md shadow-xl border-slate-200">
@@ -30,10 +79,13 @@ export default function CardDemo() {
                 <Input
                   id="email"
                   type="email"
+                  value={email}
+                  onChange={handleEmailChange}
                   placeholder="m@example.com"
                   className="pl-10"
                 />
               </div>
+              {emailError && <span className="text-red-500 text-xs">{emailError}</span>}
             </div>
             <div className="grid gap-2">
               <div className="flex items-center justify-between">
@@ -50,14 +102,18 @@ export default function CardDemo() {
                 <Input 
                   id="password" 
                   type="password" 
+                  value={password} 
+                  onChange={onPasswordChange}
+                  placeholder="********"
                   className="pl-10"
                 />
+                {passwordError && <span className="text-sm text-red-500">{passwordError}</span>}
               </div>
             </div>
           </div>
         </CardContent>
         <CardFooter className="flex flex-col gap-4 pt-2">
-          <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
+          <Button onClick={onSubmit} className="w-full bg-blue-600 hover:bg-blue-700">
             Sign in
           </Button>
           <div className="relative w-full">
@@ -90,7 +146,7 @@ export default function CardDemo() {
             Continue with Google
           </Button>
           <div className="text-center text-sm text-slate-600">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Button variant="link" className="p-0 h-auto font-semibold text-blue-600 hover:text-blue-700">
               Sign up
             </Button>
