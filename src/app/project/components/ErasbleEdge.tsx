@@ -5,8 +5,7 @@ import {
   getSmoothStepPath,
   useInternalNode,
 } from '@xyflow/react';
-import { ErasableNodeType } from './ErasableNode';
-import "./xy-theme.css";
+import { ErasableNodeType } from './ErasbleNode';
 
 export type ErasableEdgeType = Edge<{ toBeDeleted?: boolean }, 'erasable-edge'>;
 

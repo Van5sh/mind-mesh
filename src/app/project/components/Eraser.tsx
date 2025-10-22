@@ -7,10 +7,10 @@ import {
   type ReactFlowState,
 } from '@xyflow/react';
 import getStroke from 'perfect-freehand';
-import "./xy-theme.css";
-import { polylineIntersectsRectangle, pathsIntersect } from './utils/utils';
-import { ErasableNodeType } from './ErasableNode';
-import { ErasableEdgeType } from './ErasableEdge';
+
+import { polylineIntersectsRectangle, pathsIntersect } from './util';
+import { ErasableNodeType } from './ErasbleNode';
+import { ErasableEdgeType } from './ErasbleEdge';
 
 // Type definitions for path coordinates
 // - can be 2D or 3D points (with pressure) for freehand strokes for instance
@@ -66,7 +66,7 @@ export function Eraser() {
   const edges = useEdges<ErasableEdgeType>();
 
   const canvas = useRef<HTMLCanvasElement | null>(null);
-  const ctx = useRef<CanvasRenderingContext2D | undefined | null>(null);
+  const ctx = useRef<CanvasRenderingContext2D | null>(null);
 
   const nodeIntersectionData = useRef<IntersectionData[]>([]);
   const edgeIntersectionData = useRef<IntersectionData[]>([]);
