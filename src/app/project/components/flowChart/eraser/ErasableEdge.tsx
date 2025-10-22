@@ -6,6 +6,7 @@ import {
   useInternalNode,
 } from '@xyflow/react';
 import { ErasableNodeType } from './ErasableNode';
+import "./xy-theme.css";
 
 export type ErasableEdgeType = Edge<{ toBeDeleted?: boolean }, 'erasable-edge'>;
 

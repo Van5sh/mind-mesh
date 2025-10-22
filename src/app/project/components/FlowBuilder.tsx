@@ -23,8 +23,8 @@ import "./flowChart/xyflow-theme.css";
 
 import { TextUpdaterNode } from "./flowChart/TextUpdater";
 import { NodePalette } from "./flowChart/NodePalette";
-import { Eraser } from "./flowChart/Eraser";
-import { ErasableEdge } from "./flowChart/ErasableEdge";
+import { Eraser } from "./flowChart/eraser/Eraser";
+import { ErasableEdge } from "./flowChart/eraser/ErasableEdge";
 
 const initialNodes: Node[] = [
   {
@@ -132,9 +132,6 @@ const FlowBuilder: React.FC = () => {
 
   return (
     <div className="flex gap-4 h-[700px] w-full">
-      {/* Sidebar */}
-      <NodePalette onDragStart={onDragStart} />
-      {/* Canvas */}
       <div ref={reactFlowWrapper} className="flex-1 rounded-lg border overflow-hidden bg-white">
         <ReactFlow
           nodes={nodesWithHandlers}

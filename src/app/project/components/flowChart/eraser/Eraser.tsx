@@ -7,8 +7,8 @@ import {
   type ReactFlowState,
 } from '@xyflow/react';
 import getStroke from 'perfect-freehand';
-
-import { polylineIntersectsRectangle, pathsIntersect } from './utils/erutil';
+import "./xy-theme.css";
+import { polylineIntersectsRectangle, pathsIntersect } from './utils/utils';
 import { ErasableNodeType } from './ErasableNode';
 import { ErasableEdgeType } from './ErasableEdge';
 
@@ -66,9 +66,8 @@ export function Eraser() {
   const edges = useEdges<ErasableEdgeType>();
 
   const canvas = useRef<HTMLCanvasElement | null>(null);
-  const ctx = useRef<CanvasRenderingContext2D | undefined | null>();
+  const ctx = useRef<CanvasRenderingContext2D | undefined | null>(null);
 
-  // Cached intersection data for performance during dragging
   const nodeIntersectionData = useRef<IntersectionData[]>([]);
   const edgeIntersectionData = useRef<IntersectionData[]>([]);
 

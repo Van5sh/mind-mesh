@@ -1,4 +1,5 @@
 import { Handle, Position, type Node, type NodeProps } from '@xyflow/react';
+import "./xy-theme.css";
 
 export type ErasableNodeType = Node<
   { toBeDeleted?: boolean; label?: string },
