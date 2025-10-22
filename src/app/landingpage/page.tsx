@@ -1,8 +1,8 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const greetings = [
     "Hello, {name}! Hope you're having an amazing day!",
@@ -19,34 +19,40 @@ const greetings = [
 ];
 
 const LandingPage = () => {
-    const [greeting, setGreeting] = useState("Hello, Vansh!");
-
-    useEffect(() => {
+    const router = useRouter();
+    const [greeting] = useState(() => {
         const randomIndex = Math.floor(Math.random() * greetings.length);
-        setGreeting(greetings[randomIndex].replace("{name}", "Vansh"));
-    }, []);
+        return greetings[randomIndex].replace("{name}", "Vansh");
+    });
     
     const Sectionsdata=[
         {
             title:"Build Your Projects",
             description:"Easily create and manage your projects with intelligent assistance and organization features.",
+            link:"project"
         },
         {
             title:"Report Generation",
             description:"Generate detailed reports from your data with just a few clicks using our AI-powered tools.",
+            link:"report"
         },
         {
             title:"Organize your Data",
             description:"Keep your data structured and accessible with our advanced organization tools.",
+            link:"filesystem"
         }
     ]
     return (
         <div className="flex flex-col justify-center items-center h-screen">
             <h1>MIND MESH</h1>
-            <h1 className="text-5xl">{greeting}</h1>
+            <h1 className="text-5xl" suppressHydrationWarning>{greeting}</h1>
             <div className="flex flex-row justify-center items-center mt-8 gap-4">
                 {Sectionsdata.map((section, idx)=>(
-                    <Card key={idx} className="p-4 hover:z-10 hover:shadow-2xl w-80 justify-center items-center shadow-lg border-slate-200">
+                    <Card
+                        key={idx}
+                        className="p-4 hover:z-10 hover:shadow-2xl w-80 justify-center items-center shadow-lg border-slate-200"
+                        onClick={()=>router.push(`/${section.link}`)}
+                    >
                         <h2 className="text-xl justify-center  font-bold mb-2">{section.title}</h2>
                         <p className="text-gray-600">{section.description}</p>
                     </Card>
