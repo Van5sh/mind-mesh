@@ -268,3 +268,12 @@
   margin-bottom: 3px;
   display: inline-block;
 }
+
+/* Overlay canvas for tools (eraser, lasso, etc.) */
+.tool-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  cursor: crosshair;
+  pointer-events: auto;
+}

@@ -9,11 +9,10 @@ import {
   Panel,
   Connection,
 } from '@xyflow/react';
-
 import { ErasableNode } from './ErasbleNode';
 import { ErasableEdge } from './ErasbleEdge';
 import { Eraser } from './Eraser';
-
+import "./xy-theme.css";
 import '@xyflow/react/dist/style.css';
 
 const initialNodes = [
@@ -51,49 +50,67 @@ const edgeTypes = {
 const defaultEdgeOptions = {
   type: 'erasable-edge',
 };
-
-export default function EraserFlow() {
-  const [nodes, _, onNodesChange] = useNodesState(initialNodes);
+const FlowBuilder=()=> {
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const onConnect = useCallback((params:Connection) => setEdges((els) => addEdge(params, els)), [setEdges]);
+  
+  const onConnect = useCallback(
+    (params:Connection) => setEdges((els) => addEdge(params, els)),
+    [setEdges]
+  );
 
-  const [isEraserActive, setIsEraserActive] = useState(true);
+  const [isEraserActive, setIsEraserActive] = useState(false);
 
   return (
-    <div className='flex-1'>
-    <ReactFlow
-      nodes={nodes}
-      nodeTypes={nodeTypes}
-      edges={edges}
-      edgeTypes={edgeTypes}
-      onNodesChange={onNodesChange}
-      onEdgesChange={onEdgesChange}
-      onConnect={onConnect}
-      fitView
-      defaultEdgeOptions={defaultEdgeOptions}
-    >
-      <Controls />
-      <Background />
+    <div className="w-full h-[500px]" style={{ minHeight: '600px' }}>
+      <ReactFlow
+        nodes={nodes}
+        nodeTypes={nodeTypes}
+        edges={edges}
+        edgeTypes={edgeTypes}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+        fitView
+        defaultEdgeOptions={defaultEdgeOptions}
+        selectionOnDrag={!isEraserActive}
+        panOnDrag={false}
+        panActivationKeyCode="Space"
+        zoomOnScroll={false}
+        zoomActivationKeyCode="Control"
+        elementsSelectable={!isEraserActive}
+        nodesDraggable={!isEraserActive}
+      >
+        <Background />
+        <Controls />
+        {isEraserActive && <Eraser />}
 
-      {isEraserActive && <Eraser />}
-
-      <Panel position="top-left">
-        <div className="xy-theme__button-group">
-          <button
-            className={`xy-theme__button ${isEraserActive ? 'active' : ''}`}
-            onClick={() => setIsEraserActive(true)}
-          >
-            Eraser Mode
-          </button>
-          <button
-            className={`xy-theme__button ${!isEraserActive ? 'active' : ''}`}
-            onClick={() => setIsEraserActive(false)}
-          >
-            Selection Mode
-          </button>
-        </div>
-      </Panel>
-    </ReactFlow>
+        <Panel position="top-left">
+          <div className="xy-theme__button-group">
+            <button
+              className={`xy-theme__button ${isEraserActive ? 'active' : ''}`}
+              onClick={() => {
+                setIsEraserActive(true);
+                setNodes((ns) => ns.map((n) => ({ ...n, selected: false })));
+                setEdges((es) => es.map((e) => ({ ...e, selected: false })));
+              }}
+            >
+              Eraser Mode
+            </button>
+            <button
+              className={`xy-theme__button ${!isEraserActive ? 'active' : ''}`}
+              onClick={() => {
+                setIsEraserActive(false);
+                setNodes((ns) => ns.map((n) => ({ ...n, data: { ...n.data, toBeDeleted: false } })));
+              }}
+            >
+              Selection Mode
+            </button>
+          </div>
+        </Panel>
+      </ReactFlow>
     </div>
   );
 }
+
+export default FlowBuilder;

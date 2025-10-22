@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import Sections from "@/components/component/Sections";
-import { Card } from "@/components/ui/card";
 import ChatPanel from "./components/ChatPanel";
 import ProjectAnalysis from "./components/ProjectAnalysis";
 import FlowBuilder from "./components/FlowBuilder";

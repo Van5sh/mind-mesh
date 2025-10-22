@@ -7,13 +7,10 @@ import {
   type ReactFlowState,
 } from '@xyflow/react';
 import getStroke from 'perfect-freehand';
-
 import { polylineIntersectsRectangle, pathsIntersect } from './util';
 import { ErasableNodeType } from './ErasbleNode';
 import { ErasableEdgeType } from './ErasbleEdge';
 
-// Type definitions for path coordinates
-// - can be 2D or 3D points (with pressure) for freehand strokes for instance
 type PathPoints = ([number, number] | [number, number, number])[];
 
 type IntersectionData = {

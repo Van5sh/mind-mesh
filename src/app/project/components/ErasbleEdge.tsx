@@ -7,6 +7,7 @@ import {
 } from '@xyflow/react';
 import { ErasableNodeType } from './ErasbleNode';
 
+
 export type ErasableEdgeType = Edge<{ toBeDeleted?: boolean }, 'erasable-edge'>;
 
 export function ErasableEdge({
