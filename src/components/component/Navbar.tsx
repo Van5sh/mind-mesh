@@ -1,10 +1,9 @@
-
-
 "use client";
 
 import React, { useState } from "react";
-import { CircleX, FolderOpenDot, Home, Settings, UserCog } from "lucide-react";
+import { CircleX, File, FolderOpenDot, Home, Settings, UserCog } from "lucide-react";
 import colors from "@/contants/colors";
+import { useRouter } from "next/navigation";
 
 const items = [
 {
@@ -27,11 +26,17 @@ const items = [
     name: "Settings",
     link: "/settings",
 },
+{
+    icon: <File size={32}/>,
+    name: "Reports",
+    link: "/docs",
+}
 ];
 
 const Navbar = () => {
 const [onPress, setOnPress] = useState(false);
 const radius = 100;
+const router = useRouter();
 return (
     <div>
     {onPress &&
@@ -41,10 +46,10 @@ return (
         >
         <svg width="500" height="500" viewBox="0 0 500 500">
             <circle
-            cx="250"
-            cy="250"
-            r="200"
-            fill={colors.mindmesh.background}
+                cx="250"
+                cy="250"
+                r="200"
+                fill={colors.mindmesh.background}
             />
             <circle
             cx="250"
@@ -65,6 +70,13 @@ return (
                 transform: `translate(${x}px, ${y}px)`,
                 }}
             title={item.name}
+            onClick={(e) => {
+                e.stopPropagation();
+                setOnPress(false);
+                window.location.href = item.link;
+                router.push(item.link);
+            }
+            }
         >
             {item.icon}
             {item.name}
