@@ -1,7 +1,7 @@
 "use client"
 
 import { Card } from "@/components/ui/card";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 const greetings = [
@@ -20,7 +20,7 @@ const greetings = [
 
 const LandingPage = () => {
     const router = useRouter();
-    const [greeting] = useState(() => {
+    const [greeting, setGreeting] = useState(() => {
         const randomIndex = Math.floor(Math.random() * greetings.length);
         return greetings[randomIndex].replace("{name}", "Vansh");
     });
@@ -43,18 +43,72 @@ const LandingPage = () => {
         }
     ]
     return (
-        <div className="flex flex-col justify-center items-center h-screen">
-            <h1>MIND MESH</h1>
-            <h1 className="text-5xl" suppressHydrationWarning>{greeting}</h1>
-            <div className="flex flex-row justify-center items-center mt-8 gap-4">
+        <div 
+            className="flex flex-col justify-center items-center min-h-screen p-8"
+            style={{
+                background: 'linear-gradient(135deg, #0F192B 0%, #182842 50%, #1F3557 100%)'
+            }}
+        >
+            <div className="text-center mb-12">
+                <h1 
+                    className="text-6xl font-bold mb-4 bg-clip-text text-transparent"
+                    style={{
+                        backgroundImage: 'linear-gradient(135deg, #40A2E3, #2ED8C3)',
+                        textShadow: '0 0 40px rgba(64, 162, 227, 0.3)'
+                    }}
+                >
+                    MIND MESH
+                </h1>
+                <h2 
+                    className="text-3xl font-semibold"
+                    style={{ color: '#F4F8FC' }}
+                    suppressHydrationWarning
+                >
+                    {greeting}
+                </h2>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl w-full">
                 {Sectionsdata.map((section, idx)=>(
                     <Card
                         key={idx}
-                        className="p-4 hover:z-10 hover:shadow-2xl w-80 justify-center items-center shadow-lg border-slate-200"
+                        className="p-6 transition-all duration-300 cursor-pointer flex flex-col group relative overflow-hidden"
+                        style={{
+                            backgroundColor: '#182842',
+                            borderColor: '#253651',
+                            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)'
+                        }}
                         onClick={()=>router.push(`/${section.link}`)}
                     >
-                        <h2 className="text-xl justify-center  font-bold mb-2">{section.title}</h2>
-                        <p className="text-gray-600">{section.description}</p>
+                        <div 
+                            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                            style={{
+                                background: 'linear-gradient(135deg, rgba(64,162,227,0.15), rgba(46,216,195,0.15))',
+                            }}
+                        />
+                        
+                        <div className="relative z-10">
+                            <h3 
+                                className="text-2xl font-bold mb-3 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300"
+                                style={{
+                                    color: '#F4F8FC',
+                                }}
+                            >
+                                {section.title}
+                            </h3>
+                            <p 
+                                className="leading-relaxed"
+                                style={{ color: '#A9B4C7' }}
+                            >
+                                {section.description}
+                            </p>
+                        </div>
+                        <div 
+                            className="absolute bottom-0 left-0 right-0 h-1 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"
+                            style={{
+                                background: 'linear-gradient(90deg, #40A2E3, #2ED8C3)'
+                            }}
+                        />
                     </Card>
                 ))}
             </div>

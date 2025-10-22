@@ -1,29 +1,28 @@
 const colors = {
   mindmesh: {
-    primary: "#A8D8F0",
-    accent: "#AEE2D1",
-    background: "#FFFAF3",
-    surface: "#EAF6FB",
-    border: "#E6E9EF", 
-
+    background: "#0F192B",
+    surface: "#182842",
+    surfaceAlt: "#1F3557",
+    border: "#253651",
+    sky: "#40A2E3",
+    secondary: "#2ED8C3",
     text: {
-      primary: "#1E1E1E",  
-      secondary: "#6B7280",
-      muted: "#9CA3AF",    
+      primary: "#F4F8FC",
+      secondary: "#A9B4C7",
+      muted: "#7B8497",
     },
+    success: "#34D399",
+    warning: "#FBBF24",
+    error: "#EF4444",
+    info: "#60A5FA",
 
-    success: "#B7E4C7",
-    warning: "#FEEBCB",
-    error: "#FBC4C4",  
-    info: "#C8E4F8",   
+    hover: "#20314E",
+    shadow: "rgba(64, 162, 227, 0.25)",
 
-    hover: "#DFF6F0",   // Frosted Aqua
-    focus: "#EAF6FB",   // Soft Blue Highlight
-    shadow: "rgba(0, 0, 0, 0.04)",
     gradient: {
-      primary: "linear-gradient(135deg, #A8D8F0, #AEE2D1)",
-      accent: "linear-gradient(135deg, #DFF6F0, #EAF6FB)",
-      hover: "linear-gradient(135deg, #EAF6FB, #FFFFFF)",
+      primary: "linear-gradient(135deg, #40A2E3, #2ED8C3)",
+      accent: "linear-gradient(135deg, #182842, #1F3557)",
+      glow: "linear-gradient(135deg, rgba(64,162,227,0.2), rgba(46,216,195,0.2))",
     },
   },
 };

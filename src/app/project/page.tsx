@@ -15,7 +15,7 @@ const ProjectPage: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div className="flex flex-col min-h-screen">
 
       <header className="flex flex-col justify-center items-center py-6 ">
         <Sections sections={sectionData} onSelect={(idx) => setActiveIndex(idx)} />
