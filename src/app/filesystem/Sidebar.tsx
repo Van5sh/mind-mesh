@@ -1,54 +1,75 @@
+"use client";
+
 import { SidebarClose, SidebarOpen } from "lucide-react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+
 interface SidebarProps {
     open?: boolean;
     setOpen?: (open: boolean) => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
-    const router = useRouter();
     return (
-        <div className={`${open ? 'w-64 bg-[#112240]' : 'w-0'} h-screen  p-4 flex flex-col items-center transition-all duration-300`}>
+        <>
+            {/* Backdrop overlay when sidebar is open */}
+            {open && (
+                <div 
+                    className="fixed inset-0 bg-black/50 z-40 transition-opacity"
+                    onClick={() => setOpen?.(false)}
+                />
+            )}
+            
+            {/* Sidebar */}
+            <div className={`fixed left-0 top-0 h-screen bg-[#112240] ${open ? 'w-64 p-4' : 'w-12 p-2'} flex flex-col items-start transition-all duration-300 overflow-hidden z-50`}>
             {open ? (
                 <div className="w-full">
-                    <SidebarClose 
-                        className="hover:cursor-pointer text-white mb-4" 
+                    <button
+                        type="button"
+                        aria-label="Close sidebar"
+                        className="text-white mb-4 hover:opacity-80"
                         onClick={() => setOpen?.(false)}
-                    />
+                    >
+                        <SidebarClose />
+                    </button>
                     <h1 className="text-white font-bold text-lg mb-4">FILES</h1>
-                    <div>
-                        <ul className="text-white space-y-2">
-                            <li className="hover:bg-[#1d3557] p-2 rounded cursor-pointer">
-                                <a href="/filesystem">
+                    <div className="w-full">
+                        <ul className="text-white space-y-2 w-full">
+                            <li onClick={()=>{setOpen?.(false)}}>
+                                <Link href="/filesystem" className="block hover:bg-[#1d3557] p-2 rounded cursor-pointer">
                                     Home
-                                </a>
+                                </Link>
                             </li>
-                            <li className="hover:bg-[#1d3557] p-2 rounded cursor-pointer">
+                            <li onClick={()=>{setOpen?.(false)}} className="p-2 rounded text-white/90">
                                 Search
                             </li>
-                            <li  className="hover:bg-[#1d3557] p-2 rounded cursor-pointer">
-                                <a href="/filesystem/files">
+                            <li onClick={()=>{setOpen?.(false)}}>
+                                <Link href="/filesystem/files" className="block hover:bg-[#1d3557] p-2 rounded cursor-pointer">
                                     Files
-                                </a>
+                                </Link>
                             </li>
-                            <li className="hover:bg-[#1d3557] p-2 rounded cursor-pointer">
+                            <li onClick={()=>{setOpen?.(false)}} className="p-2 rounded text-white/90">
                                 Settings
                             </li>
-                            <li className="hover:bg-[#1d3557] p-2 rounded cursor-pointer">
+                            <li onClick={()=>{setOpen?.(false)}}  className="p-2 rounded text-white/90">
                                 Trash
                             </li>
                         </ul>
                     </div>
                 </div>
             ) : (
-                <div>
-                    <SidebarOpen 
-                        className="hover:cursor-pointer text-white ml-2" 
+                <div className="w-full flex justify-center">
+                    <button
+                        type="button"
+                        aria-label="Open sidebar"
+                        className="text-white hover:opacity-80"
                         onClick={() => setOpen?.(true)}
-                    />
+                    >
+                        <SidebarOpen />
+                    </button>
                 </div>
             )}
-        </div>
+            </div>
+        </>
     );
 };
 
