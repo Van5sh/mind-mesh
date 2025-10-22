@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import {  UserCog } from "lucide-react";
+import colors from "@/contants/colors";
+import Navbar from "@/components/component/Navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,10 +30,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0f192b] relative`}
       >
-        <UserCog 
-          size={24} 
-          className="fixed top-4 right-4 z-50 cursor-pointer hover:text-gray-300 transition-colors"
-        />
+        <Navbar/>
         {children}
       </body>
     </html>
