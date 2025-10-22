@@ -96,11 +96,14 @@ const files = [
 
 const FilesPage = () => {
     return (
-        <div className="min-h-screen w-full p-8 flex justify-center items-center">
-            <div className="max-w-6xl w-full">
-                <h1 className="text-4xl font-bold mb-8">My Files</h1>
-                <div className="flex flex-col gap-3">
-                    {files.map((file,index)=>(
+        <div className="min-h-screen w-full flex flex-col items-center">
+            <div className="max-w-5xl w-full mt-10 ">
+                <div className="mb-8">
+                    <h1 className="text-4xl font-bold text-white">My Files</h1>
+                    <p className="text-shadow-zinc-500 mt-2">{files.length} files total</p>
+                </div>
+                <div className="flex flex-col gap-y-2   ">
+                    {files.map((file,index)=>(  
                         <Filebar
                             key={index}
                             file_name={file.file_name}
