@@ -277,3 +277,15 @@
   cursor: crosshair;
   pointer-events: auto;
 }
+
+/* Ensure panels, controls, and buttons have default cursor and are above overlay */
+.react-flow__panel,
+.react-flow__controls {
+  z-index: 20 !important;
+  cursor: default !important;
+}
+
+.xy-theme__button-group,
+.xy-theme__button {
+  cursor: pointer !important;
+}

@@ -28,12 +28,12 @@ const LandingPage = () => {
     
     const Sectionsdata=[
         {
-            title:"Report Generation",
-            description:"Generate detailed reports from your data with just a few clicks using our AI-powered tools.",
-        },
-        {
             title:"Build Your Projects",
             description:"Easily create and manage your projects with intelligent assistance and organization features.",
+        },
+        {
+            title:"Report Generation",
+            description:"Generate detailed reports from your data with just a few clicks using our AI-powered tools.",
         },
         {
             title:"Organize your Data",
