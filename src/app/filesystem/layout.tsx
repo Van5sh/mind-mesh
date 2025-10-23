@@ -13,7 +13,7 @@ export default function FilesystemLayout({
     return (
         <div className="min-h-screen bg-[#0f192b] text-white">
             <Sidebar open={open} setOpen={setOpen} />
-            <div className="w-full">
+            <div className="flex-1 justify-center w-full">
                 {children}
             </div>
         </div>

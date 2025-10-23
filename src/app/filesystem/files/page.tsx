@@ -102,7 +102,7 @@ const FilesPage = () => {
                     <h1 className="text-4xl font-bold text-white">My Files</h1>
                     <p className="text-shadow-zinc-500 mt-2">{files.length} files total</p>
                 </div>
-                <div className="flex flex-col gap-y-2   ">
+                <div className="flex flex-col gap-y-2">
                     {files.map((file,index)=>(  
                         <Filebar
                             key={index}

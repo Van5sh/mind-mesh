@@ -28,7 +28,7 @@ const items = [
 },
 {
     icon: <File size={32}/>,
-    name: "Reports",
+    name: "Report",
     link: "/docs",
 }
 ];

@@ -2,8 +2,10 @@
 
 const HomePage = ()=>{
     return (
-        <div>
-            Home Page
+        <div className="flex justify-center items-center">
+            <div>
+                <h1>Filesystem Home Page</h1>
+            </div>
         </div>
     )
 }
