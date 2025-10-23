@@ -59,7 +59,7 @@ return (
             />
         </svg>
         {items.map((item, idx) => {
-        const angle = (idx /items.length)*Math.PI*2 - Math.PI/2;
+        const angle = (idx /items.length)*(2*Math.PI)-Math.PI/2;
         const x = radius*1.5 * Math.cos(angle);
         const y = radius*1.5 * Math.sin(angle);  
         return(
