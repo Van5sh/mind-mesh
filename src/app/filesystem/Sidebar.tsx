@@ -52,12 +52,6 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
                                 </li>
                                 <li onClick={() => setOpen?.(false)}>
                                     <button className="flex items-center gap-3 w-full hover:bg-[#1d3557] p-2 rounded text-white/90 cursor-pointer">
-                                        <Settings size={20} />
-                                        <span>Settings</span>
-                                    </button>
-                                </li>
-                                <li onClick={() => setOpen?.(false)}>
-                                    <button className="flex items-center gap-3 w-full hover:bg-[#1d3557] p-2 rounded text-white/90 cursor-pointer">
                                         <Trash2Icon size={20} />
                                         <span>Trash</span>
                                     </button>

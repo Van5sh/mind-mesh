@@ -96,23 +96,23 @@ const files = [
 
 const FilesPage = () => {
     return (
-        <div className="min-h-screen w-full flex flex-col items-center">
-            <div className="max-w-5xl w-full mt-10 ">
-                <div className="mb-8">
-                    <h1 className="text-4xl font-bold text-white">My Files</h1>
-                    <p className="text-shadow-zinc-500 mt-2">{files.length} files total</p>
-                </div>
+        <div className="w-full">
+            <div className="mb-8 py-6 px-12">
+                <h1 className="text-4xl font-bold text-white">My Files</h1>
+                <p className="text-zinc-500 mt-2">{files.length} files total</p>
+            </div>
+            <div className="px-12">
                 <div className="flex flex-col gap-y-2">
-                    {files.map((file,index)=>(  
+                    {files.map((file, index) => (  
                         <Filebar
                             key={index}
                             file_name={file.file_name}
                             file_size={file.file_size}
                             file_type={file.file_type}
                             last_modified={file.last_modified}
-                            download={()=>alert(`Downloading ${file.file_name}`)}
-                            delete={()=>alert(`Deleting ${file.file_name}`)}
-                            rename={()=>alert(`Renaming ${file.file_name}`)}
+                            download={() => alert(`Downloading ${file.file_name}`)}
+                            delete={() => alert(`Deleting ${file.file_name}`)}
+                            rename={() => alert(`Renaming ${file.file_name}`)}
                         />
                     ))}
                 </div>
@@ -120,4 +120,5 @@ const FilesPage = () => {
         </div>
     );
 }
+
 export default FilesPage;
