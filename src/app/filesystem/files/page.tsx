@@ -113,6 +113,7 @@ const FilesPage = () => {
                             download={() => alert(`Downloading ${file.file_name}`)}
                             delete={() => alert(`Deleting ${file.file_name}`)}
                             rename={() => alert(`Renaming ${file.file_name}`)}
+                            addToFavorites={() => alert(`Adding ${file.file_name} to favorites`)}
                         />
                     ))}
                 </div>

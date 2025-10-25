@@ -51,10 +51,10 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
                                     </Link>
                                 </li>
                                 <li onClick={() => setOpen?.(false)}>
-                                    <button className="flex items-center gap-3 w-full hover:bg-[#1d3557] p-2 rounded text-white/90 cursor-pointer">
+                                    <Link href="/filesystem/trash" className="flex items-center gap-3 hover:bg-[#1d3557] p-2 rounded cursor-pointer">
                                         <Trash2Icon size={20} />
                                         <span>Trash</span>
-                                    </button>
+                                    </Link>
                                 </li>
                             </ul>
                         </div>
@@ -64,10 +64,10 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
                         <button
                             type="button"
                             aria-label="Open sidebar"
-                            className="text-white hover:opacity-80 hover:cursor-pointer"
+                            className="text-white top-5 hover:opacity-80 hover:cursor-pointer"
                             onClick={() => setOpen?.(true)}
                         >
-                            <SidebarOpen size={30} />
+                            <SidebarOpen size={30} className="top-4"/>
                         </button>
                     </div>
                 )}

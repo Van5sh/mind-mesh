@@ -11,11 +11,9 @@ export default function FilesystemLayout({
 }>) {
     const [open,setOpen]=React.useState(false);
     return (
-        <div className="bg-[#0f192b] text-white">
-            <div className="left-0 m-5 fixed z-50">
-                <Sidebar open={open} setOpen={setOpen} />
-            </div>
-            <div className="flex-1 justify-center w-full">
+        <div className="min-h-screen bg-[#0f192b] text-white">
+            <Sidebar open={open} setOpen={setOpen} />
+            <div className="w-full">
                 {children}
             </div>
         </div>

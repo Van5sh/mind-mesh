@@ -1,4 +1,4 @@
-import { Download, Edit, FileIcon, Trash2 } from "lucide-react";
+import { Download, Edit, FileIcon, Star, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import colors from "@/contants/colors";
 
@@ -10,43 +10,81 @@ interface FilebarProps {
     download: () => void;
     delete: () => void;
     rename: () => void;
+    addToFavorites: () => void;
 }
 
 const Filebar = ({
     file_name,
     file_size,
+    last_modified,
     download,
     delete: deleteFn,
-    rename
+    rename,
+    addToFavorites
 }: FilebarProps) => {
     return (
         <div
-            className="flex flex-row justify-between items-center p-2 rounded-lg shadow-md w-[90vw] mx-auto "
+            className="group relative rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 w-full max-w-6xl mx-auto overflow-hidden"
             style={{
                 backgroundColor: colors.mindmesh.border,
             }}
         >
-            <div
-                className={`flex flex-row justify-between items-center bg-white gap-4 p-4 rounded-lg shadow-md w-[90vw] mx-auto`}
-            >
-                <div className="flex flex-row items-center gap-4">
-                    <div className="rounded-xl bg-[#0f192b] p-3">
-                        <FileIcon size={24} />
+            <div className="flex flex-row justify-between items-center bg-white p-5 m-0.5 rounded-xl transition-transform duration-300 hover:scale-[1.01]">
+                <div className="flex flex-row items-center gap-5 flex-1 min-w-0">
+                    <div className="rounded-xl bg-gradient-to-br from-[#0f192b] to-[#1a2942] p-4 shadow-md group-hover:shadow-lg transition-shadow duration-300">
+                        <FileIcon size={28} className="text-white" />
                     </div>
-                    <div className="flex flex-col">
-                        <h1 className="font-bold text-zinc-900">{file_name}</h1>
-                        <h6 style={{ color: colors.mindmesh.text.muted }}>{file_size}</h6>
+                    <div className="flex flex-col min-w-0 flex-1">
+                        <h1 className="font-bold text-lg text-zinc-900 truncate">{file_name}</h1>
+                        <div className="flex flex-row gap-3 mt-1">
+                            <span className="text-sm font-medium" style={{ color: colors.mindmesh.text.muted }}>
+                                {file_size}
+                            </span>
+                            <span className="text-sm" style={{ color: colors.mindmesh.text.muted }}>
+                                •
+                            </span>
+                            <span className="text-sm" style={{ color: colors.mindmesh.text.muted }}>
+                                {new Date(last_modified).toLocaleDateString('en-US', { 
+                                    month: 'short', 
+                                    day: 'numeric', 
+                                    year: 'numeric' 
+                                })}
+                            </span>
+                        </div>
                     </div>
                 </div>
-                <div className="flex flex-row gap-2">
-                    <Button className="hover:cursor-pointer" style={{background:colors.mindmesh.success}} onClick={download}>
-                        <Download />
+                <div className="flex flex-row gap-2 ml-4">
+                    <Button 
+                        className="hover:cursor-pointer hover:scale-110 transition-transform duration-200 shadow-md hover:shadow-lg" 
+                        style={{background: "#fbbf24"}} 
+                        onClick={addToFavorites}
+                        size="icon"
+                    >
+                        <Star size={18} />
                     </Button>
-                    <Button className="hover:cursor-pointer" style={{background:colors.mindmesh.error}} onClick={deleteFn}>
-                        <Trash2 />
+                    <Button 
+                        className="hover:cursor-pointer hover:scale-110 transition-transform duration-200 shadow-md hover:shadow-lg" 
+                        style={{background: colors.mindmesh.success}} 
+                        onClick={download}
+                        size="icon"
+                    >
+                        <Download size={18} />
                     </Button>
-                    <Button className="hover:cursor-pointer" style={{background:colors.mindmesh.warning}} onClick={rename}>
-                        <Edit />
+                    <Button 
+                        className="hover:cursor-pointer hover:scale-110 transition-transform duration-200 shadow-md hover:shadow-lg" 
+                        style={{background: colors.mindmesh.warning}} 
+                        onClick={rename}
+                        size="icon"
+                    >
+                        <Edit size={18} />
+                    </Button>
+                    <Button 
+                        className="hover:cursor-pointer hover:scale-110 transition-transform duration-200 shadow-md hover:shadow-lg" 
+                        style={{background: colors.mindmesh.error}} 
+                        onClick={deleteFn}
+                        size="icon"
+                    >
+                        <Trash2 size={18} />
                     </Button>
                 </div>
             </div>
