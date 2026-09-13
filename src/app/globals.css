@@ -3,11 +3,24 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+  MeshMind design tokens — macOS-inspired.
+
+  Reference: macOS Finder / System Settings — soft window grays in light
+  mode, a warm charcoal (never pure black) in dark mode, SF Pro
+  typography, hairline borders, and a monochrome "graphite" accent
+  (contrast-based, not a brand hue) used the way macOS uses grayscale
+  accents in System Settings. Functional colors (success/warning/
+  destructive) stay the macOS system green/orange/red; there is no blue
+  anywhere in the palette by design.
+*/
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+    var(--font-geist-sans), "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", var(--font-geist-mono), "Cascadia Code",
+    Menlo, Consolas, monospace;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -25,6 +38,7 @@
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
@@ -37,79 +51,144 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-teal: var(--teal);
+  --color-teal-foreground: var(--teal-foreground);
+  --color-purple: var(--purple);
+  --color-purple-foreground: var(--purple-foreground);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-xl: calc(var(--radius) + 5px);
 }
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+
+  /* Light — macOS Finder/System Settings window gray */
+  --background: #f5f5f7;
+  --foreground: #1d1d1f;
+
+  --card: #ffffff;
+  --card-foreground: #1d1d1f;
+
+  --popover: #ffffff;
+  --popover-foreground: #1d1d1f;
+
+  --primary: #1d1d1f;
+  --primary-foreground: #ffffff;
+
+  --secondary: #e8e8ed;
+  --secondary-foreground: #1d1d1f;
+
+  --muted: #eeeef1;
+  --muted-foreground: #6e6e73;
+
+  --accent: #ececef;
+  --accent-foreground: #1d1d1f;
+
+  --destructive: #ff3b30;
+  --destructive-foreground: #ffffff;
+
+  --success: #248a3d;
+  --success-foreground: #ffffff;
+
+  --warning: #ff9500;
+  --warning-foreground: #2b1600;
+
+  --info: #0e9aad;
+  --info-foreground: #ffffff;
+
+  --teal: #1a8f8f;
+  --teal-foreground: #ffffff;
+
+  --purple: #af52de;
+  --purple-foreground: #ffffff;
+
+  --border: rgba(0, 0, 0, 0.1);
+  --input: rgba(0, 0, 0, 0.06);
+  --ring: #1d1d1f;
+
+  --chart-1: #6e6e73;
+  --chart-2: #1a8f8f;
+  --chart-3: #af52de;
+  --chart-4: #ff9500;
+  --chart-5: #ff3b30;
+
+  --sidebar: #eef0f2;
+  --sidebar-foreground: #1d1d1f;
+  --sidebar-primary: #1d1d1f;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: rgba(0, 0, 0, 0.06);
+  --sidebar-accent-foreground: #1d1d1f;
+  --sidebar-border: rgba(0, 0, 0, 0.08);
+  --sidebar-ring: #1d1d1f;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* Dark — warm charcoal, deliberately not pure black */
+  --background: #242426;
+  --foreground: #f2f2f4;
+
+  --card: #2c2c2e;
+  --card-foreground: #f2f2f4;
+
+  --popover: #323234;
+  --popover-foreground: #f2f2f4;
+
+  --primary: #f2f2f4;
+  --primary-foreground: #1d1d1f;
+
+  --secondary: #3a3a3d;
+  --secondary-foreground: #f2f2f4;
+
+  --muted: #2a2a2c;
+  --muted-foreground: #9d9da3;
+
+  --accent: #3a3a3d;
+  --accent-foreground: #f2f2f4;
+
+  --destructive: #ff453a;
+  --destructive-foreground: #ffffff;
+
+  --success: #30d158;
+  --success-foreground: #04240d;
+
+  --warning: #ff9f0a;
+  --warning-foreground: #2b1600;
+
+  --info: #2dd4de;
+  --info-foreground: #04272a;
+
+  --teal: #5ac8c8;
+  --teal-foreground: #042222;
+
+  --purple: #bf5af2;
+  --purple-foreground: #29063a;
+
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.07);
+  --ring: #f2f2f4;
+
+  --chart-1: #9d9da3;
+  --chart-2: #5ac8c8;
+  --chart-3: #bf5af2;
+  --chart-4: #ff9f0a;
+  --chart-5: #ff453a;
+
+  --sidebar: #1f1f21;
+  --sidebar-foreground: #f2f2f4;
+  --sidebar-primary: #f2f2f4;
+  --sidebar-primary-foreground: #1d1d1f;
+  --sidebar-accent: rgba(255, 255, 255, 0.07);
+  --sidebar-accent-foreground: #f2f2f4;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-ring: #f2f2f4;
 }
 
 @layer base {
@@ -118,6 +197,8 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
   }
 }
 
@@ -133,7 +214,7 @@
 @keyframes fade-in {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -141,15 +222,89 @@
   }
 }
 
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+
 .animate-gradient {
   background-size: 200% 200%;
-  animation: gradient 3s ease infinite;
+  animation: gradient 4s ease infinite;
 }
 
 .animate-fade-in {
-  animation: fade-in 0.8s ease-out forwards;
+  animation: fade-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .delay-1000 {
   animation-delay: 1s;
+}
+
+/* macOS-style vibrancy: frosted, saturated blur used on sidebars/toolbars
+   so content behind subtly bleeds through, like NSVisualEffectView. */
+.mac-vibrancy {
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+}
+
+/* Soft, layered elevation used on cards, popovers, and dialogs instead of
+   a single hard drop-shadow — mirrors macOS window/panel shadows. */
+.mac-shadow {
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.03),
+    0 6px 16px -8px rgba(0, 0, 0, 0.12);
+}
+
+.dark .mac-shadow {
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.16),
+    0 8px 24px -8px rgba(0, 0, 0, 0.5);
+}
+
+.mac-shadow-lg {
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.08),
+    0 20px 40px -12px rgba(0, 0, 0, 0.22);
+}
+
+.dark .mac-shadow-lg {
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.28),
+    0 24px 48px -16px rgba(0, 0, 0, 0.6);
+}
+
+/* Thin, unobtrusive scrollbars used throughout the app shell */
+.brand-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.brand-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.brand-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--border);
+  border-radius: 999px;
+}
+.brand-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
 }

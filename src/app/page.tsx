@@ -1,160 +1,113 @@
-import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, Brain, FileText, Sparkles, Workflow } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+const features = [
+  {
+    title: "Chat with your documents",
+    desc: "Ask questions in plain language and get answers grounded directly in the files you've uploaded — no more digging through PDFs.",
+    icon: Brain,
+    accent: "text-primary",
+  },
+  {
+    title: "AI-generated reports",
+    desc: "Turn a project's worth of documents and conversations into a polished, shareable summary in seconds.",
+    icon: FileText,
+    accent: "text-teal",
+  },
+  {
+    title: "Visual flowcharts",
+    desc: "Map processes and decisions onto a canvas — by hand, or let the AI draft the first pass from your chats.",
+    icon: Workflow,
+    accent: "text-warning",
+  },
+];
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-gray-900 dark:via-gray-950 dark:to-black text-gray-900 dark:text-white font-sans">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 -left-32 w-96 h-96 bg-blue-400/10 dark:bg-blue-500/5 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-indigo-400/10 dark:bg-indigo-500/5 rounded-full blur-3xl animate-pulse delay-1000"></div>
+    <div className="relative min-h-screen overflow-hidden bg-background text-foreground">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -left-32 top-1/4 h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
+        <div className="delay-1000 absolute -right-32 bottom-1/4 h-96 w-96 animate-pulse rounded-full bg-teal/10 blur-3xl" />
       </div>
 
-      <main className="relative flex flex-col items-center justify-center px-6 py-24 sm:px-12 lg:px-24 text-center space-y-20">
-        
-        {/* Hero Section */}
-        <div className="space-y-8 animate-fade-in">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/50 text-blue-700 dark:text-blue-300 text-sm font-medium backdrop-blur-sm">
+      <header className="relative z-10 mx-auto flex max-w-6xl items-center justify-between px-6 py-6 sm:px-10">
+        <div className="flex items-center gap-2">
+          <span className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-sm font-bold text-primary-foreground">
+            M
+          </span>
+          <span className="text-base font-semibold">MeshMind</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" asChild>
+            <Link href="/getstarted">Log in</Link>
+          </Button>
+          <Button asChild>
+            <Link href="/getstarted">Get started</Link>
+          </Button>
+        </div>
+      </header>
+
+      <main className="relative z-10 mx-auto flex max-w-6xl flex-col items-center px-6 py-16 text-center sm:px-10 sm:py-24">
+        <div className="animate-fade-in space-y-8">
+          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-sm font-medium text-primary">
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
             </span>
-            AI-Powered Knowledge Platform
+            AI-powered knowledge platform
           </div>
 
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight leading-tight">
-            Welcome to{" "}
-            <span className="relative inline-block">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 animate-gradient">
-                MindMesh
-              </span>
-              <span className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 rounded-full blur-sm"></span>
+          <h1 className="text-5xl font-bold leading-tight tracking-tight sm:text-6xl lg:text-7xl">
+            Your documents,{" "}
+            <span className="animate-gradient bg-linear-to-r from-primary via-teal to-primary bg-size-[200%_200%] bg-clip-text text-transparent">
+              understood
             </span>
           </h1>
-          
-          <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
-            Your AI-driven workspace for seamless knowledge management, ideation, and document intelligence.
+
+          <p className="mx-auto max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
+            MeshMind turns every file your team uploads into a searchable, chattable
+            knowledge base — with AI-generated reports and flowcharts along the way.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-            <a
-              href="/getstarted"
-              className="group relative rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold px-10 py-4 text-base sm:text-lg shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105 hover:-translate-y-0.5"
-            >
-              <span className="relative z-10">Get Started</span>
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-700 to-indigo-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </a>
-            <a
-              href="#learn-more"
-              className="group rounded-full border-2 border-gray-300 dark:border-gray-700 px-10 py-4 font-semibold text-base sm:text-lg hover:bg-gray-100 dark:hover:bg-gray-900 hover:border-blue-500 dark:hover:border-blue-500 transition-all duration-300 hover:scale-105 hover:-translate-y-0.5"
-            >
-              Learn More
-            </a>
+          <div className="flex flex-col justify-center gap-3 pt-2 sm:flex-row">
+            <Button size="lg" className="group" asChild>
+              <Link href="/getstarted">
+                Get started free
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </Link>
+            </Button>
+            <Button size="lg" variant="outline" asChild>
+              <Link href="#features">See how it works</Link>
+            </Button>
           </div>
         </div>
 
-        {/* Feature Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 w-full max-w-6xl mt-10">
-          {[
-            {
-              title: "Knowledge Management",
-              desc: "Organize and connect your ideas seamlessly with intelligent linking",
-              icon: "🧠",
-              gradient: "from-blue-500 to-cyan-500",
-            },
-            {
-              title: "Project Ideation",
-              desc: "Transform thoughts into actionable projects with AI assistance",
-              icon: "💡",
-              gradient: "from-indigo-500 to-purple-500",
-            },
-            {
-              title: "Document Intelligence",
-              desc: "AI-powered insights and analysis from your documents",
-              icon: "📄",
-              gradient: "from-purple-500 to-pink-500",
-            },
-          ].map((feature, i) => (
+        <div id="features" className="mt-24 grid w-full grid-cols-1 gap-6 sm:grid-cols-3">
+          {features.map((feature) => (
             <div
-              key={i}
-              className="group relative p-8 rounded-3xl border border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl hover:shadow-2xl hover:shadow-blue-500/10 hover:-translate-y-2 transition-all duration-300 cursor-pointer"
-              style={{ animationDelay: `${i * 100}ms` }}
+              key={feature.title}
+              className="group relative rounded-2xl border border-border bg-card p-8 text-left transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5"
             >
-              {/* Gradient overlay on hover */}
-              <div className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
-              
-              {/* Icon */}
-              <div className="text-5xl mb-4 transform group-hover:scale-110 transition-transform duration-300">
-                {feature.icon}
-              </div>
-              
-              <h3 className={`font-bold text-xl mb-3 bg-gradient-to-r ${feature.gradient} bg-clip-text text-transparent`}>
-                {feature.title}
-              </h3>
-              <p className="text-base text-gray-600 dark:text-gray-400 leading-relaxed">
-                {feature.desc}
-              </p>
-
-              {/* Decorative corner */}
-              <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-gradient-to-br from-blue-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <feature.icon className={`h-8 w-8 ${feature.accent}`} />
+              <h3 className="mt-4 text-lg font-semibold">{feature.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{feature.desc}</p>
             </div>
           ))}
         </div>
 
-        {/* About / Description */}
-        <div className="relative max-w-4xl mx-auto mt-12">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 dark:from-blue-500/5 dark:to-indigo-500/5 rounded-3xl blur-2xl"></div>
-          <div className="relative p-10 rounded-3xl border border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl">
-            <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              Intelligence Meets Innovation
-            </h2>
-            <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
-              MindMesh learns from your files, chats, and reports to build a dynamic
-              knowledge graph connecting ideas, documents, and people — turning
-              information into insight. Experience the future of intelligent knowledge management.
-            </p>
-          </div>
+        <div className="relative mt-20 max-w-3xl rounded-3xl border border-border bg-card p-10">
+          <Sparkles className="mx-auto h-8 w-8 text-primary" />
+          <h2 className="mt-4 text-2xl font-bold sm:text-3xl">Built for teams who live in documents</h2>
+          <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+            Data rooms, research libraries, legal archives — MeshMind organizes projects around
+            the files that matter, with role-based access so the right people see the right things.
+          </p>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="relative flex flex-wrap justify-center items-center gap-8 py-16 border-t border-gray-200 dark:border-gray-800 backdrop-blur-sm">
-        <div className="absolute inset-0 bg-gradient-to-t from-gray-50/50 to-transparent dark:from-gray-950/50"></div>
-        {[
-          {
-            href: "https://nextjs.org/learn",
-            label: "Learn",
-            icon: "/file.svg",
-          },
-          {
-            href: "https://vercel.com/templates?framework=next.js",
-            label: "Examples",
-            icon: "/window.svg",
-          },
-          {
-            href: "https://nextjs.org",
-            label: "Go to nextjs.org →",
-            icon: "/globe.svg",
-          },
-        ].map((link, i) => (
-          <a
-            key={i}
-            href={link.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="relative flex items-center gap-3 px-5 py-3 rounded-full text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-all duration-300 group"
-          >
-            <Image
-              aria-hidden
-              src={link.icon}
-              alt={`${link.label} icon`}
-              width={18}
-              height={18}
-              className="group-hover:scale-110 transition-transform duration-300"
-            />
-            <span className="font-medium">{link.label}</span>
-          </a>
-        ))}
+      <footer className="relative z-10 border-t border-border py-10 text-center text-sm text-muted-foreground">
+        © {new Date().getFullYear()} MeshMind. All rights reserved.
       </footer>
     </div>
   );
