@@ -1,0 +1,11 @@
+query GetReportsByStatus(
+  $projectId: ID!
+  $status: ReportStatus!
+) {
+  reportsByStatus(
+    projectId: $projectId
+    status: $status
+  ) {
+    ...ReportFields
+  }
+}

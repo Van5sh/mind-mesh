@@ -1,0 +1,3 @@
+mutation DeleteReport($id: ID!) {
+  deleteReport(id: $id)
+}

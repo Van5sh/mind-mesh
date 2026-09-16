@@ -1,0 +1,5 @@
+query GetReports($projectId: ID!) {
+  reports(projectId: $projectId) {
+    ...ReportFields
+  }
+}

@@ -1,0 +1,5 @@
+query GetReportsByChat($sourceChatId: ID!) {
+  reportsByChat(sourceChatId: $sourceChatId) {
+    ...ReportFields
+  }
+}

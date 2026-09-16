@@ -1,0 +1,5 @@
+query GetAIReports($projectId: ID!) {
+  aiReports(projectId: $projectId) {
+    ...ReportFields
+  }
+}

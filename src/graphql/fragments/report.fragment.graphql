@@ -1,0 +1,23 @@
+fragment ReportFields on Report {
+  id
+  title
+  content
+  format
+
+  properties {
+    generatedBy {
+      id
+      username
+      email
+    }
+    generatedByAI
+    status
+
+    sourceChat {
+      id
+    }
+  }
+
+  createdAt
+  updatedAt
+}

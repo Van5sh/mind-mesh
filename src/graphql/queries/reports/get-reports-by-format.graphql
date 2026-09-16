@@ -1,0 +1,11 @@
+query GetReportsByFormat(
+  $projectId: ID!
+  $format: ReportFormat!
+) {
+  reportsByFormat(
+    projectId: $projectId
+    format: $format
+  ) {
+    ...ReportFields
+  }
+}
