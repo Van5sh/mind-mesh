@@ -1,0 +1,18 @@
+mutation UpdateUserAvatar(
+  $id: ID!
+  $input: UpdateUserAvatarInput!
+) {
+  updateUserAvatar(
+    id: $id
+    input: $input
+  ) {
+    user {
+      id
+    }
+
+    firstName
+    lastName
+    avatarUrl
+    updatedAt
+  }
+}

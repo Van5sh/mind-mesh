@@ -1,0 +1,5 @@
+query GetUsers($ids: [ID!]!) {
+  users(ids: $ids) {
+    ...UserFields
+  }
+}
