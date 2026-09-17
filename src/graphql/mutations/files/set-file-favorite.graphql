@@ -1,0 +1,16 @@
+mutation SetFileFavorite($input: SetFileFavoriteInput!) {
+  setFileFavorite(input: $input) {
+    user {
+      id
+      username
+      email
+    }
+    file {
+      id
+      name
+    }
+    isFavorite
+    createdAt
+    updatedAt
+  }
+}

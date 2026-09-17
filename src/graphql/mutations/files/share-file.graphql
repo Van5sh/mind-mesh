@@ -1,0 +1,5 @@
+mutation ShareFile($input: ShareFileInput!) {
+  shareFile(input: $input) {
+    ...FileShareFields
+  }
+}

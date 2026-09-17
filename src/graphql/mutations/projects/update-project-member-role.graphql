@@ -1,0 +1,5 @@
+mutation UpdateProjectMemberRole($input: UpdateProjectMemberRoleInput!) {
+  updateProjectMemberRole(input: $input) {
+    ...ProjectMemberFields
+  }
+}

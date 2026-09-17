@@ -1,5 +1,5 @@
-query GetUser($id: ID!) {
-  user(id: $id) {
+query GetUserByEmail($email: String!) {
+  userByEmail(email: $email) {
     ...UserFields
   }
 }

@@ -1,0 +1,5 @@
+query GetFiles($projectId: ID, $folderId: ID) {
+  files(projectId: $projectId, folderId: $folderId) {
+    ...FileFields
+  }
+}

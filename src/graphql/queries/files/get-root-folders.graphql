@@ -1,0 +1,5 @@
+query GetRootFolders($projectId: ID!) {
+  rootFolders(projectId: $projectId) {
+    ...FolderFields
+  }
+}

@@ -1,0 +1,3 @@
+mutation DeleteActivityLogByID($id: ID!) {
+  deleteActivityLogByID(id: $id)
+}

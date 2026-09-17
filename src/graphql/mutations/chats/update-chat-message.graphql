@@ -1,0 +1,5 @@
+mutation UpdateChatMessage($input: UpdateChatMessageInput!) {
+  updateChatMessage(input: $input) {
+    ...ChatMessageFields
+  }
+}

@@ -1,0 +1,5 @@
+query GetFlowcharts($projectId: ID!) {
+  flowcharts(projectId: $projectId) {
+    ...FlowchartFields
+  }
+}

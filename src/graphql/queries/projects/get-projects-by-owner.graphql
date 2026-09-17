@@ -1,0 +1,5 @@
+query GetProjectsByOwner($ownerId: ID!) {
+  projectsByOwner(ownerId: $ownerId) {
+    ...ProjectFields
+  }
+}

@@ -1,0 +1,5 @@
+query GetArchivedProjectsByOwner($ownerId: ID!) {
+  archivedProjectsByOwner(ownerId: $ownerId) {
+    ...ProjectFields
+  }
+}

@@ -1,0 +1,5 @@
+query GetRootFiles($projectId: ID!) {
+  rootFiles(projectId: $projectId) {
+    ...FileFields
+  }
+}

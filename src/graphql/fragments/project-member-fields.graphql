@@ -1,0 +1,11 @@
+fragment ProjectMemberFields on ProjectMember {
+  id
+  role
+  user {
+    id
+    username
+    email
+  }
+  createdAt
+  updatedAt
+}

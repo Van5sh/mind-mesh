@@ -1,0 +1,5 @@
+query GetChat($id: ID!) {
+  chat(id: $id) {
+    ...ChatFields
+  }
+}

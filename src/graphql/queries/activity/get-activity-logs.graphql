@@ -1,0 +1,5 @@
+query GetActivityLogs($projectId: ID, $userId: ID) {
+  activityLogs(projectId: $projectId, userId: $userId) {
+    ...ActivityLogFields
+  }
+}

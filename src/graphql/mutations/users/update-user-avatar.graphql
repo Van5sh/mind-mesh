@@ -1,18 +1,15 @@
-mutation UpdateUserAvatar(
-  $id: ID!
-  $input: UpdateUserAvatarInput!
-) {
-  updateUserAvatar(
-    id: $id
-    input: $input
-  ) {
+mutation UpdateUserAvatar($id: ID!, $input: UpdateUserAvatarInput!) {
+  updateUserAvatar(id: $id, input: $input) {
     user {
       id
+      username
+      email
     }
-
     firstName
     lastName
+    bio
     avatarUrl
+    createdAt
     updatedAt
   }
 }

@@ -1,0 +1,5 @@
+mutation MoveFile($input: MoveFileInput!) {
+  moveFile(input: $input) {
+    ...FileFields
+  }
+}

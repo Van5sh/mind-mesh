@@ -1,0 +1,26 @@
+fragment ChatMessageFields on ChatMessage {
+  id
+  role
+  content
+  sender {
+    id
+    username
+    email
+  }
+  aiMetadata {
+    embeddingModel
+    embeddingSynced
+    indexedAt
+  }
+  mentionedUsers {
+    id
+    username
+    email
+  }
+  referencedFiles {
+    id
+    name
+  }
+  createdAt
+  updatedAt
+}

@@ -1,0 +1,5 @@
+query GetProject($id: ID!) {
+  project(id: $id) {
+    ...ProjectFields
+  }
+}

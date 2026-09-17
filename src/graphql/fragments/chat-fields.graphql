@@ -1,0 +1,17 @@
+fragment ChatFields on Chat {
+  id
+  title
+  type
+  status
+  lastActivityAt
+  participants {
+    user {
+      id
+      username
+      email
+    }
+    joinedAt
+  }
+  createdAt
+  updatedAt
+}

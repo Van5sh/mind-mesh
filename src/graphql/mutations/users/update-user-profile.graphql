@@ -1,22 +1,14 @@
-mutation UpdateUserProfile(
-  $id: ID!
-  $input: UpdateUserProfileInput!
-) {
-  updateUserProfile(
-    id: $id
-    input: $input
-  ) {
+mutation UpdateUserProfile($id: ID!, $input: UpdateUserProfileInput!) {
+  updateUserProfile(id: $id, input: $input) {
     user {
       id
       username
       email
     }
-
     firstName
     lastName
     bio
     avatarUrl
-
     createdAt
     updatedAt
   }

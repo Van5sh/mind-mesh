@@ -1,0 +1,5 @@
+query GetFileShare($id: ID!) {
+  fileShare(id: $id) {
+    ...FileShareFields
+  }
+}

@@ -1,11 +1,5 @@
-mutation UpdateReport(
-  $id: ID!
-  $input: UpdateReportInput!
-) {
-  updateReport(
-    id: $id
-    input: $input
-  ) {
+mutation UpdateReport($id: ID!, $input: UpdateReportInput!) {
+  updateReport(id: $id, input: $input) {
     ...ReportFields
   }
 }

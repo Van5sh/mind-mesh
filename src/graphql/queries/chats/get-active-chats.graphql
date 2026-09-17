@@ -1,0 +1,5 @@
+query GetActiveChats($projectId: ID!) {
+  activeChats(projectId: $projectId) {
+    ...ChatFields
+  }
+}

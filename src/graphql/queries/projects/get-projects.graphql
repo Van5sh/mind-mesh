@@ -1,0 +1,5 @@
+query GetProjects {
+  projects {
+    ...ProjectFields
+  }
+}

@@ -1,0 +1,5 @@
+query GetFavoriteFiles($userId: ID!, $projectId: ID) {
+  favoriteFiles(userId: $userId, projectId: $projectId) {
+    ...FileFields
+  }
+}

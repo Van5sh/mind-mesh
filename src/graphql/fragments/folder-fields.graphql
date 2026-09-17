@@ -1,0 +1,6 @@
+fragment FolderFields on Folder {
+  id
+  name
+  createdAt
+  updatedAt
+}

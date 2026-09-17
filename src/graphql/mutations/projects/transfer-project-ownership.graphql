@@ -1,0 +1,5 @@
+mutation TransferProjectOwnership($input: TransferProjectOwnershipInput!) {
+  transferProjectOwnership(input: $input) {
+    ...ProjectFields
+  }
+}

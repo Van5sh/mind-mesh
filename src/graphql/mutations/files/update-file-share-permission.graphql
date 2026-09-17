@@ -1,0 +1,5 @@
+mutation UpdateFileSharePermission($fileShareId: ID!, $permission: FilePermission!) {
+  updateFileSharePermission(fileShareId: $fileShareId, permission: $permission) {
+    ...FileShareFields
+  }
+}

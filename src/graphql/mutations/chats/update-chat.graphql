@@ -1,0 +1,5 @@
+mutation UpdateChat($id: ID!, $input: UpdateChatInput!) {
+  updateChat(id: $id, input: $input) {
+    ...ChatFields
+  }
+}

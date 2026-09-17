@@ -1,0 +1,5 @@
+mutation UpdateFlowchart($id: ID!, $input: UpdateFlowchartInput!) {
+  updateFlowchart(id: $id, input: $input) {
+    ...FlowchartFields
+  }
+}

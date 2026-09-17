@@ -1,0 +1,5 @@
+query GetSharedWithMe($userId: ID!) {
+  sharedWithMe(userId: $userId) {
+    ...FileShareFields
+  }
+}

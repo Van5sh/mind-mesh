@@ -1,0 +1,5 @@
+mutation CreateActivityLog($input: CreateActivityLogInput!) {
+  createActivityLog(input: $input) {
+    ...ActivityLogFields
+  }
+}

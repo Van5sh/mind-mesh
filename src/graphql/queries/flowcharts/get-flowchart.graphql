@@ -1,0 +1,5 @@
+query GetFlowchart($id: ID!) {
+  flowchart(id: $id) {
+    ...FlowchartFields
+  }
+}

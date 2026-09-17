@@ -1,0 +1,12 @@
+fragment ActivityLogFields on ActivityLog {
+  id
+  action
+  entityType
+  entityId
+  user {
+    id
+    username
+    email
+  }
+  createdAt
+}

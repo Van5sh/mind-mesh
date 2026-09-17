@@ -1,0 +1,17 @@
+fragment FlowchartFields on Flowchart {
+  id
+  name
+  data
+  generatedBy {
+    id
+    username
+    email
+  }
+  generatedByAI
+  status
+  sourceChat {
+    id
+  }
+  createdAt
+  updatedAt
+}

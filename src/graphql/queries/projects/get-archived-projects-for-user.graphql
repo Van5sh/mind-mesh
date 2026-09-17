@@ -1,0 +1,5 @@
+query GetArchivedProjectsForUser($userId: ID!) {
+  archivedProjectsForUser(userId: $userId) {
+    ...ProjectFields
+  }
+}

@@ -1,0 +1,11 @@
+query GetFolderContents($folderId: ID, $projectId: ID) {
+  folderContents(folderId: $folderId, projectId: $projectId) {
+    __typename
+    ... on Folder {
+      ...FolderFields
+    }
+    ... on File {
+      ...FileFields
+    }
+  }
+}

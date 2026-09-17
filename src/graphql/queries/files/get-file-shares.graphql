@@ -1,0 +1,5 @@
+query GetFileShares($fileId: ID!) {
+  fileShares(fileId: $fileId) {
+    ...FileShareFields
+  }
+}

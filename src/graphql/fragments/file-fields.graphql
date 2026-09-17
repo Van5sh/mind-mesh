@@ -1,0 +1,41 @@
+fragment FileFields on File {
+  id
+  name
+  size
+  storage {
+    bucketName
+    objectKey
+    etag
+    versionId
+    checksum
+    mimeType
+    uploadedBy {
+      id
+      username
+      email
+    }
+    downloadUrl
+    createdAt
+    updatedAt
+  }
+  properties {
+    originalName
+    isIndexed
+    deletedAt
+    createdAt
+    updatedAt
+  }
+  aiMetadata {
+    extractedText
+    embeddingModel
+    embeddingSynced
+    indexedAt
+    processingStatus
+    summary
+    errorMessage
+    createdAt
+    updatedAt
+  }
+  createdAt
+  updatedAt
+}

@@ -3,7 +3,6 @@ fragment ReportFields on Report {
   title
   content
   format
-
   properties {
     generatedBy {
       id
@@ -12,12 +11,10 @@ fragment ReportFields on Report {
     }
     generatedByAI
     status
-
     sourceChat {
       id
     }
   }
-
   createdAt
   updatedAt
 }

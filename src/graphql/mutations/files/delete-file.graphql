@@ -1,0 +1,3 @@
+mutation DeleteFile($fileId: ID!) {
+  deleteFile(fileId: $fileId)
+}

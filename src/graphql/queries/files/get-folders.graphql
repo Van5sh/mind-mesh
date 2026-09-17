@@ -1,0 +1,5 @@
+query GetFolders($projectId: ID) {
+  folders(projectId: $projectId) {
+    ...FolderFields
+  }
+}

@@ -1,0 +1,10 @@
+mutation CreateChatParticipant($input: CreateChatParticipantInput!) {
+  createChatParticipant(input: $input) {
+    user {
+      id
+      username
+      email
+    }
+    joinedAt
+  }
+}

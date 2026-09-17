@@ -1,11 +1,5 @@
-query GetReportsByGenerator(
-  $projectId: ID!
-  $generatedById: ID!
-) {
-  reportsByGenerator(
-    projectId: $projectId
-    generatedById: $generatedById
-  ) {
+query GetReportsByGenerator($projectId: ID!, $generatedById: ID!) {
+  reportsByGenerator(projectId: $projectId, generatedById: $generatedById) {
     ...ReportFields
   }
 }

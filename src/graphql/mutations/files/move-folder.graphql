@@ -1,0 +1,5 @@
+mutation MoveFolder($folderId: ID!, $parentFolderId: ID) {
+  moveFolder(folderId: $folderId, parentFolderId: $parentFolderId) {
+    ...FolderFields
+  }
+}

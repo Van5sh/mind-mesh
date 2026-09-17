@@ -1,0 +1,3 @@
+mutation DeleteFileShare($fileShareId: ID!) {
+  deleteFileShare(fileShareId: $fileShareId)
+}

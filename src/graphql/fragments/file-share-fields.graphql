@@ -1,0 +1,15 @@
+fragment FileShareFields on FileShare {
+  id
+  sharedBy {
+    id
+    username
+    email
+  }
+  sharedWith {
+    id
+    username
+    email
+  }
+  permission
+  createdAt
+}

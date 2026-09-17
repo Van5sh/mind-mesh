@@ -1,0 +1,5 @@
+mutation AddProjectMember($input: AddProjectMemberInput!) {
+  addProjectMember(input: $input) {
+    ...ProjectMemberFields
+  }
+}

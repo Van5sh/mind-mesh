@@ -1,0 +1,5 @@
+query GetArchivedChats($projectId: ID!) {
+  archivedChats(projectId: $projectId) {
+    ...ChatFields
+  }
+}

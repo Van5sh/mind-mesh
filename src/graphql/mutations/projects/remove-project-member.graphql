@@ -1,0 +1,3 @@
+mutation RemoveProjectMember($projectId: ID!, $userId: ID!) {
+  removeProjectMember(projectId: $projectId, userId: $userId)
+}

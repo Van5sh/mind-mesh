@@ -5,12 +5,10 @@ query GetUserProfile($userId: ID!) {
       username
       email
     }
-
     firstName
     lastName
     bio
     avatarUrl
-
     createdAt
     updatedAt
   }

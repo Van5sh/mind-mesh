@@ -1,0 +1,3 @@
+mutation DeleteFlowchart($id: ID!) {
+  deleteFlowchart(id: $id)
+}

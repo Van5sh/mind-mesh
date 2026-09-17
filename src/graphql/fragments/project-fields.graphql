@@ -1,0 +1,14 @@
+fragment ProjectFields on Project {
+  id
+  name
+  description
+  visibility
+  owner {
+    id
+    username
+    email
+  }
+  archivedAt
+  createdAt
+  updatedAt
+}

@@ -1,0 +1,8 @@
+query GetFolder($id: ID!) {
+  folder(id: $id) {
+    ...FolderFields
+    parentFolder {
+      ...FolderFields
+    }
+  }
+}
