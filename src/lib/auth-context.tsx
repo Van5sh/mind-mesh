@@ -4,10 +4,10 @@
  * Real session state: Firebase handles the Google/GitHub sign-in itself
  * (src/lib/firebase.ts), the resulting ID token is POSTed to the backend's
  * POST /auth/firebase, which verifies it and sets a session cookie - from
- * then on, `me` is the source of truth for who's logged in. No backend
- * logout endpoint exists yet (see conversation) - signOut() only clears
- * local state/cache; the session cookie stays valid server-side until it
- * expires.
+ * then on, `me` is the source of truth for who's logged in. signOut()
+ * clears local state immediately (instant UI feedback) and separately
+ * fires POST /auth/logout in the background to actually invalidate the
+ * session server-side.
  */
 
 import {
@@ -139,8 +139,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 
   const signOut = useCallback(() => {
+    // Clear local state/cache immediately - the UI should reflect "logged
+    // out" right away regardless of how long the network call below takes.
     apolloClient.clearStore();
     setState({ status: "unauthenticated", user: null });
+
+    // Best-effort: invalidates the session server-side too (deletes the
+    // row, so the cookie can't be replayed even if it were captured).
+    // Not awaited by callers and failures aren't surfaced - from the
+    // user's point of view they're already logged out either way.
+    fetch(process.env.NEXT_PUBLIC_LOGOUT_URL!, {
+      method: "POST",
+      credentials: "include",
+    }).catch(() => {
+      // Nothing meaningful to do client-side if this fails.
+    });
   }, []);
 
   const value = useMemo<AuthValue>(

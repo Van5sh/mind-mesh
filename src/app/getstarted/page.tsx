@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, Sparkles } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth, type AuthProvider } from "@/lib/auth-context";
@@ -38,8 +39,18 @@ export default function GetStartedPage() {
   }, [status, router]);
 
   async function handleSignIn(provider: AuthProvider) {
-    await signIn(provider);
-    router.push("/dashboard");
+    try {
+      await signIn(provider);
+      router.push("/dashboard");
+    } catch {
+      // Covers a closed/blocked popup, a rejected token, or the backend
+      // being unreachable - signIn()'s own finally already reset
+      // signingIn, so the button is usable again; this just tells the
+      // user something actually happened instead of failing silently.
+      toast.error("Sign-in failed", {
+        description: "Please try again.",
+      });
+    }
   }
 
   return (
@@ -79,11 +90,6 @@ export default function GetStartedPage() {
               {signingIn === "github" ? <Loader2 className="h-4 w-4 animate-spin" /> : <GitHubIcon />}
               Continue with GitHub
             </Button>
-
-            <div className="mt-2 flex items-center gap-2 rounded-md bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
-              <Sparkles className="h-3.5 w-3.5 shrink-0 text-primary" />
-              This is a demo build — sign-in is simulated and no real account is created.
-            </div>
           </CardContent>
         </Card>
 
