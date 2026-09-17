@@ -9,7 +9,7 @@ export async function getServerApolloClient() {
   return new ApolloClient({
     ssrMode: true,
     link: new HttpLink({
-      uri: process.env.GRAPHQL_URL,
+      uri: process.env.NEXT_PUBLIC_GRAPHQL_URL,
       headers: authHeader
         ? {
             authorization: authHeader,
