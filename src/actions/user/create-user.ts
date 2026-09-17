@@ -4,7 +4,6 @@ import { getServerApolloClient } from "@/lib/apollo/server";
 import {
   CreateUserDocument,
   type CreateUserInput,
-  type CreateUserMutation,
 } from "@/graphql/generated/graphql";
 
 export async function createUserAction(
