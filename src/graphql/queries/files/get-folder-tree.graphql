@@ -1,0 +1,13 @@
+# One level of the folder tree around a folder: where it sits (parent) and
+# what is directly inside it (child folders).
+query GetFolderTree($id: ID!) {
+  folder(id: $id) {
+    ...FolderFields
+    parentFolder {
+      ...FolderFields
+    }
+    childFolders {
+      ...FolderFields
+    }
+  }
+}

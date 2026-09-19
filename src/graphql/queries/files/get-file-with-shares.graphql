@@ -1,0 +1,15 @@
+# A file together with who it is shared with. Deliberately not FileFields:
+# that fragment includes aiMetadata.extractedText (the whole document body),
+# which a sharing view does not need.
+query GetFileWithShares($id: ID!) {
+  file(id: $id) {
+    id
+    name
+    size
+    createdAt
+    updatedAt
+    shares {
+      ...FileShareFields
+    }
+  }
+}

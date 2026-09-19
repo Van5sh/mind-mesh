@@ -1,0 +1,9 @@
+# Live feed of every new message (user-sent and AI replies) in one chat.
+# Served over WebSocket by the backend's second listener (WS_PORT, default
+# 8081) - not by the regular /query endpoint. Only delivers messages
+# published after subscribing; load history with GetChatMessages first.
+subscription ChatMessageAdded($chatId: ID!) {
+  chatMessageAdded(chatId: $chatId) {
+    ...ChatMessageFields
+  }
+}

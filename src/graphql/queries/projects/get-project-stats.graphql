@@ -1,0 +1,9 @@
+query GetProjectStats($projectId: ID!) {
+  projectStats(projectId: $projectId) {
+    memberCount
+    fileCount
+    chatCount
+    reportCount
+    flowchartCount
+  }
+}

@@ -3,11 +3,11 @@
 type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 /** Internal type. DO NOT USE DIRECTLY. */
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
-import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
+import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
 export type AddProjectMemberInput = {
-  projectId: string | number;
+  projectId: string;
   role: ProjectMemberRole;
-  userId: string | number;
+  userId: string;
 };
 
 export type ChatStatus =
@@ -23,64 +23,64 @@ export type CreateActivityLogInput = {
   action: string;
   entityId: string;
   entityType: string;
-  projectId?: string | number | null | undefined;
-  userId?: string | number | null | undefined;
+  projectId?: string | null | undefined;
+  userId?: string | null | undefined;
 };
 
 export type CreateChatInput = {
-  projectId: string | number;
+  projectId: string;
   title: string;
   type: ChatType;
 };
 
 export type CreateChatMessageInput = {
-  chatId: string | number;
+  chatId: string;
   content: string;
   role: MessageRole;
 };
 
 export type CreateChatParticipantInput = {
-  chatId: string | number;
-  userId: string | number;
+  chatId: string;
+  userId: string;
 };
 
 export type CreateFileInput = {
-  file: unknown;
-  folderId?: string | number | null | undefined;
+  file: File;
+  folderId?: string | null | undefined;
   name: string;
-  projectId: string | number;
+  projectId: string;
 };
 
 export type CreateFlowchartInput = {
   data: unknown;
   generatedByAI?: boolean | null | undefined;
-  generatedById?: string | number | null | undefined;
+  generatedById?: string | null | undefined;
   name: string;
-  projectId: string | number;
-  sourceChatId?: string | number | null | undefined;
+  projectId: string;
+  sourceChatId?: string | null | undefined;
   status?: FlowchartStatus | null | undefined;
 };
 
 export type CreateFolderInput = {
   name: string;
-  parentFolderId?: string | number | null | undefined;
-  projectId: string | number;
+  parentFolderId?: string | null | undefined;
+  projectId: string;
 };
 
 export type CreateProjectInput = {
   description?: string | null | undefined;
   name: string;
-  ownerId: string | number;
+  ownerId: string;
   visibility: ProjectVisibility;
 };
 
 export type CreateReportInput = {
   content: string;
   format: ReportFormat;
-  generatedBy?: string | number | null | undefined;
+  generatedBy?: string | null | undefined;
   generatedByAi?: boolean | null | undefined;
-  projectId: string | number;
-  sourceChatId?: string | number | null | undefined;
+  projectId: string;
+  sourceChatId?: string | null | undefined;
   status?: ReportStatus | null | undefined;
   title: string;
 };
@@ -112,8 +112,8 @@ export type MessageRole =
   | 'USER';
 
 export type MoveFileInput = {
-  fileId: string | number;
-  folderId?: string | number | null | undefined;
+  fileId: string;
+  folderId?: string | null | undefined;
 };
 
 export type ProjectMemberRole =
@@ -144,21 +144,21 @@ export type ReportStatus =
   | 'READY';
 
 export type SetFileFavoriteInput = {
-  fileId: string | number;
+  fileId: string;
   isFavorite: boolean;
-  userId: string | number;
+  userId: string;
 };
 
 export type ShareFileInput = {
-  fileId: string | number;
+  fileId: string;
   permission: FilePermission;
-  sharedBy: string | number;
-  sharedWith: string | number;
+  sharedBy: string;
+  sharedWith: string;
 };
 
 export type TransferProjectOwnershipInput = {
-  ownerId: string | number;
-  projectId: string | number;
+  ownerId: string;
+  projectId: string;
 };
 
 export type UpdateChatInput = {
@@ -169,15 +169,15 @@ export type UpdateChatInput = {
 
 export type UpdateChatMessageInput = {
   content: string;
-  id: string | number;
+  id: string;
 };
 
 export type UpdateFlowchartInput = {
   data?: string | null | undefined;
-  generatedBy?: string | number | null | undefined;
+  generatedBy?: string | null | undefined;
   generatedByAI?: boolean | null | undefined;
   name?: string | null | undefined;
-  sourceChatId?: string | number | null | undefined;
+  sourceChatId?: string | null | undefined;
   status?: FlowchartStatus | null | undefined;
 };
 
@@ -188,9 +188,9 @@ export type UpdateProjectInput = {
 };
 
 export type UpdateProjectMemberRoleInput = {
-  projectId: string | number;
+  projectId: string;
   role: ProjectMemberRole;
-  userId: string | number;
+  userId: string;
 };
 
 export type UpdateReportInput = {
@@ -215,37 +215,37 @@ export type UpdateUserProfileInput = {
   lastName: string;
 };
 
-export type ActivityLogFieldsFragment = { id: string, action: string, entityType: string | null, entityId: string | null, createdAt: unknown, user: { id: string, username: string, email: string } | null } & { ' $fragmentName'?: 'ActivityLogFieldsFragment' };
+export type ActivityLogFieldsFragment = { id: string, action: string, entityType: string | null, entityId: string | null, createdAt: string, user: { id: string, username: string, email: string } | null };
 
-export type ChatFieldsFragment = { id: string, title: string | null, type: ChatType, status: ChatStatus, lastActivityAt: unknown, createdAt: unknown, updatedAt: unknown, participants: Array<{ joinedAt: unknown, user: { id: string, username: string, email: string } }> } & { ' $fragmentName'?: 'ChatFieldsFragment' };
+export type ChatFieldsFragment = { id: string, title: string | null, type: ChatType, status: ChatStatus, lastActivityAt: string, createdAt: string, updatedAt: string, participants: Array<{ joinedAt: string, user: { id: string, username: string, email: string } }> };
 
-export type ChatMessageFieldsFragment = { id: string, role: MessageRole, content: string, createdAt: unknown, updatedAt: unknown, sender: { id: string, username: string, email: string } | null, aiMetadata: { embeddingModel: string | null, embeddingSynced: boolean, indexedAt: unknown } | null, mentionedUsers: Array<{ id: string, username: string, email: string }>, referencedFiles: Array<{ id: string, name: string }> } & { ' $fragmentName'?: 'ChatMessageFieldsFragment' };
+export type ChatMessageFieldsFragment = { id: string, role: MessageRole, content: string, createdAt: string, updatedAt: string, sender: { id: string, username: string, email: string } | null, aiMetadata: { embeddingModel: string | null, embeddingSynced: boolean, indexedAt: string | null } | null, mentionedUsers: Array<{ id: string, username: string, email: string }>, referencedFiles: Array<{ id: string, name: string }> };
 
-export type FileFieldsFragment = { id: string, name: string, size: unknown, createdAt: unknown, updatedAt: unknown, storage: { bucketName: string, objectKey: string, etag: string | null, versionId: string | null, checksum: string | null, mimeType: string, downloadUrl: string, createdAt: unknown, updatedAt: unknown, uploadedBy: { id: string, username: string, email: string } } | null, properties: { originalName: string | null, isIndexed: boolean, deletedAt: unknown, createdAt: unknown, updatedAt: unknown }, aiMetadata: { extractedText: string | null, embeddingModel: string | null, embeddingSynced: boolean, indexedAt: unknown, processingStatus: FileProcessingStatus, summary: string | null, errorMessage: string | null, createdAt: unknown, updatedAt: unknown } | null } & { ' $fragmentName'?: 'FileFieldsFragment' };
+export type FileFieldsFragment = { id: string, name: string, size: number, createdAt: string, updatedAt: string, storage: { bucketName: string, objectKey: string, etag: string | null, versionId: string | null, checksum: string | null, mimeType: string, downloadUrl: string, createdAt: string, updatedAt: string, uploadedBy: { id: string, username: string, email: string } } | null, properties: { originalName: string | null, isIndexed: boolean, deletedAt: string | null, createdAt: string, updatedAt: string }, aiMetadata: { extractedText: string | null, embeddingModel: string | null, embeddingSynced: boolean, indexedAt: string | null, processingStatus: FileProcessingStatus, summary: string | null, errorMessage: string | null, createdAt: string, updatedAt: string } | null };
 
-export type FileShareFieldsFragment = { id: string, permission: FilePermission, createdAt: unknown, sharedBy: { id: string, username: string, email: string }, sharedWith: { id: string, username: string, email: string } } & { ' $fragmentName'?: 'FileShareFieldsFragment' };
+export type FileShareFieldsFragment = { id: string, permission: FilePermission, createdAt: string, sharedBy: { id: string, username: string, email: string }, sharedWith: { id: string, username: string, email: string } };
 
-export type FlowchartFieldsFragment = { id: string, name: string, data: unknown, generatedByAI: boolean, status: FlowchartStatus, createdAt: unknown, updatedAt: unknown, generatedBy: { id: string, username: string, email: string } | null, sourceChat: { id: string } | null } & { ' $fragmentName'?: 'FlowchartFieldsFragment' };
+export type FlowchartFieldsFragment = { id: string, name: string, data: unknown, generatedByAI: boolean, status: FlowchartStatus, createdAt: string, updatedAt: string, generatedBy: { id: string, username: string, email: string } | null, sourceChat: { id: string } | null };
 
-export type FolderFieldsFragment = { id: string, name: string, createdAt: unknown, updatedAt: unknown } & { ' $fragmentName'?: 'FolderFieldsFragment' };
+export type FolderFieldsFragment = { id: string, name: string, createdAt: string, updatedAt: string };
 
-export type ProjectFieldsFragment = { id: string, name: string, description: string | null, visibility: ProjectVisibility, archivedAt: unknown, createdAt: unknown, updatedAt: unknown, owner: { id: string, username: string, email: string } } & { ' $fragmentName'?: 'ProjectFieldsFragment' };
+export type ProjectFieldsFragment = { id: string, name: string, description: string | null, visibility: ProjectVisibility, archivedAt: string | null, createdAt: string, updatedAt: string, owner: { id: string, username: string, email: string } };
 
-export type ProjectMemberFieldsFragment = { id: string, role: ProjectRole, createdAt: unknown, updatedAt: unknown, user: { id: string, username: string, email: string } } & { ' $fragmentName'?: 'ProjectMemberFieldsFragment' };
+export type ProjectMemberFieldsFragment = { id: string, role: ProjectRole, createdAt: string, updatedAt: string, user: { id: string, username: string, email: string } };
 
-export type ReportFieldsFragment = { id: string, title: string, content: string, format: ReportFormat, createdAt: unknown, updatedAt: unknown, properties: { generatedByAI: boolean, status: ReportStatus, generatedBy: { id: string, username: string, email: string }, sourceChat: { id: string } | null } } & { ' $fragmentName'?: 'ReportFieldsFragment' };
+export type ReportFieldsFragment = { id: string, title: string, content: string, format: ReportFormat, createdAt: string, updatedAt: string, properties: { generatedByAI: boolean, status: ReportStatus, generatedBy: { id: string, username: string, email: string }, sourceChat: { id: string } | null } };
 
-export type UserFieldsFragment = { id: string, username: string, email: string, createdAt: unknown, updatedAt: unknown, profile: { firstName: string, lastName: string, bio: string | null, avatarUrl: string | null, createdAt: unknown, updatedAt: unknown } | null } & { ' $fragmentName'?: 'UserFieldsFragment' };
+export type UserFieldsFragment = { id: string, username: string, email: string, createdAt: string, updatedAt: string, profile: { firstName: string, lastName: string, bio: string | null, avatarUrl: string | null, createdAt: string, updatedAt: string } | null };
 
 export type CreateActivityLogMutationVariables = Exact<{
   input: CreateActivityLogInput;
 }>;
 
 
-export type CreateActivityLogMutation = { createActivityLog: { ' $fragmentRefs'?: { 'ActivityLogFieldsFragment': ActivityLogFieldsFragment } } };
+export type CreateActivityLogMutation = { createActivityLog: { id: string, action: string, entityType: string | null, entityId: string | null, createdAt: string, user: { id: string, username: string, email: string } | null } };
 
 export type DeleteActivityLogByIdMutationVariables = Exact<{
-  id: string | number;
+  id: string;
 }>;
 
 
@@ -256,39 +256,39 @@ export type CreateChatMessageMutationVariables = Exact<{
 }>;
 
 
-export type CreateChatMessageMutation = { createChatMessage: { ' $fragmentRefs'?: { 'ChatMessageFieldsFragment': ChatMessageFieldsFragment } } };
+export type CreateChatMessageMutation = { createChatMessage: { id: string, role: MessageRole, content: string, createdAt: string, updatedAt: string, sender: { id: string, username: string, email: string } | null, aiMetadata: { embeddingModel: string | null, embeddingSynced: boolean, indexedAt: string | null } | null, mentionedUsers: Array<{ id: string, username: string, email: string }>, referencedFiles: Array<{ id: string, name: string }> } };
 
 export type CreateChatParticipantMutationVariables = Exact<{
   input: CreateChatParticipantInput;
 }>;
 
 
-export type CreateChatParticipantMutation = { createChatParticipant: { joinedAt: unknown, user: { id: string, username: string, email: string } } };
+export type CreateChatParticipantMutation = { createChatParticipant: { joinedAt: string, user: { id: string, username: string, email: string } } };
 
 export type CreateChatMutationVariables = Exact<{
   input: CreateChatInput;
 }>;
 
 
-export type CreateChatMutation = { createChat: { ' $fragmentRefs'?: { 'ChatFieldsFragment': ChatFieldsFragment } } };
+export type CreateChatMutation = { createChat: { id: string, title: string | null, type: ChatType, status: ChatStatus, lastActivityAt: string, createdAt: string, updatedAt: string, participants: Array<{ joinedAt: string, user: { id: string, username: string, email: string } }> } };
 
 export type DeleteChatMessageMutationVariables = Exact<{
-  id: string | number;
+  id: string;
 }>;
 
 
 export type DeleteChatMessageMutation = { deleteChatMessage: boolean };
 
 export type DeleteChatMutationVariables = Exact<{
-  id: string | number;
+  id: string;
 }>;
 
 
 export type DeleteChatMutation = { deleteChat: boolean };
 
 export type RemoveChatParticipantMutationVariables = Exact<{
-  chatId: string | number;
-  userId: string | number;
+  chatId: string;
+  userId: string;
 }>;
 
 
@@ -299,46 +299,46 @@ export type UpdateChatMessageMutationVariables = Exact<{
 }>;
 
 
-export type UpdateChatMessageMutation = { updateChatMessage: { ' $fragmentRefs'?: { 'ChatMessageFieldsFragment': ChatMessageFieldsFragment } } };
+export type UpdateChatMessageMutation = { updateChatMessage: { id: string, role: MessageRole, content: string, createdAt: string, updatedAt: string, sender: { id: string, username: string, email: string } | null, aiMetadata: { embeddingModel: string | null, embeddingSynced: boolean, indexedAt: string | null } | null, mentionedUsers: Array<{ id: string, username: string, email: string }>, referencedFiles: Array<{ id: string, name: string }> } };
 
 export type UpdateChatMutationVariables = Exact<{
-  id: string | number;
+  id: string;
   input: UpdateChatInput;
 }>;
 
 
-export type UpdateChatMutation = { updateChat: { ' $fragmentRefs'?: { 'ChatFieldsFragment': ChatFieldsFragment } } };
+export type UpdateChatMutation = { updateChat: { id: string, title: string | null, type: ChatType, status: ChatStatus, lastActivityAt: string, createdAt: string, updatedAt: string, participants: Array<{ joinedAt: string, user: { id: string, username: string, email: string } }> } };
 
 export type CreateFileMutationVariables = Exact<{
   input: CreateFileInput;
 }>;
 
 
-export type CreateFileMutation = { createFile: { ' $fragmentRefs'?: { 'FileFieldsFragment': FileFieldsFragment } } };
+export type CreateFileMutation = { createFile: { id: string, name: string, size: number, createdAt: string, updatedAt: string, storage: { bucketName: string, objectKey: string, etag: string | null, versionId: string | null, checksum: string | null, mimeType: string, downloadUrl: string, createdAt: string, updatedAt: string, uploadedBy: { id: string, username: string, email: string } } | null, properties: { originalName: string | null, isIndexed: boolean, deletedAt: string | null, createdAt: string, updatedAt: string }, aiMetadata: { extractedText: string | null, embeddingModel: string | null, embeddingSynced: boolean, indexedAt: string | null, processingStatus: FileProcessingStatus, summary: string | null, errorMessage: string | null, createdAt: string, updatedAt: string } | null } };
 
 export type CreateFolderMutationVariables = Exact<{
   input: CreateFolderInput;
 }>;
 
 
-export type CreateFolderMutation = { createFolder: { ' $fragmentRefs'?: { 'FolderFieldsFragment': FolderFieldsFragment } } };
+export type CreateFolderMutation = { createFolder: { id: string, name: string, createdAt: string, updatedAt: string } };
 
 export type DeleteFileShareMutationVariables = Exact<{
-  fileShareId: string | number;
+  fileShareId: string;
 }>;
 
 
 export type DeleteFileShareMutation = { deleteFileShare: boolean };
 
 export type DeleteFileMutationVariables = Exact<{
-  fileId: string | number;
+  fileId: string;
 }>;
 
 
 export type DeleteFileMutation = { deleteFile: boolean };
 
 export type DeleteFolderMutationVariables = Exact<{
-  folderId: string | number;
+  folderId: string;
 }>;
 
 
@@ -349,85 +349,85 @@ export type MoveFileMutationVariables = Exact<{
 }>;
 
 
-export type MoveFileMutation = { moveFile: { ' $fragmentRefs'?: { 'FileFieldsFragment': FileFieldsFragment } } };
+export type MoveFileMutation = { moveFile: { id: string, name: string, size: number, createdAt: string, updatedAt: string, storage: { bucketName: string, objectKey: string, etag: string | null, versionId: string | null, checksum: string | null, mimeType: string, downloadUrl: string, createdAt: string, updatedAt: string, uploadedBy: { id: string, username: string, email: string } } | null, properties: { originalName: string | null, isIndexed: boolean, deletedAt: string | null, createdAt: string, updatedAt: string }, aiMetadata: { extractedText: string | null, embeddingModel: string | null, embeddingSynced: boolean, indexedAt: string | null, processingStatus: FileProcessingStatus, summary: string | null, errorMessage: string | null, createdAt: string, updatedAt: string } | null } };
 
 export type MoveFolderMutationVariables = Exact<{
-  folderId: string | number;
-  parentFolderId?: string | number | null | undefined;
+  folderId: string;
+  parentFolderId?: string | null | undefined;
 }>;
 
 
-export type MoveFolderMutation = { moveFolder: { ' $fragmentRefs'?: { 'FolderFieldsFragment': FolderFieldsFragment } } };
+export type MoveFolderMutation = { moveFolder: { id: string, name: string, createdAt: string, updatedAt: string } };
 
 export type RenameFileMutationVariables = Exact<{
-  fileId: string | number;
+  fileId: string;
   name: string;
 }>;
 
 
-export type RenameFileMutation = { renameFile: { ' $fragmentRefs'?: { 'FileFieldsFragment': FileFieldsFragment } } };
+export type RenameFileMutation = { renameFile: { id: string, name: string, size: number, createdAt: string, updatedAt: string, storage: { bucketName: string, objectKey: string, etag: string | null, versionId: string | null, checksum: string | null, mimeType: string, downloadUrl: string, createdAt: string, updatedAt: string, uploadedBy: { id: string, username: string, email: string } } | null, properties: { originalName: string | null, isIndexed: boolean, deletedAt: string | null, createdAt: string, updatedAt: string }, aiMetadata: { extractedText: string | null, embeddingModel: string | null, embeddingSynced: boolean, indexedAt: string | null, processingStatus: FileProcessingStatus, summary: string | null, errorMessage: string | null, createdAt: string, updatedAt: string } | null } };
 
 export type RenameFolderMutationVariables = Exact<{
-  folderId: string | number;
+  folderId: string;
   name: string;
 }>;
 
 
-export type RenameFolderMutation = { renameFolder: { ' $fragmentRefs'?: { 'FolderFieldsFragment': FolderFieldsFragment } } };
+export type RenameFolderMutation = { renameFolder: { id: string, name: string, createdAt: string, updatedAt: string } };
 
 export type SetFileFavoriteMutationVariables = Exact<{
   input: SetFileFavoriteInput;
 }>;
 
 
-export type SetFileFavoriteMutation = { setFileFavorite: { isFavorite: boolean, createdAt: unknown, updatedAt: unknown, user: { id: string, username: string, email: string }, file: { id: string, name: string } } };
+export type SetFileFavoriteMutation = { setFileFavorite: { isFavorite: boolean, createdAt: string, updatedAt: string, user: { id: string, username: string, email: string }, file: { id: string, name: string } } };
 
 export type ShareFileMutationVariables = Exact<{
   input: ShareFileInput;
 }>;
 
 
-export type ShareFileMutation = { shareFile: { ' $fragmentRefs'?: { 'FileShareFieldsFragment': FileShareFieldsFragment } } };
+export type ShareFileMutation = { shareFile: { id: string, permission: FilePermission, createdAt: string, sharedBy: { id: string, username: string, email: string }, sharedWith: { id: string, username: string, email: string } } };
 
 export type UpdateFileSharePermissionMutationVariables = Exact<{
-  fileShareId: string | number;
+  fileShareId: string;
   permission: FilePermission;
 }>;
 
 
-export type UpdateFileSharePermissionMutation = { updateFileSharePermission: { ' $fragmentRefs'?: { 'FileShareFieldsFragment': FileShareFieldsFragment } } };
+export type UpdateFileSharePermissionMutation = { updateFileSharePermission: { id: string, permission: FilePermission, createdAt: string, sharedBy: { id: string, username: string, email: string }, sharedWith: { id: string, username: string, email: string } } };
 
 export type CreateFlowchartMutationVariables = Exact<{
   input: CreateFlowchartInput;
 }>;
 
 
-export type CreateFlowchartMutation = { createFlowchart: { ' $fragmentRefs'?: { 'FlowchartFieldsFragment': FlowchartFieldsFragment } } };
+export type CreateFlowchartMutation = { createFlowchart: { id: string, name: string, data: unknown, generatedByAI: boolean, status: FlowchartStatus, createdAt: string, updatedAt: string, generatedBy: { id: string, username: string, email: string } | null, sourceChat: { id: string } | null } };
 
 export type DeleteFlowchartMutationVariables = Exact<{
-  id: string | number;
+  id: string;
 }>;
 
 
 export type DeleteFlowchartMutation = { deleteFlowchart: boolean };
 
 export type UpdateFlowchartMutationVariables = Exact<{
-  id: string | number;
+  id: string;
   input: UpdateFlowchartInput;
 }>;
 
 
-export type UpdateFlowchartMutation = { updateFlowchart: { ' $fragmentRefs'?: { 'FlowchartFieldsFragment': FlowchartFieldsFragment } } };
+export type UpdateFlowchartMutation = { updateFlowchart: { id: string, name: string, data: unknown, generatedByAI: boolean, status: FlowchartStatus, createdAt: string, updatedAt: string, generatedBy: { id: string, username: string, email: string } | null, sourceChat: { id: string } | null } };
 
 export type AddProjectMemberMutationVariables = Exact<{
   input: AddProjectMemberInput;
 }>;
 
 
-export type AddProjectMemberMutation = { addProjectMember: { ' $fragmentRefs'?: { 'ProjectMemberFieldsFragment': ProjectMemberFieldsFragment } } };
+export type AddProjectMemberMutation = { addProjectMember: { id: string, role: ProjectRole, createdAt: string, updatedAt: string, user: { id: string, username: string, email: string } } };
 
 export type ArchiveProjectMutationVariables = Exact<{
-  projectId: string | number;
+  projectId: string;
 }>;
 
 
@@ -438,25 +438,25 @@ export type CreateProjectMutationVariables = Exact<{
 }>;
 
 
-export type CreateProjectMutation = { createProject: { ' $fragmentRefs'?: { 'ProjectFieldsFragment': ProjectFieldsFragment } } };
+export type CreateProjectMutation = { createProject: { id: string, name: string, description: string | null, visibility: ProjectVisibility, archivedAt: string | null, createdAt: string, updatedAt: string, owner: { id: string, username: string, email: string } } };
 
 export type DeleteProjectMutationVariables = Exact<{
-  id: string | number;
+  id: string;
 }>;
 
 
 export type DeleteProjectMutation = { deleteProject: boolean };
 
 export type RemoveProjectMemberMutationVariables = Exact<{
-  projectId: string | number;
-  userId: string | number;
+  projectId: string;
+  userId: string;
 }>;
 
 
 export type RemoveProjectMemberMutation = { removeProjectMember: boolean };
 
 export type RestoreProjectMutationVariables = Exact<{
-  projectId: string | number;
+  projectId: string;
 }>;
 
 
@@ -467,389 +467,420 @@ export type TransferProjectOwnershipMutationVariables = Exact<{
 }>;
 
 
-export type TransferProjectOwnershipMutation = { transferProjectOwnership: { ' $fragmentRefs'?: { 'ProjectFieldsFragment': ProjectFieldsFragment } } };
+export type TransferProjectOwnershipMutation = { transferProjectOwnership: { id: string, name: string, description: string | null, visibility: ProjectVisibility, archivedAt: string | null, createdAt: string, updatedAt: string, owner: { id: string, username: string, email: string } } };
 
 export type UpdateProjectMemberRoleMutationVariables = Exact<{
   input: UpdateProjectMemberRoleInput;
 }>;
 
 
-export type UpdateProjectMemberRoleMutation = { updateProjectMemberRole: { ' $fragmentRefs'?: { 'ProjectMemberFieldsFragment': ProjectMemberFieldsFragment } } };
+export type UpdateProjectMemberRoleMutation = { updateProjectMemberRole: { id: string, role: ProjectRole, createdAt: string, updatedAt: string, user: { id: string, username: string, email: string } } };
 
 export type UpdateProjectMutationVariables = Exact<{
-  id: string | number;
+  id: string;
   input: UpdateProjectInput;
 }>;
 
 
-export type UpdateProjectMutation = { updateProject: { ' $fragmentRefs'?: { 'ProjectFieldsFragment': ProjectFieldsFragment } } };
+export type UpdateProjectMutation = { updateProject: { id: string, name: string, description: string | null, visibility: ProjectVisibility, archivedAt: string | null, createdAt: string, updatedAt: string, owner: { id: string, username: string, email: string } } };
 
 export type CreateReportMutationVariables = Exact<{
   input: CreateReportInput;
 }>;
 
 
-export type CreateReportMutation = { createReport: { ' $fragmentRefs'?: { 'ReportFieldsFragment': ReportFieldsFragment } } };
+export type CreateReportMutation = { createReport: { id: string, title: string, content: string, format: ReportFormat, createdAt: string, updatedAt: string, properties: { generatedByAI: boolean, status: ReportStatus, generatedBy: { id: string, username: string, email: string }, sourceChat: { id: string } | null } } };
 
 export type DeleteReportMutationVariables = Exact<{
-  id: string | number;
+  id: string;
 }>;
 
 
 export type DeleteReportMutation = { deleteReport: boolean };
 
 export type UpdateReportMutationVariables = Exact<{
-  id: string | number;
+  id: string;
   input: UpdateReportInput;
 }>;
 
 
-export type UpdateReportMutation = { updateReport: { ' $fragmentRefs'?: { 'ReportFieldsFragment': ReportFieldsFragment } } };
+export type UpdateReportMutation = { updateReport: { id: string, title: string, content: string, format: ReportFormat, createdAt: string, updatedAt: string, properties: { generatedByAI: boolean, status: ReportStatus, generatedBy: { id: string, username: string, email: string }, sourceChat: { id: string } | null } } };
 
 export type CreateUserMutationVariables = Exact<{
   input: CreateUserInput;
 }>;
 
 
-export type CreateUserMutation = { createUser: { ' $fragmentRefs'?: { 'UserFieldsFragment': UserFieldsFragment } } };
+export type CreateUserMutation = { createUser: { id: string, username: string, email: string, createdAt: string, updatedAt: string, profile: { firstName: string, lastName: string, bio: string | null, avatarUrl: string | null, createdAt: string, updatedAt: string } | null } };
 
 export type DeleteUserMutationVariables = Exact<{
-  id: string | number;
+  id: string;
 }>;
 
 
 export type DeleteUserMutation = { deleteUser: boolean };
 
 export type UpdateUserAvatarMutationVariables = Exact<{
-  id: string | number;
+  id: string;
   input: UpdateUserAvatarInput;
 }>;
 
 
-export type UpdateUserAvatarMutation = { updateUserAvatar: { firstName: string, lastName: string, bio: string | null, avatarUrl: string | null, createdAt: unknown, updatedAt: unknown, user: { id: string, username: string, email: string } } };
+export type UpdateUserAvatarMutation = { updateUserAvatar: { firstName: string, lastName: string, bio: string | null, avatarUrl: string | null, createdAt: string, updatedAt: string, user: { id: string, username: string, email: string } } };
 
 export type UpdateUserProfileMutationVariables = Exact<{
-  id: string | number;
+  id: string;
   input: UpdateUserProfileInput;
 }>;
 
 
-export type UpdateUserProfileMutation = { updateUserProfile: { firstName: string, lastName: string, bio: string | null, avatarUrl: string | null, createdAt: unknown, updatedAt: unknown, user: { id: string, username: string, email: string } } };
+export type UpdateUserProfileMutation = { updateUserProfile: { firstName: string, lastName: string, bio: string | null, avatarUrl: string | null, createdAt: string, updatedAt: string, user: { id: string, username: string, email: string } } };
 
 export type UpdateUserMutationVariables = Exact<{
-  id: string | number;
+  id: string;
   input: UpdateUserInput;
 }>;
 
 
-export type UpdateUserMutation = { updateUser: { ' $fragmentRefs'?: { 'UserFieldsFragment': UserFieldsFragment } } };
+export type UpdateUserMutation = { updateUser: { id: string, username: string, email: string, createdAt: string, updatedAt: string, profile: { firstName: string, lastName: string, bio: string | null, avatarUrl: string | null, createdAt: string, updatedAt: string } | null } };
 
 export type GetActivityLogsQueryVariables = Exact<{
-  projectId?: string | number | null | undefined;
-  userId?: string | number | null | undefined;
+  projectId?: string | null | undefined;
+  userId?: string | null | undefined;
 }>;
 
 
-export type GetActivityLogsQuery = { activityLogs: Array<{ ' $fragmentRefs'?: { 'ActivityLogFieldsFragment': ActivityLogFieldsFragment } }> };
+export type GetActivityLogsQuery = { activityLogs: Array<{ id: string, action: string, entityType: string | null, entityId: string | null, createdAt: string, user: { id: string, username: string, email: string } | null }> };
 
 export type GetActiveChatsQueryVariables = Exact<{
-  projectId: string | number;
+  projectId: string;
 }>;
 
 
-export type GetActiveChatsQuery = { activeChats: Array<{ ' $fragmentRefs'?: { 'ChatFieldsFragment': ChatFieldsFragment } }> };
+export type GetActiveChatsQuery = { activeChats: Array<{ id: string, title: string | null, type: ChatType, status: ChatStatus, lastActivityAt: string, createdAt: string, updatedAt: string, participants: Array<{ joinedAt: string, user: { id: string, username: string, email: string } }> }> };
 
 export type GetArchivedChatsQueryVariables = Exact<{
-  projectId: string | number;
+  projectId: string;
 }>;
 
 
-export type GetArchivedChatsQuery = { archivedChats: Array<{ ' $fragmentRefs'?: { 'ChatFieldsFragment': ChatFieldsFragment } }> };
+export type GetArchivedChatsQuery = { archivedChats: Array<{ id: string, title: string | null, type: ChatType, status: ChatStatus, lastActivityAt: string, createdAt: string, updatedAt: string, participants: Array<{ joinedAt: string, user: { id: string, username: string, email: string } }> }> };
 
 export type GetChatMessagesQueryVariables = Exact<{
-  chatId: string | number;
+  chatId: string;
 }>;
 
 
-export type GetChatMessagesQuery = { chatMessages: Array<{ ' $fragmentRefs'?: { 'ChatMessageFieldsFragment': ChatMessageFieldsFragment } }> };
+export type GetChatMessagesQuery = { chatMessages: Array<{ id: string, role: MessageRole, content: string, createdAt: string, updatedAt: string, sender: { id: string, username: string, email: string } | null, aiMetadata: { embeddingModel: string | null, embeddingSynced: boolean, indexedAt: string | null } | null, mentionedUsers: Array<{ id: string, username: string, email: string }>, referencedFiles: Array<{ id: string, name: string }> }> };
 
 export type GetChatQueryVariables = Exact<{
-  id: string | number;
+  id: string;
 }>;
 
 
-export type GetChatQuery = { chat: { ' $fragmentRefs'?: { 'ChatFieldsFragment': ChatFieldsFragment } } | null };
+export type GetChatQuery = { chat: { id: string, title: string | null, type: ChatType, status: ChatStatus, lastActivityAt: string, createdAt: string, updatedAt: string, participants: Array<{ joinedAt: string, user: { id: string, username: string, email: string } }> } | null };
 
 export type GetChatsQueryVariables = Exact<{
-  projectId: string | number;
+  projectId: string;
 }>;
 
 
-export type GetChatsQuery = { chats: Array<{ ' $fragmentRefs'?: { 'ChatFieldsFragment': ChatFieldsFragment } }> };
+export type GetChatsQuery = { chats: Array<{ id: string, title: string | null, type: ChatType, status: ChatStatus, lastActivityAt: string, createdAt: string, updatedAt: string, participants: Array<{ joinedAt: string, user: { id: string, username: string, email: string } }> }> };
 
 export type GetMyChatsQueryVariables = Exact<{
-  projectId?: string | number | null | undefined;
+  projectId?: string | null | undefined;
 }>;
 
 
-export type GetMyChatsQuery = { myChats: Array<{ ' $fragmentRefs'?: { 'ChatFieldsFragment': ChatFieldsFragment } }> };
+export type GetMyChatsQuery = { myChats: Array<{ id: string, title: string | null, type: ChatType, status: ChatStatus, lastActivityAt: string, createdAt: string, updatedAt: string, participants: Array<{ joinedAt: string, user: { id: string, username: string, email: string } }> }> };
 
 export type GetFavoriteFilesQueryVariables = Exact<{
-  userId: string | number;
-  projectId?: string | number | null | undefined;
+  userId: string;
+  projectId?: string | null | undefined;
 }>;
 
 
-export type GetFavoriteFilesQuery = { favoriteFiles: Array<{ ' $fragmentRefs'?: { 'FileFieldsFragment': FileFieldsFragment } }> };
+export type GetFavoriteFilesQuery = { favoriteFiles: Array<{ id: string, name: string, size: number, createdAt: string, updatedAt: string, storage: { bucketName: string, objectKey: string, etag: string | null, versionId: string | null, checksum: string | null, mimeType: string, downloadUrl: string, createdAt: string, updatedAt: string, uploadedBy: { id: string, username: string, email: string } } | null, properties: { originalName: string | null, isIndexed: boolean, deletedAt: string | null, createdAt: string, updatedAt: string }, aiMetadata: { extractedText: string | null, embeddingModel: string | null, embeddingSynced: boolean, indexedAt: string | null, processingStatus: FileProcessingStatus, summary: string | null, errorMessage: string | null, createdAt: string, updatedAt: string } | null }> };
 
 export type GetFileShareQueryVariables = Exact<{
-  id: string | number;
+  id: string;
 }>;
 
 
-export type GetFileShareQuery = { fileShare: { ' $fragmentRefs'?: { 'FileShareFieldsFragment': FileShareFieldsFragment } } | null };
+export type GetFileShareQuery = { fileShare: { id: string, permission: FilePermission, createdAt: string, sharedBy: { id: string, username: string, email: string }, sharedWith: { id: string, username: string, email: string } } | null };
 
 export type GetFileSharesQueryVariables = Exact<{
-  fileId: string | number;
+  fileId: string;
 }>;
 
 
-export type GetFileSharesQuery = { fileShares: Array<{ ' $fragmentRefs'?: { 'FileShareFieldsFragment': FileShareFieldsFragment } }> };
+export type GetFileSharesQuery = { fileShares: Array<{ id: string, permission: FilePermission, createdAt: string, sharedBy: { id: string, username: string, email: string }, sharedWith: { id: string, username: string, email: string } }> };
+
+export type GetFileWithSharesQueryVariables = Exact<{
+  id: string;
+}>;
+
+
+export type GetFileWithSharesQuery = { file: { id: string, name: string, size: number, createdAt: string, updatedAt: string, shares: Array<{ id: string, permission: FilePermission, createdAt: string, sharedBy: { id: string, username: string, email: string }, sharedWith: { id: string, username: string, email: string } }> } | null };
 
 export type GetFileQueryVariables = Exact<{
-  id: string | number;
+  id: string;
 }>;
 
 
-export type GetFileQuery = { file: { ' $fragmentRefs'?: { 'FileFieldsFragment': FileFieldsFragment } } | null };
+export type GetFileQuery = { file: { id: string, name: string, size: number, createdAt: string, updatedAt: string, storage: { bucketName: string, objectKey: string, etag: string | null, versionId: string | null, checksum: string | null, mimeType: string, downloadUrl: string, createdAt: string, updatedAt: string, uploadedBy: { id: string, username: string, email: string } } | null, properties: { originalName: string | null, isIndexed: boolean, deletedAt: string | null, createdAt: string, updatedAt: string }, aiMetadata: { extractedText: string | null, embeddingModel: string | null, embeddingSynced: boolean, indexedAt: string | null, processingStatus: FileProcessingStatus, summary: string | null, errorMessage: string | null, createdAt: string, updatedAt: string } | null } | null };
 
 export type GetFilesQueryVariables = Exact<{
-  projectId?: string | number | null | undefined;
-  folderId?: string | number | null | undefined;
+  projectId?: string | null | undefined;
+  folderId?: string | null | undefined;
 }>;
 
 
-export type GetFilesQuery = { files: Array<{ ' $fragmentRefs'?: { 'FileFieldsFragment': FileFieldsFragment } }> };
+export type GetFilesQuery = { files: Array<{ id: string, name: string, size: number, createdAt: string, updatedAt: string, storage: { bucketName: string, objectKey: string, etag: string | null, versionId: string | null, checksum: string | null, mimeType: string, downloadUrl: string, createdAt: string, updatedAt: string, uploadedBy: { id: string, username: string, email: string } } | null, properties: { originalName: string | null, isIndexed: boolean, deletedAt: string | null, createdAt: string, updatedAt: string }, aiMetadata: { extractedText: string | null, embeddingModel: string | null, embeddingSynced: boolean, indexedAt: string | null, processingStatus: FileProcessingStatus, summary: string | null, errorMessage: string | null, createdAt: string, updatedAt: string } | null }> };
 
 export type GetFolderContentsQueryVariables = Exact<{
-  folderId?: string | number | null | undefined;
-  projectId?: string | number | null | undefined;
+  folderId?: string | null | undefined;
+  projectId?: string | null | undefined;
 }>;
 
 
 export type GetFolderContentsQuery = { folderContents: Array<
-    | (
-      { __typename: 'File' }
-      & { ' $fragmentRefs'?: { 'FileFieldsFragment': FileFieldsFragment } }
-    )
-    | (
-      { __typename: 'Folder' }
-      & { ' $fragmentRefs'?: { 'FolderFieldsFragment': FolderFieldsFragment } }
-    )
+    | { __typename: 'File', id: string, name: string, size: number, createdAt: string, updatedAt: string, storage: { bucketName: string, objectKey: string, etag: string | null, versionId: string | null, checksum: string | null, mimeType: string, downloadUrl: string, createdAt: string, updatedAt: string, uploadedBy: { id: string, username: string, email: string } } | null, properties: { originalName: string | null, isIndexed: boolean, deletedAt: string | null, createdAt: string, updatedAt: string }, aiMetadata: { extractedText: string | null, embeddingModel: string | null, embeddingSynced: boolean, indexedAt: string | null, processingStatus: FileProcessingStatus, summary: string | null, errorMessage: string | null, createdAt: string, updatedAt: string } | null }
+    | { __typename: 'Folder', id: string, name: string, createdAt: string, updatedAt: string }
   > };
 
 export type GetFolderPathQueryVariables = Exact<{
-  folderId: string | number;
+  folderId: string;
 }>;
 
 
-export type GetFolderPathQuery = { folderPath: Array<{ ' $fragmentRefs'?: { 'FolderFieldsFragment': FolderFieldsFragment } }> };
+export type GetFolderPathQuery = { folderPath: Array<{ id: string, name: string, createdAt: string, updatedAt: string }> };
+
+export type GetFolderTreeQueryVariables = Exact<{
+  id: string;
+}>;
+
+
+export type GetFolderTreeQuery = { folder: { id: string, name: string, createdAt: string, updatedAt: string, parentFolder: { id: string, name: string, createdAt: string, updatedAt: string } | null, childFolders: Array<{ id: string, name: string, createdAt: string, updatedAt: string }> } | null };
 
 export type GetFolderQueryVariables = Exact<{
-  id: string | number;
+  id: string;
 }>;
 
 
-export type GetFolderQuery = { folder: (
-    { parentFolder: { ' $fragmentRefs'?: { 'FolderFieldsFragment': FolderFieldsFragment } } | null }
-    & { ' $fragmentRefs'?: { 'FolderFieldsFragment': FolderFieldsFragment } }
-  ) | null };
+export type GetFolderQuery = { folder: { id: string, name: string, createdAt: string, updatedAt: string, parentFolder: { id: string, name: string, createdAt: string, updatedAt: string } | null } | null };
 
 export type GetFoldersQueryVariables = Exact<{
-  projectId?: string | number | null | undefined;
+  projectId?: string | null | undefined;
 }>;
 
 
-export type GetFoldersQuery = { folders: Array<{ ' $fragmentRefs'?: { 'FolderFieldsFragment': FolderFieldsFragment } }> };
+export type GetFoldersQuery = { folders: Array<{ id: string, name: string, createdAt: string, updatedAt: string }> };
 
 export type GetRootFilesQueryVariables = Exact<{
-  projectId: string | number;
+  projectId: string;
 }>;
 
 
-export type GetRootFilesQuery = { rootFiles: Array<{ ' $fragmentRefs'?: { 'FileFieldsFragment': FileFieldsFragment } }> };
+export type GetRootFilesQuery = { rootFiles: Array<{ id: string, name: string, size: number, createdAt: string, updatedAt: string, storage: { bucketName: string, objectKey: string, etag: string | null, versionId: string | null, checksum: string | null, mimeType: string, downloadUrl: string, createdAt: string, updatedAt: string, uploadedBy: { id: string, username: string, email: string } } | null, properties: { originalName: string | null, isIndexed: boolean, deletedAt: string | null, createdAt: string, updatedAt: string }, aiMetadata: { extractedText: string | null, embeddingModel: string | null, embeddingSynced: boolean, indexedAt: string | null, processingStatus: FileProcessingStatus, summary: string | null, errorMessage: string | null, createdAt: string, updatedAt: string } | null }> };
 
 export type GetRootFoldersQueryVariables = Exact<{
-  projectId: string | number;
+  projectId: string;
 }>;
 
 
-export type GetRootFoldersQuery = { rootFolders: Array<{ ' $fragmentRefs'?: { 'FolderFieldsFragment': FolderFieldsFragment } }> };
+export type GetRootFoldersQuery = { rootFolders: Array<{ id: string, name: string, createdAt: string, updatedAt: string }> };
 
 export type GetSharedWithMeQueryVariables = Exact<{
-  userId: string | number;
+  userId: string;
 }>;
 
 
-export type GetSharedWithMeQuery = { sharedWithMe: Array<{ ' $fragmentRefs'?: { 'FileShareFieldsFragment': FileShareFieldsFragment } }> };
+export type GetSharedWithMeQuery = { sharedWithMe: Array<{ id: string, permission: FilePermission, createdAt: string, sharedBy: { id: string, username: string, email: string }, sharedWith: { id: string, username: string, email: string } }> };
 
 export type GetFlowchartQueryVariables = Exact<{
-  id: string | number;
+  id: string;
 }>;
 
 
-export type GetFlowchartQuery = { flowchart: { ' $fragmentRefs'?: { 'FlowchartFieldsFragment': FlowchartFieldsFragment } } | null };
+export type GetFlowchartQuery = { flowchart: { id: string, name: string, data: unknown, generatedByAI: boolean, status: FlowchartStatus, createdAt: string, updatedAt: string, generatedBy: { id: string, username: string, email: string } | null, sourceChat: { id: string } | null } | null };
 
 export type GetFlowchartsQueryVariables = Exact<{
-  projectId: string | number;
+  projectId: string;
 }>;
 
 
-export type GetFlowchartsQuery = { flowcharts: Array<{ ' $fragmentRefs'?: { 'FlowchartFieldsFragment': FlowchartFieldsFragment } }> };
+export type GetFlowchartsQuery = { flowcharts: Array<{ id: string, name: string, data: unknown, generatedByAI: boolean, status: FlowchartStatus, createdAt: string, updatedAt: string, generatedBy: { id: string, username: string, email: string } | null, sourceChat: { id: string } | null }> };
 
 export type GetArchivedProjectsByOwnerQueryVariables = Exact<{
-  ownerId: string | number;
+  ownerId: string;
 }>;
 
 
-export type GetArchivedProjectsByOwnerQuery = { archivedProjectsByOwner: Array<{ ' $fragmentRefs'?: { 'ProjectFieldsFragment': ProjectFieldsFragment } }> };
+export type GetArchivedProjectsByOwnerQuery = { archivedProjectsByOwner: Array<{ id: string, name: string, description: string | null, visibility: ProjectVisibility, archivedAt: string | null, createdAt: string, updatedAt: string, owner: { id: string, username: string, email: string } }> };
 
 export type GetArchivedProjectsForUserQueryVariables = Exact<{
-  userId: string | number;
+  userId: string;
 }>;
 
 
-export type GetArchivedProjectsForUserQuery = { archivedProjectsForUser: Array<{ ' $fragmentRefs'?: { 'ProjectFieldsFragment': ProjectFieldsFragment } }> };
+export type GetArchivedProjectsForUserQuery = { archivedProjectsForUser: Array<{ id: string, name: string, description: string | null, visibility: ProjectVisibility, archivedAt: string | null, createdAt: string, updatedAt: string, owner: { id: string, username: string, email: string } }> };
+
+export type GetDashboardQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetDashboardQuery = { projects: Array<{ id: string, name: string, description: string | null, visibility: ProjectVisibility, archivedAt: string | null, createdAt: string, updatedAt: string, members: Array<{ id: string, role: ProjectRole, user: { id: string, username: string } }>, files: Array<{ file: { id: string, name: string, size: number, createdAt: string, aiMetadata: { processingStatus: FileProcessingStatus } | null } }>, chats: Array<{ id: string }>, reports: Array<{ id: string }>, flowcharts: Array<{ id: string }>, activityLogs: Array<{ id: string, action: string, entityType: string | null, entityId: string | null, createdAt: string, user: { id: string, username: string, email: string } | null }>, owner: { id: string, username: string, email: string } }> };
 
 export type GetProjectMembersQueryVariables = Exact<{
-  projectId: string | number;
+  projectId: string;
 }>;
 
 
-export type GetProjectMembersQuery = { projectMembers: Array<{ ' $fragmentRefs'?: { 'ProjectMemberFieldsFragment': ProjectMemberFieldsFragment } }> };
+export type GetProjectMembersQuery = { projectMembers: Array<{ id: string, role: ProjectRole, createdAt: string, updatedAt: string, user: { id: string, username: string, email: string } }> };
+
+export type GetProjectStatsQueryVariables = Exact<{
+  projectId: string;
+}>;
+
+
+export type GetProjectStatsQuery = { projectStats: { memberCount: number, fileCount: number, chatCount: number, reportCount: number, flowchartCount: number } };
 
 export type GetProjectQueryVariables = Exact<{
-  id: string | number;
+  id: string;
 }>;
 
 
-export type GetProjectQuery = { project: { ' $fragmentRefs'?: { 'ProjectFieldsFragment': ProjectFieldsFragment } } | null };
+export type GetProjectQuery = { project: { id: string, name: string, description: string | null, visibility: ProjectVisibility, archivedAt: string | null, createdAt: string, updatedAt: string, owner: { id: string, username: string, email: string } } | null };
 
 export type GetProjectsByOwnerQueryVariables = Exact<{
-  ownerId: string | number;
+  ownerId: string;
 }>;
 
 
-export type GetProjectsByOwnerQuery = { projectsByOwner: Array<{ ' $fragmentRefs'?: { 'ProjectFieldsFragment': ProjectFieldsFragment } }> };
+export type GetProjectsByOwnerQuery = { projectsByOwner: Array<{ id: string, name: string, description: string | null, visibility: ProjectVisibility, archivedAt: string | null, createdAt: string, updatedAt: string, owner: { id: string, username: string, email: string } }> };
 
 export type GetProjectsForUserQueryVariables = Exact<{
-  userId: string | number;
+  userId: string;
 }>;
 
 
-export type GetProjectsForUserQuery = { projectsForUser: Array<{ ' $fragmentRefs'?: { 'ProjectFieldsFragment': ProjectFieldsFragment } }> };
+export type GetProjectsForUserQuery = { projectsForUser: Array<{ id: string, name: string, description: string | null, visibility: ProjectVisibility, archivedAt: string | null, createdAt: string, updatedAt: string, owner: { id: string, username: string, email: string } }> };
 
 export type GetProjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetProjectsQuery = { projects: Array<{ ' $fragmentRefs'?: { 'ProjectFieldsFragment': ProjectFieldsFragment } }> };
+export type GetProjectsQuery = { projects: Array<{ id: string, name: string, description: string | null, visibility: ProjectVisibility, archivedAt: string | null, createdAt: string, updatedAt: string, owner: { id: string, username: string, email: string } }> };
 
 export type GetAiReportsQueryVariables = Exact<{
-  projectId: string | number;
+  projectId: string;
 }>;
 
 
-export type GetAiReportsQuery = { aiReports: Array<{ ' $fragmentRefs'?: { 'ReportFieldsFragment': ReportFieldsFragment } }> };
+export type GetAiReportsQuery = { aiReports: Array<{ id: string, title: string, content: string, format: ReportFormat, createdAt: string, updatedAt: string, properties: { generatedByAI: boolean, status: ReportStatus, generatedBy: { id: string, username: string, email: string }, sourceChat: { id: string } | null } }> };
 
 export type GetReportQueryVariables = Exact<{
-  id: string | number;
+  id: string;
 }>;
 
 
-export type GetReportQuery = { report: { ' $fragmentRefs'?: { 'ReportFieldsFragment': ReportFieldsFragment } } | null };
+export type GetReportQuery = { report: { id: string, title: string, content: string, format: ReportFormat, createdAt: string, updatedAt: string, properties: { generatedByAI: boolean, status: ReportStatus, generatedBy: { id: string, username: string, email: string }, sourceChat: { id: string } | null } } | null };
 
 export type GetReportsByChatQueryVariables = Exact<{
-  sourceChatId: string | number;
+  sourceChatId: string;
 }>;
 
 
-export type GetReportsByChatQuery = { reportsByChat: Array<{ ' $fragmentRefs'?: { 'ReportFieldsFragment': ReportFieldsFragment } }> };
+export type GetReportsByChatQuery = { reportsByChat: Array<{ id: string, title: string, content: string, format: ReportFormat, createdAt: string, updatedAt: string, properties: { generatedByAI: boolean, status: ReportStatus, generatedBy: { id: string, username: string, email: string }, sourceChat: { id: string } | null } }> };
 
 export type GetReportsByFormatQueryVariables = Exact<{
-  projectId: string | number;
+  projectId: string;
   format: ReportFormat;
 }>;
 
 
-export type GetReportsByFormatQuery = { reportsByFormat: Array<{ ' $fragmentRefs'?: { 'ReportFieldsFragment': ReportFieldsFragment } }> };
+export type GetReportsByFormatQuery = { reportsByFormat: Array<{ id: string, title: string, content: string, format: ReportFormat, createdAt: string, updatedAt: string, properties: { generatedByAI: boolean, status: ReportStatus, generatedBy: { id: string, username: string, email: string }, sourceChat: { id: string } | null } }> };
 
 export type GetReportsByGeneratorQueryVariables = Exact<{
-  projectId: string | number;
-  generatedById: string | number;
+  projectId: string;
+  generatedById: string;
 }>;
 
 
-export type GetReportsByGeneratorQuery = { reportsByGenerator: Array<{ ' $fragmentRefs'?: { 'ReportFieldsFragment': ReportFieldsFragment } }> };
+export type GetReportsByGeneratorQuery = { reportsByGenerator: Array<{ id: string, title: string, content: string, format: ReportFormat, createdAt: string, updatedAt: string, properties: { generatedByAI: boolean, status: ReportStatus, generatedBy: { id: string, username: string, email: string }, sourceChat: { id: string } | null } }> };
 
 export type GetReportsByStatusQueryVariables = Exact<{
-  projectId: string | number;
+  projectId: string;
   status: ReportStatus;
 }>;
 
 
-export type GetReportsByStatusQuery = { reportsByStatus: Array<{ ' $fragmentRefs'?: { 'ReportFieldsFragment': ReportFieldsFragment } }> };
+export type GetReportsByStatusQuery = { reportsByStatus: Array<{ id: string, title: string, content: string, format: ReportFormat, createdAt: string, updatedAt: string, properties: { generatedByAI: boolean, status: ReportStatus, generatedBy: { id: string, username: string, email: string }, sourceChat: { id: string } | null } }> };
 
 export type GetReportsQueryVariables = Exact<{
-  projectId: string | number;
+  projectId: string;
 }>;
 
 
-export type GetReportsQuery = { reports: Array<{ ' $fragmentRefs'?: { 'ReportFieldsFragment': ReportFieldsFragment } }> };
+export type GetReportsQuery = { reports: Array<{ id: string, title: string, content: string, format: ReportFormat, createdAt: string, updatedAt: string, properties: { generatedByAI: boolean, status: ReportStatus, generatedBy: { id: string, username: string, email: string }, sourceChat: { id: string } | null } }> };
 
 export type GetAllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllUsersQuery = { allUsers: Array<{ ' $fragmentRefs'?: { 'UserFieldsFragment': UserFieldsFragment } }> };
+export type GetAllUsersQuery = { allUsers: Array<{ id: string, username: string, email: string, createdAt: string, updatedAt: string, profile: { firstName: string, lastName: string, bio: string | null, avatarUrl: string | null, createdAt: string, updatedAt: string } | null }> };
 
 export type GetUserByEmailQueryVariables = Exact<{
   email: string;
 }>;
 
 
-export type GetUserByEmailQuery = { userByEmail: { ' $fragmentRefs'?: { 'UserFieldsFragment': UserFieldsFragment } } | null };
+export type GetUserByEmailQuery = { userByEmail: { id: string, username: string, email: string, createdAt: string, updatedAt: string, profile: { firstName: string, lastName: string, bio: string | null, avatarUrl: string | null, createdAt: string, updatedAt: string } | null } | null };
 
 export type GetUserByUsernameQueryVariables = Exact<{
   username: string;
 }>;
 
 
-export type GetUserByUsernameQuery = { userByUsername: { ' $fragmentRefs'?: { 'UserFieldsFragment': UserFieldsFragment } } | null };
+export type GetUserByUsernameQuery = { userByUsername: { id: string, username: string, email: string, createdAt: string, updatedAt: string, profile: { firstName: string, lastName: string, bio: string | null, avatarUrl: string | null, createdAt: string, updatedAt: string } | null } | null };
 
 export type GetUserProfileQueryVariables = Exact<{
-  userId: string | number;
+  userId: string;
 }>;
 
 
-export type GetUserProfileQuery = { userProfile: { firstName: string, lastName: string, bio: string | null, avatarUrl: string | null, createdAt: unknown, updatedAt: unknown, user: { id: string, username: string, email: string } } | null };
+export type GetUserProfileQuery = { userProfile: { firstName: string, lastName: string, bio: string | null, avatarUrl: string | null, createdAt: string, updatedAt: string, user: { id: string, username: string, email: string } } | null };
+
+export type GetUserWorkspaceQueryVariables = Exact<{
+  id: string;
+}>;
+
+
+export type GetUserWorkspaceQuery = { user: { id: string, username: string, ownedProjects: Array<{ id: string, name: string, description: string | null, visibility: ProjectVisibility, archivedAt: string | null, createdAt: string, updatedAt: string, owner: { id: string, username: string, email: string } }>, projectMemberships: Array<{ id: string, role: ProjectRole, project: { id: string, name: string, visibility: ProjectVisibility } }>, sharedFiles: Array<{ id: string, permission: FilePermission, createdAt: string, file: { id: string, name: string, size: number }, sharedBy: { id: string, username: string, email: string }, sharedWith: { id: string, username: string, email: string } }> } | null };
 
 export type GetUserQueryVariables = Exact<{
-  id: string | number;
+  id: string;
 }>;
 
 
-export type GetUserQuery = { user: { ' $fragmentRefs'?: { 'UserFieldsFragment': UserFieldsFragment } } | null };
+export type GetUserQuery = { user: { id: string, username: string, email: string, createdAt: string, updatedAt: string, profile: { firstName: string, lastName: string, bio: string | null, avatarUrl: string | null, createdAt: string, updatedAt: string } | null } | null };
 
 export type GetUsersQueryVariables = Exact<{
-  ids: Array<string | number> | string | number;
+  ids: Array<string> | string;
 }>;
 
 
-export type GetUsersQuery = { users: Array<{ ' $fragmentRefs'?: { 'UserFieldsFragment': UserFieldsFragment } }> };
+export type GetUsersQuery = { users: Array<{ id: string, username: string, email: string, createdAt: string, updatedAt: string, profile: { firstName: string, lastName: string, bio: string | null, avatarUrl: string | null, createdAt: string, updatedAt: string } | null }> };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { me: { ' $fragmentRefs'?: { 'UserFieldsFragment': UserFieldsFragment } } | null };
+export type MeQuery = { me: { id: string, username: string, email: string, createdAt: string, updatedAt: string, profile: { firstName: string, lastName: string, bio: string | null, avatarUrl: string | null, createdAt: string, updatedAt: string } | null } | null };
+
+export type ChatMessageAddedSubscriptionVariables = Exact<{
+  chatId: string;
+}>;
+
+
+export type ChatMessageAddedSubscription = { chatMessageAdded: { id: string, role: MessageRole, content: string, createdAt: string, updatedAt: string, sender: { id: string, username: string, email: string } | null, aiMetadata: { embeddingModel: string | null, embeddingSynced: boolean, indexedAt: string | null } | null, mentionedUsers: Array<{ id: string, username: string, email: string }>, referencedFiles: Array<{ id: string, name: string }> } };
 
 export const ActivityLogFieldsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ActivityLogFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ActivityLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"action"}},{"kind":"Field","name":{"kind":"Name","value":"entityType"}},{"kind":"Field","name":{"kind":"Name","value":"entityId"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]} as unknown as DocumentNode<ActivityLogFieldsFragment, unknown>;
 export const ChatFieldsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ChatFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Chat"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"lastActivityAt"}},{"kind":"Field","name":{"kind":"Name","value":"participants"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"joinedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]} as unknown as DocumentNode<ChatFieldsFragment, unknown>;
@@ -914,10 +945,12 @@ export const GetMyChatsDocument = {"kind":"Document","definitions":[{"kind":"Ope
 export const GetFavoriteFilesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetFavoriteFiles"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"projectId"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"favoriteFiles"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userId"}}},{"kind":"Argument","name":{"kind":"Name","value":"projectId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"projectId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FileFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FileFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"File"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"size"}},{"kind":"Field","name":{"kind":"Name","value":"storage"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bucketName"}},{"kind":"Field","name":{"kind":"Name","value":"objectKey"}},{"kind":"Field","name":{"kind":"Name","value":"etag"}},{"kind":"Field","name":{"kind":"Name","value":"versionId"}},{"kind":"Field","name":{"kind":"Name","value":"checksum"}},{"kind":"Field","name":{"kind":"Name","value":"mimeType"}},{"kind":"Field","name":{"kind":"Name","value":"uploadedBy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"downloadUrl"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"properties"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"originalName"}},{"kind":"Field","name":{"kind":"Name","value":"isIndexed"}},{"kind":"Field","name":{"kind":"Name","value":"deletedAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"aiMetadata"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"extractedText"}},{"kind":"Field","name":{"kind":"Name","value":"embeddingModel"}},{"kind":"Field","name":{"kind":"Name","value":"embeddingSynced"}},{"kind":"Field","name":{"kind":"Name","value":"indexedAt"}},{"kind":"Field","name":{"kind":"Name","value":"processingStatus"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"errorMessage"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]} as unknown as DocumentNode<GetFavoriteFilesQuery, GetFavoriteFilesQueryVariables>;
 export const GetFileShareDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetFileShare"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"fileShare"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FileShareFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FileShareFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"FileShare"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"sharedBy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"sharedWith"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"permission"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]} as unknown as DocumentNode<GetFileShareQuery, GetFileShareQueryVariables>;
 export const GetFileSharesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetFileShares"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"fileId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"fileShares"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"fileId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"fileId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FileShareFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FileShareFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"FileShare"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"sharedBy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"sharedWith"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"permission"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]} as unknown as DocumentNode<GetFileSharesQuery, GetFileSharesQueryVariables>;
+export const GetFileWithSharesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetFileWithShares"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"file"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"size"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"shares"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FileShareFields"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FileShareFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"FileShare"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"sharedBy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"sharedWith"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"permission"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]} as unknown as DocumentNode<GetFileWithSharesQuery, GetFileWithSharesQueryVariables>;
 export const GetFileDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetFile"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"file"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FileFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FileFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"File"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"size"}},{"kind":"Field","name":{"kind":"Name","value":"storage"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bucketName"}},{"kind":"Field","name":{"kind":"Name","value":"objectKey"}},{"kind":"Field","name":{"kind":"Name","value":"etag"}},{"kind":"Field","name":{"kind":"Name","value":"versionId"}},{"kind":"Field","name":{"kind":"Name","value":"checksum"}},{"kind":"Field","name":{"kind":"Name","value":"mimeType"}},{"kind":"Field","name":{"kind":"Name","value":"uploadedBy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"downloadUrl"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"properties"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"originalName"}},{"kind":"Field","name":{"kind":"Name","value":"isIndexed"}},{"kind":"Field","name":{"kind":"Name","value":"deletedAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"aiMetadata"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"extractedText"}},{"kind":"Field","name":{"kind":"Name","value":"embeddingModel"}},{"kind":"Field","name":{"kind":"Name","value":"embeddingSynced"}},{"kind":"Field","name":{"kind":"Name","value":"indexedAt"}},{"kind":"Field","name":{"kind":"Name","value":"processingStatus"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"errorMessage"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]} as unknown as DocumentNode<GetFileQuery, GetFileQueryVariables>;
 export const GetFilesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetFiles"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"projectId"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"folderId"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"files"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"projectId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"projectId"}}},{"kind":"Argument","name":{"kind":"Name","value":"folderId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"folderId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FileFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FileFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"File"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"size"}},{"kind":"Field","name":{"kind":"Name","value":"storage"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bucketName"}},{"kind":"Field","name":{"kind":"Name","value":"objectKey"}},{"kind":"Field","name":{"kind":"Name","value":"etag"}},{"kind":"Field","name":{"kind":"Name","value":"versionId"}},{"kind":"Field","name":{"kind":"Name","value":"checksum"}},{"kind":"Field","name":{"kind":"Name","value":"mimeType"}},{"kind":"Field","name":{"kind":"Name","value":"uploadedBy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"downloadUrl"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"properties"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"originalName"}},{"kind":"Field","name":{"kind":"Name","value":"isIndexed"}},{"kind":"Field","name":{"kind":"Name","value":"deletedAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"aiMetadata"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"extractedText"}},{"kind":"Field","name":{"kind":"Name","value":"embeddingModel"}},{"kind":"Field","name":{"kind":"Name","value":"embeddingSynced"}},{"kind":"Field","name":{"kind":"Name","value":"indexedAt"}},{"kind":"Field","name":{"kind":"Name","value":"processingStatus"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"errorMessage"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]} as unknown as DocumentNode<GetFilesQuery, GetFilesQueryVariables>;
 export const GetFolderContentsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetFolderContents"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"folderId"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"projectId"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"folderContents"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"folderId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"folderId"}}},{"kind":"Argument","name":{"kind":"Name","value":"projectId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"projectId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"__typename"}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Folder"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FolderFields"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"File"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FileFields"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FolderFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Folder"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FileFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"File"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"size"}},{"kind":"Field","name":{"kind":"Name","value":"storage"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bucketName"}},{"kind":"Field","name":{"kind":"Name","value":"objectKey"}},{"kind":"Field","name":{"kind":"Name","value":"etag"}},{"kind":"Field","name":{"kind":"Name","value":"versionId"}},{"kind":"Field","name":{"kind":"Name","value":"checksum"}},{"kind":"Field","name":{"kind":"Name","value":"mimeType"}},{"kind":"Field","name":{"kind":"Name","value":"uploadedBy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"downloadUrl"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"properties"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"originalName"}},{"kind":"Field","name":{"kind":"Name","value":"isIndexed"}},{"kind":"Field","name":{"kind":"Name","value":"deletedAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"aiMetadata"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"extractedText"}},{"kind":"Field","name":{"kind":"Name","value":"embeddingModel"}},{"kind":"Field","name":{"kind":"Name","value":"embeddingSynced"}},{"kind":"Field","name":{"kind":"Name","value":"indexedAt"}},{"kind":"Field","name":{"kind":"Name","value":"processingStatus"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"errorMessage"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]} as unknown as DocumentNode<GetFolderContentsQuery, GetFolderContentsQueryVariables>;
 export const GetFolderPathDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetFolderPath"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"folderId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"folderPath"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"folderId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"folderId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FolderFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FolderFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Folder"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]} as unknown as DocumentNode<GetFolderPathQuery, GetFolderPathQueryVariables>;
+export const GetFolderTreeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetFolderTree"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"folder"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FolderFields"}},{"kind":"Field","name":{"kind":"Name","value":"parentFolder"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FolderFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"childFolders"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FolderFields"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FolderFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Folder"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]} as unknown as DocumentNode<GetFolderTreeQuery, GetFolderTreeQueryVariables>;
 export const GetFolderDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetFolder"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"folder"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FolderFields"}},{"kind":"Field","name":{"kind":"Name","value":"parentFolder"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FolderFields"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FolderFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Folder"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]} as unknown as DocumentNode<GetFolderQuery, GetFolderQueryVariables>;
 export const GetFoldersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetFolders"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"projectId"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"folders"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"projectId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"projectId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FolderFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FolderFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Folder"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]} as unknown as DocumentNode<GetFoldersQuery, GetFoldersQueryVariables>;
 export const GetRootFilesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetRootFiles"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"projectId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"rootFiles"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"projectId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"projectId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FileFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FileFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"File"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"size"}},{"kind":"Field","name":{"kind":"Name","value":"storage"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bucketName"}},{"kind":"Field","name":{"kind":"Name","value":"objectKey"}},{"kind":"Field","name":{"kind":"Name","value":"etag"}},{"kind":"Field","name":{"kind":"Name","value":"versionId"}},{"kind":"Field","name":{"kind":"Name","value":"checksum"}},{"kind":"Field","name":{"kind":"Name","value":"mimeType"}},{"kind":"Field","name":{"kind":"Name","value":"uploadedBy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"downloadUrl"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"properties"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"originalName"}},{"kind":"Field","name":{"kind":"Name","value":"isIndexed"}},{"kind":"Field","name":{"kind":"Name","value":"deletedAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"aiMetadata"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"extractedText"}},{"kind":"Field","name":{"kind":"Name","value":"embeddingModel"}},{"kind":"Field","name":{"kind":"Name","value":"embeddingSynced"}},{"kind":"Field","name":{"kind":"Name","value":"indexedAt"}},{"kind":"Field","name":{"kind":"Name","value":"processingStatus"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"errorMessage"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]} as unknown as DocumentNode<GetRootFilesQuery, GetRootFilesQueryVariables>;
@@ -927,7 +960,9 @@ export const GetFlowchartDocument = {"kind":"Document","definitions":[{"kind":"O
 export const GetFlowchartsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetFlowcharts"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"projectId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"flowcharts"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"projectId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"projectId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FlowchartFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FlowchartFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Flowchart"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"data"}},{"kind":"Field","name":{"kind":"Name","value":"generatedBy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"generatedByAI"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"sourceChat"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]} as unknown as DocumentNode<GetFlowchartsQuery, GetFlowchartsQueryVariables>;
 export const GetArchivedProjectsByOwnerDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetArchivedProjectsByOwner"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ownerId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"archivedProjectsByOwner"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ownerId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ownerId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ProjectFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProjectFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Project"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"visibility"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"archivedAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]} as unknown as DocumentNode<GetArchivedProjectsByOwnerQuery, GetArchivedProjectsByOwnerQueryVariables>;
 export const GetArchivedProjectsForUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetArchivedProjectsForUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"archivedProjectsForUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ProjectFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProjectFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Project"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"visibility"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"archivedAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]} as unknown as DocumentNode<GetArchivedProjectsForUserQuery, GetArchivedProjectsForUserQueryVariables>;
+export const GetDashboardDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetDashboard"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"projects"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ProjectFields"}},{"kind":"Field","name":{"kind":"Name","value":"members"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"files"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"file"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"size"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"aiMetadata"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"processingStatus"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"chats"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"reports"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"flowcharts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"activityLogs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ActivityLogFields"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProjectFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Project"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"visibility"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"archivedAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ActivityLogFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ActivityLog"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"action"}},{"kind":"Field","name":{"kind":"Name","value":"entityType"}},{"kind":"Field","name":{"kind":"Name","value":"entityId"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]} as unknown as DocumentNode<GetDashboardQuery, GetDashboardQueryVariables>;
 export const GetProjectMembersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetProjectMembers"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"projectId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"projectMembers"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"projectId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"projectId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ProjectMemberFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProjectMemberFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ProjectMember"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]} as unknown as DocumentNode<GetProjectMembersQuery, GetProjectMembersQueryVariables>;
+export const GetProjectStatsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetProjectStats"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"projectId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"projectStats"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"projectId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"projectId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"memberCount"}},{"kind":"Field","name":{"kind":"Name","value":"fileCount"}},{"kind":"Field","name":{"kind":"Name","value":"chatCount"}},{"kind":"Field","name":{"kind":"Name","value":"reportCount"}},{"kind":"Field","name":{"kind":"Name","value":"flowchartCount"}}]}}]}}]} as unknown as DocumentNode<GetProjectStatsQuery, GetProjectStatsQueryVariables>;
 export const GetProjectDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetProject"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"project"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ProjectFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProjectFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Project"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"visibility"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"archivedAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]} as unknown as DocumentNode<GetProjectQuery, GetProjectQueryVariables>;
 export const GetProjectsByOwnerDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetProjectsByOwner"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ownerId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"projectsByOwner"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ownerId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ownerId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ProjectFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProjectFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Project"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"visibility"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"archivedAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]} as unknown as DocumentNode<GetProjectsByOwnerQuery, GetProjectsByOwnerQueryVariables>;
 export const GetProjectsForUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetProjectsForUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"projectsForUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ProjectFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProjectFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Project"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"visibility"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"archivedAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]} as unknown as DocumentNode<GetProjectsForUserQuery, GetProjectsForUserQueryVariables>;
@@ -943,6 +978,8 @@ export const GetAllUsersDocument = {"kind":"Document","definitions":[{"kind":"Op
 export const GetUserByEmailDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUserByEmail"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"email"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userByEmail"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"email"},"value":{"kind":"Variable","name":{"kind":"Name","value":"email"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"UserFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"UserFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"User"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"profile"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"bio"}},{"kind":"Field","name":{"kind":"Name","value":"avatarUrl"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]} as unknown as DocumentNode<GetUserByEmailQuery, GetUserByEmailQueryVariables>;
 export const GetUserByUsernameDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUserByUsername"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"username"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userByUsername"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"username"},"value":{"kind":"Variable","name":{"kind":"Name","value":"username"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"UserFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"UserFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"User"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"profile"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"bio"}},{"kind":"Field","name":{"kind":"Name","value":"avatarUrl"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]} as unknown as DocumentNode<GetUserByUsernameQuery, GetUserByUsernameQueryVariables>;
 export const GetUserProfileDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUserProfile"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userProfile"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"bio"}},{"kind":"Field","name":{"kind":"Name","value":"avatarUrl"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<GetUserProfileQuery, GetUserProfileQueryVariables>;
+export const GetUserWorkspaceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUserWorkspace"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"ownedProjects"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ProjectFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"projectMemberships"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"project"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"visibility"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"sharedFiles"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FileShareFields"}},{"kind":"Field","name":{"kind":"Name","value":"file"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"size"}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ProjectFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Project"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"visibility"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"archivedAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FileShareFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"FileShare"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"sharedBy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"sharedWith"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"permission"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]} as unknown as DocumentNode<GetUserWorkspaceQuery, GetUserWorkspaceQueryVariables>;
 export const GetUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"UserFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"UserFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"User"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"profile"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"bio"}},{"kind":"Field","name":{"kind":"Name","value":"avatarUrl"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]} as unknown as DocumentNode<GetUserQuery, GetUserQueryVariables>;
 export const GetUsersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUsers"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"users"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ids"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"UserFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"UserFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"User"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"profile"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"bio"}},{"kind":"Field","name":{"kind":"Name","value":"avatarUrl"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]} as unknown as DocumentNode<GetUsersQuery, GetUsersQueryVariables>;
 export const MeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"UserFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"UserFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"User"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"profile"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"bio"}},{"kind":"Field","name":{"kind":"Name","value":"avatarUrl"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]} as unknown as DocumentNode<MeQuery, MeQueryVariables>;
+export const ChatMessageAddedDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"ChatMessageAdded"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"chatId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"chatMessageAdded"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"chatId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"chatId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ChatMessageFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ChatMessageFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ChatMessage"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"sender"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"aiMetadata"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"embeddingModel"}},{"kind":"Field","name":{"kind":"Name","value":"embeddingSynced"}},{"kind":"Field","name":{"kind":"Name","value":"indexedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"mentionedUsers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"referencedFiles"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]} as unknown as DocumentNode<ChatMessageAddedSubscription, ChatMessageAddedSubscriptionVariables>;

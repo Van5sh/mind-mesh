@@ -1,0 +1,40 @@
+# Everything the dashboard renders, in one round trip: project cards, the
+# four stat counts (files/chats/reports/flowcharts) and recent activity.
+# Selections are deliberately lean - FileFields is not used here because it
+# includes aiMetadata.extractedText (the whole document body) per file.
+query GetDashboard {
+  projects {
+    ...ProjectFields
+    members {
+      id
+      role
+      user {
+        id
+        username
+      }
+    }
+    files {
+      file {
+        id
+        name
+        size
+        createdAt
+        aiMetadata {
+          processingStatus
+        }
+      }
+    }
+    chats {
+      id
+    }
+    reports {
+      id
+    }
+    flowcharts {
+      id
+    }
+    activityLogs {
+      ...ActivityLogFields
+    }
+  }
+}

@@ -1,0 +1,30 @@
+# One user's place in the workspace in a single round trip: the projects they
+# own, the projects they belong to (with their role), and the files shared
+# with them. Each of these lists is batched server-side across users, so
+# selecting them together stays cheap.
+query GetUserWorkspace($id: ID!) {
+  user(id: $id) {
+    id
+    username
+    ownedProjects {
+      ...ProjectFields
+    }
+    projectMemberships {
+      id
+      role
+      project {
+        id
+        name
+        visibility
+      }
+    }
+    sharedFiles {
+      ...FileShareFields
+      file {
+        id
+        name
+        size
+      }
+    }
+  }
+}
