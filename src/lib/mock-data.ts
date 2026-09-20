@@ -16,10 +16,6 @@ import type {
 const daysAgo = (n: number) =>
   new Date(Date.now() - n * 86_400_000).toISOString();
 
-// ---------------------------------------------------------------------------
-// Users
-// ---------------------------------------------------------------------------
-
 export const mockUsers: User[] = [
   {
     id: "user-1",
@@ -54,10 +50,6 @@ export const mockUsers: User[] = [
 ];
 
 export const CURRENT_USER_ID = "user-1";
-
-// ---------------------------------------------------------------------------
-// Projects
-// ---------------------------------------------------------------------------
 
 export const mockProjects: Project[] = [
   {
@@ -116,10 +108,6 @@ export const mockProjectMembers: ProjectMember[] = [
   { id: "pm-7", projectId: "proj-3", user: mockUsers[0], role: "ADMIN", createdAt: daysAgo(190) },
   { id: "pm-8", projectId: "proj-4", user: mockUsers[0], role: "OWNER", createdAt: daysAgo(400) },
 ];
-
-// ---------------------------------------------------------------------------
-// Folders & Files
-// ---------------------------------------------------------------------------
 
 export const mockFolders: Folder[] = [
   { id: "fold-1", projectId: "proj-1", parentFolderId: null, name: "Financials", createdAt: daysAgo(44), updatedAt: daysAgo(10) },

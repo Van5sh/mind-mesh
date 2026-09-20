@@ -6,6 +6,7 @@ import { StoreProvider } from "@/lib/store";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
+import { GraphQLProvider } from "@/lib/apollo/provider"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,6 +35,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
         <ThemeProvider>
+          <GraphQLProvider>
           <StoreProvider>
             <AuthProvider>
               <TooltipProvider delayDuration={200}>
@@ -42,6 +44,7 @@ export default function RootLayout({
               </TooltipProvider>
             </AuthProvider>
           </StoreProvider>
+          </GraphQLProvider>
         </ThemeProvider>
       </body>
     </html>

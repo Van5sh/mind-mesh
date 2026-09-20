@@ -1,16 +1,47 @@
 "use client";
 
-import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
+import {
+  ApolloClient,
+  ApolloLink,
+  HttpLink,
+  InMemoryCache,
+} from "@apollo/client";
 
-// Browser Apollo Client. credentials: "include" is required, not optional -
-// the frontend (3000) and backend (8090) are different origins, so without
-// it the session cookie /auth/firebase sets never gets sent back on
-// subsequent requests, and every authenticated query silently comes back
-// as if you were logged out.
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
+import { getMainDefinition } from "@apollo/client/utilities";
+import { createClient } from "graphql-ws";
+
+const httpLink = new HttpLink({
+  uri: process.env.NEXT_PUBLIC_GRAPHQL_URL,
+  credentials: "include",
+});
+
+
+const wsLink =
+  typeof window !== "undefined"
+    ? new GraphQLWsLink(
+        createClient({
+          url: process.env.NEXT_PUBLIC_GRAPHQL_WS_URL!,
+        }),
+      )
+    : null;
+
+const splitLink = wsLink
+  ? ApolloLink.split(
+      ({ query }) => {
+        const definition = getMainDefinition(query);
+
+        return (
+          definition.kind === "OperationDefinition" &&
+          definition.operation === "subscription"
+        );
+      },
+      wsLink,
+      httpLink,
+    )
+  : httpLink;
+
 export const apolloClient = new ApolloClient({
-  link: new HttpLink({
-    uri: process.env.NEXT_PUBLIC_GRAPHQL_URL,
-    credentials: "include",
-  }),
+  link: splitLink,
   cache: new InMemoryCache(),
 });

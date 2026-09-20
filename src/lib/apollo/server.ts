@@ -4,15 +4,15 @@ import { headers } from "next/headers";
 export async function getServerApolloClient() {
   const requestHeaders = await headers();
 
-  const authHeader = requestHeaders.get("authorization");
+  const cookie = requestHeaders.get("cookie");
 
   return new ApolloClient({
     ssrMode: true,
     link: new HttpLink({
       uri: process.env.NEXT_PUBLIC_GRAPHQL_URL,
-      headers: authHeader
+      headers: cookie
         ? {
-            authorization: authHeader,
+            cookie,
           }
         : {},
     }),
