@@ -17,7 +17,6 @@ import {
   Upload,
   X,
 } from "lucide-react";
-import { useStore } from "@/lib/store";
 import type { DriveFile, DriveFolder } from "@/lib/types";
 import { formatBytes, timeAgo } from "@/lib/format";
 import { FileIcon } from "@/components/file-icon";
@@ -62,22 +61,22 @@ const SECTIONS: { key: Section; label: string; icon: React.ElementType }[] = [
 ];
 
 export default function FilesPage() {
-  const {
-    driveFolders,
-    driveFiles,
-    createDriveFolder,
-    renameDriveFolder,
-    trashDriveFolder,
-    restoreDriveFolder,
-    deleteDriveFolderForever,
-    uploadDriveFile,
-    renameDriveFile,
-    toggleStarDriveFile,
-    trashDriveFile,
-    restoreDriveFile,
-    deleteDriveFileForever,
-    emptyDriveTrash,
-  } = useStore();
+  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
+  const driveFolders: DriveFolder[] = [];
+  const driveFiles: DriveFile[] = [];
+  const noop = (..._args: unknown[]): void => {};
+  const createDriveFolder = noop;
+  const renameDriveFolder = noop;
+  const trashDriveFolder = noop;
+  const restoreDriveFolder = noop;
+  const deleteDriveFolderForever = noop;
+  const uploadDriveFile = noop;
+  const renameDriveFile = noop;
+  const toggleStarDriveFile = noop;
+  const trashDriveFile = noop;
+  const restoreDriveFile = noop;
+  const deleteDriveFileForever = noop;
+  const emptyDriveTrash = noop;
 
   const [section, setSection] = useState<Section>("all");
   const [folderId, setFolderId] = useState<string | null>(null);

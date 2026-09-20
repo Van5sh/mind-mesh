@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { FileText, Sparkles, User as UserIcon } from "lucide-react";
-import { useProjectReports } from "@/lib/store";
+import type { Report } from "@/lib/types";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/status-badge";
@@ -19,7 +19,8 @@ function timeAgo(iso: string) {
 
 export default function ReportsPage() {
   const { projectId } = useParams<{ projectId: string }>();
-  const reports = useProjectReports(projectId).sort(
+  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
+  const reports = ([] as Report[]).sort(
     (a, b) => +new Date(b.updatedAt) - +new Date(a.updatedAt),
   );
 

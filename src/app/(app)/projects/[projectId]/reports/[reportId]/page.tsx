@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter, notFound } from "next/navigation";
 import { ArrowLeft, Download, Loader2, Pencil, Sparkles, Trash2 } from "lucide-react";
-import { useProjectReports, useStore } from "@/lib/store";
+import type { Report } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { StatusBadge } from "@/components/status-badge";
@@ -30,9 +30,12 @@ function renderMarkdown(content: string) {
 
 export default function ReportDetailPage() {
   const { projectId, reportId } = useParams<{ projectId: string; reportId: string }>();
-  const reports = useProjectReports(projectId);
+  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
+  const reports: Report[] = [];
   const report = reports.find((r) => r.id === reportId);
-  const { updateReport, deleteReport } = useStore();
+  const noop = (..._args: unknown[]): void => {};
+  const updateReport = noop;
+  const deleteReport = noop;
   const router = useRouter();
 
   const [editing, setEditing] = useState(false);

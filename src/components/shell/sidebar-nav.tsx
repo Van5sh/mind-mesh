@@ -17,7 +17,7 @@ import {
   Workflow,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useMyProjects, useProject } from "@/lib/store";
+import type { Project } from "@/lib/types";
 
 function NavLink({
   href,
@@ -53,8 +53,9 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   const params = useParams<{ projectId?: string }>();
   const projectId = params?.projectId;
-  const project = useProject(projectId ?? "");
-  const myProjects = useMyProjects();
+  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
+  const project = undefined as Project | undefined;
+  const myProjects: Project[] = [];
 
   if (projectId && project) {
     const base = `/projects/${projectId}`;

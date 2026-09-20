@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useParams, notFound } from "next/navigation";
 import { ArrowLeft, Check, Loader2 } from "lucide-react";
-import { useProjectFlowcharts, useStore } from "@/lib/store";
+import type { Flowchart } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { StatusBadge } from "@/components/status-badge";
@@ -22,9 +22,12 @@ const FlowBuilder = dynamic(() => import("@/components/flow/FlowBuilder"), {
 
 export default function FlowchartEditorPage() {
   const { projectId, flowchartId } = useParams<{ projectId: string; flowchartId: string }>();
-  const flowcharts = useProjectFlowcharts(projectId);
+  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
+  const flowcharts: Flowchart[] = [];
   const flowchart = flowcharts.find((f) => f.id === flowchartId);
-  const { renameFlowchart, saveFlowchartData } = useStore();
+  const noop = (..._args: unknown[]): void => {};
+  const renameFlowchart = noop;
+  const saveFlowchartData = noop;
 
   const [name, setName] = useState(flowchart?.name ?? "");
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");

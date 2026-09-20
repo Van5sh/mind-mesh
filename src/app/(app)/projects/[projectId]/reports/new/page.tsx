@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Loader2, Sparkles } from "lucide-react";
-import { useProjectChats, useStore } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,14 +16,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { ReportFormat } from "@/lib/types";
+import type { Chat, Report, ReportFormat } from "@/lib/types";
 import Link from "next/link";
 
 export default function NewReportPage() {
   const { projectId } = useParams<{ projectId: string }>();
   const router = useRouter();
-  const { createReport, generateAIReport } = useStore();
-  const chats = useProjectChats(projectId);
+  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
+  const createReport = (..._args: unknown[]): Pick<Report, "id"> => ({ id: "" });
+  const generateAIReport = (..._args: unknown[]): Pick<Report, "id"> => ({ id: "" });
+  const chats: Chat[] = [];
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");

@@ -10,19 +10,19 @@ import {
   Users2,
   Workflow,
 } from "lucide-react";
-import {
-  useProject,
-  useProjectActivity,
-  useProjectChats,
-  useProjectFiles,
-  useProjectFlowcharts,
-  useProjectMembers,
-  useProjectReports,
-} from "@/lib/store";
+import type {
+  ActivityLog,
+  Chat,
+  Flowchart,
+  Project,
+  ProjectFile,
+  ProjectMember,
+  Report,
+  User,
+} from "@/lib/types";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/status-badge";
-import { userById } from "@/lib/mock-data";
 
 function timeAgo(iso: string) {
   const diffMs = Date.now() - new Date(iso).getTime();
@@ -36,13 +36,16 @@ function timeAgo(iso: string) {
 
 export default function ProjectOverviewPage() {
   const { projectId } = useParams<{ projectId: string }>();
-  const project = useProject(projectId)!;
-  const files = useProjectFiles(projectId, undefined);
-  const chats = useProjectChats(projectId);
-  const reports = useProjectReports(projectId);
-  const flowcharts = useProjectFlowcharts(projectId);
-  const members = useProjectMembers(projectId);
-  const activity = useProjectActivity(projectId).slice(0, 6);
+  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
+  // The project layout 404s while there is no project, so this never renders.
+  const project = null as unknown as Project;
+  const files: ProjectFile[] = [];
+  const chats: Chat[] = [];
+  const reports: Report[] = [];
+  const flowcharts: Flowchart[] = [];
+  const members: ProjectMember[] = [];
+  const activity: ActivityLog[] = [];
+  const userById = (_id?: string | null): User | undefined => undefined;
 
   const stats = [
     { label: "Files", value: files.length, icon: FolderKanban, href: `/projects/${projectId}/files` },

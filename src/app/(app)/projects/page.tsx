@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { ArchiveRestore, FolderKanban, Search } from "lucide-react";
-import { useArchivedProjects, useMyProjects, useStore } from "@/lib/store";
+import type { Project } from "@/lib/types";
 import { NewProjectDialog } from "@/components/projects/new-project-dialog";
 import { ProjectCard } from "@/components/projects/project-card";
 import { Input } from "@/components/ui/input";
@@ -21,9 +21,11 @@ import { toast } from "sonner";
 type SortKey = "updated" | "name" | "created";
 
 export default function ProjectsPage() {
-  const myProjects = useMyProjects();
-  const archivedProjects = useArchivedProjects();
-  const { restoreProject } = useStore();
+  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
+  const myProjects: Project[] = [];
+  const archivedProjects: Project[] = [];
+  const noop = (..._args: unknown[]): void => {};
+  const restoreProject = noop;
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortKey>("updated");
 

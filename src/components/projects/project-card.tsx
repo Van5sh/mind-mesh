@@ -5,8 +5,7 @@ import { Lock, Users2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { useProjectFiles, useProjectMembers } from "@/lib/store";
-import type { Project } from "@/lib/types";
+import type { Project, ProjectFile, ProjectMember } from "@/lib/types";
 
 function timeAgo(iso: string) {
   const diffMs = Date.now() - new Date(iso).getTime();
@@ -20,8 +19,9 @@ function timeAgo(iso: string) {
 }
 
 export function ProjectCard({ project }: { project: Project }) {
-  const files = useProjectFiles(project.id, undefined);
-  const members = useProjectMembers(project.id);
+  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
+  const files: ProjectFile[] = [];
+  const members: ProjectMember[] = [];
 
   return (
     <Link href={`/projects/${project.id}`}>

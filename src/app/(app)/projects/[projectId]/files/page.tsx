@@ -14,8 +14,8 @@ import {
   Trash2,
   Upload,
 } from "lucide-react";
-import { useProjectFiles, useProjectFolders, useStore } from "@/lib/store";
 import { SUPPORTED_UPLOAD_TYPES } from "@/lib/types";
+import type { Folder, ProjectFile } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -59,9 +59,16 @@ function timeAgo(iso: string) {
 
 export default function FilesPage() {
   const { projectId } = useParams<{ projectId: string }>();
-  const folders = useProjectFolders(projectId);
-  const files = useProjectFiles(projectId, undefined);
-  const { createFolder, uploadFile, renameFile, renameFolder, deleteFile, deleteFolder } = useStore();
+  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
+  const folders: Folder[] = [];
+  const files: ProjectFile[] = [];
+  const noop = (..._args: unknown[]): void => {};
+  const createFolder = noop;
+  const uploadFile = noop;
+  const renameFile = noop;
+  const renameFolder = noop;
+  const deleteFile = noop;
+  const deleteFolder = noop;
 
   const [currentFolderId, setCurrentFolderId] = useState<string | null>(null);
   const [query, setQuery] = useState("");

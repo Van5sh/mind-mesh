@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { Bot, MessagesSquare, Plus, Users2 } from "lucide-react";
-import { useProjectChats, useStore } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/status-badge";
@@ -24,7 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
-import type { ChatType } from "@/lib/types";
+import type { Chat, ChatType } from "@/lib/types";
 
 function timeAgo(iso: string) {
   const mins = Math.round((Date.now() - new Date(iso).getTime()) / 60_000);
@@ -36,10 +35,11 @@ function timeAgo(iso: string) {
 
 export default function ChatsPage() {
   const { projectId } = useParams<{ projectId: string }>();
-  const chats = useProjectChats(projectId).sort(
+  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
+  const chats = ([] as Chat[]).sort(
     (a, b) => +new Date(b.lastActivityAt) - +new Date(a.lastActivityAt),
   );
-  const { createChat } = useStore();
+  const createChat = (_projectId: string, _title: string, _type: ChatType): Pick<Chat, "id"> => ({ id: "" });
   const router = useRouter();
 
   const [open, setOpen] = useState(false);

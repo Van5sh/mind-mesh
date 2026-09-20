@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { SidebarNav } from "./sidebar-nav";
 import { UserMenu } from "./user-menu";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { useMyProjects, useProject } from "@/lib/store";
+import type { Project } from "@/lib/types";
 import { toast } from "sonner";
 
 function humanize(segment: string) {
@@ -30,7 +30,8 @@ function humanize(segment: string) {
 function useBreadcrumbs() {
   const pathname = usePathname();
   const params = useParams<{ projectId?: string }>();
-  const project = useProject(params?.projectId ?? "");
+  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
+  const project = undefined as Project | undefined;
   const segments = pathname.split("/").filter(Boolean);
 
   return segments.map((segment, i) => {
@@ -48,7 +49,7 @@ export function Topbar() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const router = useRouter();
-  const projects = useMyProjects();
+  const projects: Project[] = [];
 
   function handleSearchSubmit(e: React.FormEvent) {
     e.preventDefault();

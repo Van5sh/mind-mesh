@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { Loader2, Plus, Sparkles, User as UserIcon, Workflow } from "lucide-react";
-import { useProjectChats, useProjectFlowcharts, useStore } from "@/lib/store";
+import type { Chat, Flowchart } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/status-badge";
@@ -36,11 +36,13 @@ function timeAgo(iso: string) {
 
 export default function FlowchartsPage() {
   const { projectId } = useParams<{ projectId: string }>();
-  const flowcharts = useProjectFlowcharts(projectId).sort(
+  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
+  const flowcharts = ([] as Flowchart[]).sort(
     (a, b) => +new Date(b.updatedAt) - +new Date(a.updatedAt),
   );
-  const chats = useProjectChats(projectId);
-  const { createFlowchart, generateAIFlowchart } = useStore();
+  const chats: Chat[] = [];
+  const createFlowchart = (..._args: unknown[]): Pick<Flowchart, "id"> => ({ id: "" });
+  const generateAIFlowchart = (..._args: unknown[]): Pick<Flowchart, "id"> => ({ id: "" });
   const router = useRouter();
 
   const [open, setOpen] = useState(false);

@@ -2,8 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { Activity as ActivityIcon } from "lucide-react";
-import { useProjectActivity } from "@/lib/store";
-import { userById } from "@/lib/mock-data";
+import type { ActivityLog, User } from "@/lib/types";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 
@@ -18,7 +17,9 @@ function formatDate(iso: string) {
 
 export default function ActivityPage() {
   const { projectId } = useParams<{ projectId: string }>();
-  const activity = useProjectActivity(projectId);
+  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
+  const activity: ActivityLog[] = [];
+  const userById = (_id?: string | null): User | undefined => undefined;
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">

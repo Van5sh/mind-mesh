@@ -23,12 +23,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useStore } from "@/lib/store";
-import type { ProjectVisibility } from "@/lib/types";
+import type { Project, ProjectVisibility } from "@/lib/types";
 import { toast } from "sonner";
 
 export function NewProjectDialog({ trigger }: { trigger?: React.ReactNode }) {
-  const { createProject } = useStore();
+  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
+  const createProject = (..._args: unknown[]): Pick<Project, "id" | "name"> => ({ id: "", name: "" });
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");

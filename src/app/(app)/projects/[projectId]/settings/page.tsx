@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ArchiveRestore, Loader2 } from "lucide-react";
-import { useMyRole, useProject, useProjectMembers, useStore } from "@/lib/store";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -24,15 +23,22 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { ProjectVisibility } from "@/lib/types";
+import type { Project, ProjectMember, ProjectRole, ProjectVisibility } from "@/lib/types";
 import { toast } from "sonner";
 
 export default function ProjectSettingsPage() {
   const { projectId } = useParams<{ projectId: string }>();
-  const project = useProject(projectId)!;
-  const members = useProjectMembers(projectId);
-  const myRole = useMyRole(projectId);
-  const { updateProject, archiveProject, restoreProject, deleteProject, transferOwnership } = useStore();
+  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
+  // The project layout 404s while there is no project, so this never renders.
+  const project = null as unknown as Project;
+  const members: ProjectMember[] = [];
+  const myRole = null as ProjectRole | null;
+  const noop = (..._args: unknown[]): void => {};
+  const updateProject = noop;
+  const archiveProject = noop;
+  const restoreProject = noop;
+  const deleteProject = noop;
+  const transferOwnership = noop;
   const router = useRouter();
 
   const isOwner = myRole === "OWNER";

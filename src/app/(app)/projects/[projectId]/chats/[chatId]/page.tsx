@@ -3,8 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter, notFound } from "next/navigation";
 import { ArrowLeft, Archive, Bot, Send, Sparkles, User as UserIcon } from "lucide-react";
-import { useChatMessages, useProjectChats, useStore } from "@/lib/store";
-import { userById } from "@/lib/mock-data";
+import type { Chat, ChatMessage, User } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -14,10 +13,14 @@ import Link from "next/link";
 
 export default function ChatConversationPage() {
   const { projectId, chatId } = useParams<{ projectId: string; chatId: string }>();
-  const chats = useProjectChats(projectId);
+  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
+  const chats: Chat[] = [];
   const chat = chats.find((c) => c.id === chatId);
-  const messages = useChatMessages(chatId);
-  const { sendMessage, archiveChat } = useStore();
+  const messages: ChatMessage[] = [];
+  const noop = (..._args: unknown[]): void => {};
+  const sendMessage = noop;
+  const archiveChat = noop;
+  const userById = (_id?: string | null): User | undefined => undefined;
   const router = useRouter();
 
   const [draft, setDraft] = useState("");

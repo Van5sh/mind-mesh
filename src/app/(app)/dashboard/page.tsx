@@ -3,13 +3,12 @@
 import Link from "next/link";
 import { FileText, FolderKanban, MessagesSquare, Workflow } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
-import { useMyProjects, useStore } from "@/lib/store";
+import type { ActivityLog, Chat, Project, ProjectFile, Report, User } from "@/lib/types";
 import { NewProjectDialog } from "@/components/projects/new-project-dialog";
 import { ProjectCard } from "@/components/projects/project-card";
 import { Card } from "@/components/ui/card";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { Button } from "@/components/ui/button";
-import { userById } from "@/lib/mock-data";
 
 function timeAgo(iso: string) {
   const diffMs = Date.now() - new Date(iso).getTime();
@@ -23,8 +22,13 @@ function timeAgo(iso: string) {
 
 export default function DashboardPage() {
   const { user } = useAuth();
-  const projects = useMyProjects();
-  const { files, chats, reports, activity } = useStore();
+  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
+  const projects: Project[] = [];
+  const files: ProjectFile[] = [];
+  const chats: Chat[] = [];
+  const reports: Report[] = [];
+  const activity: ActivityLog[] = [];
+  const userById = (_id?: string | null): User | undefined => undefined;
 
   const myProjectIds = new Set(projects.map((p) => p.id));
   const stats = [

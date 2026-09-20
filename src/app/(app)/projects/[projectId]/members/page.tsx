@@ -3,8 +3,6 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { Crown, MoreHorizontal, UserPlus } from "lucide-react";
-import { useMyRole, useProject, useProjectMembers, useStore } from "@/lib/store";
-import { mockUsers } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -28,7 +26,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { ProjectRole } from "@/lib/types";
+import type { Project, ProjectMember, ProjectRole, User } from "@/lib/types";
 import { toast } from "sonner";
 
 const ROLE_LABEL: Record<ProjectRole, string> = {
@@ -40,10 +38,16 @@ const ROLE_LABEL: Record<ProjectRole, string> = {
 
 export default function MembersPage() {
   const { projectId } = useParams<{ projectId: string }>();
-  const project = useProject(projectId)!;
-  const members = useProjectMembers(projectId);
-  const myRole = useMyRole(projectId);
-  const { addMember, updateMemberRole, removeMember } = useStore();
+  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
+  // The project layout 404s while there is no project, so this never renders.
+  const project = null as unknown as Project;
+  const members: ProjectMember[] = [];
+  const myRole = null as ProjectRole | null;
+  const noop = (..._args: unknown[]): void => {};
+  const addMember = noop;
+  const updateMemberRole = noop;
+  const removeMember = noop;
+  const mockUsers: User[] = [];
   const canManage = myRole === "OWNER" || myRole === "ADMIN";
 
   const [inviteOpen, setInviteOpen] = useState(false);
