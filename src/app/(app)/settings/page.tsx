@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { gql } from "@apollo/client";
+import { useQuery } from "@apollo/client/react"
 import { Loader2, Trash2 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { AppearancePicker } from "@/components/theme-toggle";
@@ -33,7 +35,9 @@ export default function SettingsPage() {
   const [confirmText, setConfirmText] = useState("");
 
   if (!user) return null;
-
+  useEffect(()=>{
+    
+  },[])
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);

@@ -28,6 +28,7 @@
 
 # debug
 npm-debug.log*
+/mind-mesh/GRAPHQL_INTEGRATION_GUIDE.md
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
@@ -41,3 +42,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+GRAPHQL_INTEGRATION_GUIDE.md
