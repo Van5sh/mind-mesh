@@ -3,12 +3,12 @@
 import Link from "next/link";
 import { FileText, FolderKanban, MessagesSquare, Workflow } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
-import type { ActivityLog, Chat, Project, ProjectFile, Report, User } from "@/lib/types";
 import { NewProjectDialog } from "@/components/projects/new-project-dialog";
 import { ProjectCard } from "@/components/projects/project-card";
 import { Card } from "@/components/ui/card";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { Button } from "@/components/ui/button";
+import { useDashboard } from "@/hooks/use-dashboard";
 
 function timeAgo(iso: string) {
   const diffMs = Date.now() - new Date(iso).getTime();
@@ -22,27 +22,20 @@ function timeAgo(iso: string) {
 
 export default function DashboardPage() {
   const { user } = useAuth();
-  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
-  const projects: Project[] = [];
-  const files: ProjectFile[] = [];
-  const chats: Chat[] = [];
-  const reports: Report[] = [];
-  const activity: ActivityLog[] = [];
-  const userById = (_id?: string | null): User | undefined => undefined;
-
-  const myProjectIds = new Set(projects.map((p) => p.id));
+  const { projects, loading, error } = useDashboard();
+  const projs = projects.length
+  const files = projects.reduce((sum, p) => sum + p.fileCount, 0)
+  const chats = projects.reduce((sum, p) => sum + p.chatCount, 0)
+  const flowRe = projects.reduce((sum, p) => sum + p.reportCount + p.flowchartCount, 0)
+  const recentActivity = projects.flatMap((p) => p.activity).sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt)).slice(0, 8);
+  if (loading) return <p>Loading...</p>
+  if (error) return <p>Something went wrong: {error.message}</p>;
   const stats = [
-    { label: "Projects", value: projects.length, icon: FolderKanban, href: "/projects" },
-    { label: "Files", value: files.filter((f) => myProjectIds.has(f.projectId)).length, icon: FileText },
-    { label: "Chats", value: chats.filter((c) => myProjectIds.has(c.projectId)).length, icon: MessagesSquare },
-    { label: "Flowcharts & reports", value: reports.filter((r) => myProjectIds.has(r.projectId)).length, icon: Workflow },
-  ];
-
-  const recentActivity = activity
-    .filter((a) => a.projectId && myProjectIds.has(a.projectId))
-    .sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt))
-    .slice(0, 8);
-
+    { label: "Projects", value: projs, icon: FolderKanban, href: "/projects" },
+    { label: "Files", value: files, icon: FileText },
+    { label: "Chats", value: chats, icon: MessagesSquare },
+    { label: "Flowcharts & reports", value: flowRe, icon: Workflow },
+  ]
   const firstName = user?.firstName || user?.username || "there";
 
   return (
@@ -99,7 +92,7 @@ export default function DashboardPage() {
           ) : (
             <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
               {projects.slice(0, 4).map((project) => (
-                <ProjectCard key={project.id} project={project} />
+                <ProjectCard key={project.project.id} project={project.project} />
               ))}
             </div>
           )}
@@ -112,13 +105,12 @@ export default function DashboardPage() {
               <p className="text-sm text-muted-foreground">No activity yet.</p>
             )}
             {recentActivity.map((a) => {
-              const actor = userById(a.userId);
               return (
                 <div key={a.id} className="flex items-start gap-3 text-sm">
                   <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
                   <div className="min-w-0">
                     <p className="text-foreground">
-                      <span className="font-medium">{actor?.firstName ?? actor?.username ?? "Someone"}</span>{" "}
+                      <span className="font-medium">{a.actor}</span>{" "}
                       <span className="text-muted-foreground">{a.action}</span>
                     </p>
                     <p className="text-xs text-muted-foreground">{timeAgo(a.createdAt)}</p>

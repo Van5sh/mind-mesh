@@ -19,7 +19,6 @@ function timeAgo(iso: string) {
 }
 
 export function ProjectCard({ project }: { project: Project }) {
-  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
   const files: ProjectFile[] = [];
   const members: ProjectMember[] = [];
 
