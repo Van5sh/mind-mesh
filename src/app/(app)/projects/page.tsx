@@ -21,7 +21,6 @@ import { toast } from "sonner";
 type SortKey = "updated" | "name" | "created";
 
 export default function ProjectsPage() {
-  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
   const myProjects: Project[] = [];
   const archivedProjects: Project[] = [];
   const noop = (..._args: unknown[]): void => {};
