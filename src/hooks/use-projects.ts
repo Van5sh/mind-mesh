@@ -4,6 +4,7 @@ import { skipToken, useMutation, useQuery } from "@apollo/client/react";
 import {
   ArchiveProjectDocument,
   CreateProjectDocument,
+  DeleteProjectDocument,
   GetArchivedProjectsForUserDocument,
   GetDashboardDocument,
   GetProjectsDocument,
@@ -83,6 +84,19 @@ export function useRestoreProject() {
     return result.data?.restoreProject
   }
   return {restoreProject,loading}
+}
+
+export function useDeleteProject() {
+  const [mutate,{loading}]=useMutation(DeleteProjectDocument,{
+    refetchQueries:[GetProjectsDocument, GetDashboardDocument],
+  });
+  async function deleteProject(id:string) {
+    const result=await mutate({variables:{
+      id
+    }});
+    return result.data?.deleteProject
+  }
+  return {deleteProject,loading}
 }
 
 export function useArchivedProjectsForUser() {

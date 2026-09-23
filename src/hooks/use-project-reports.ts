@@ -1,6 +1,6 @@
 "use client"
 
-import { DeleteReportDocument, GetReportDocument, GetReportsDocument, UpdateReportDocument, UpdateReportInput } from "@/graphql/generated/graphql"
+import { CreateReportDocument, DeleteReportDocument, GetReportDocument, GetReportsDocument, UpdateReportDocument, type CreateReportInput, type UpdateReportInput } from "@/graphql/generated/graphql"
 import { toReport } from "@/lib/mappers/report";
 import { useMutation, useQuery } from "@apollo/client/react"
 import { useMemo } from "react";
@@ -37,6 +37,19 @@ export function useReports(id:string) {
         loading:loading && !data,
         error
     }
+}
+
+export function useCreateReport() {
+    const [mutate,{loading}]=useMutation(CreateReportDocument);
+    async function createReport(input:CreateReportInput) {
+        const result=await mutate({
+            variables:{
+                input
+            }
+        })
+        return result.data?.createReport
+    }
+    return {createReport,loading}
 }
 
 export function useUpdateReport(){

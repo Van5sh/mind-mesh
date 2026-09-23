@@ -1,6 +1,14 @@
 "use client"
 
-import { MeDocument, UpdateUserDocument, UpdateUserInput } from "@/graphql/generated/graphql"
+import {
+    MeDocument,
+    UpdateUserAvatarDocument,
+    UpdateUserDocument,
+    UpdateUserProfileDocument,
+    type UpdateUserAvatarInput,
+    type UpdateUserInput,
+    type UpdateUserProfileInput,
+} from "@/graphql/generated/graphql"
 import { useMutation, useQuery } from "@apollo/client/react"
 import { useMemo } from "react";
 
@@ -26,4 +34,32 @@ export function useUpdateUser() {
         return result.data?.updateUser
     }
     return {updateUser,loading}
+}
+
+export function useUpdateUserProfile() {
+    const [mutate,{loading}]=useMutation(UpdateUserProfileDocument);
+    async function updateUserProfile(id:string,input:UpdateUserProfileInput) {
+        const result=await mutate({
+            variables:{
+                id,
+                input
+            }
+        })
+        return result.data?.updateUserProfile
+    }
+    return {updateUserProfile,loading}
+}
+
+export function useUpdateUserAvatar() {
+    const [mutate,{loading}]=useMutation(UpdateUserAvatarDocument);
+    async function updateUserAvatar(id:string,input:UpdateUserAvatarInput) {
+        const result=await mutate({
+            variables:{
+                id,
+                input
+            }
+        })
+        return result.data?.updateUserAvatar
+    }
+    return {updateUserAvatar,loading}
 }
