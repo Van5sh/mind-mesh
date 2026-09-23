@@ -4,7 +4,7 @@ import { MeDocument, UpdateUserDocument, UpdateUserInput } from "@/graphql/gener
 import { useMutation, useQuery } from "@apollo/client/react"
 import { useMemo } from "react";
 
-export function Me() {
+export function useMe() {
     const {data,loading,error}=useQuery(MeDocument);
     const user=useMemo(()=>(data?.me),[data])
     return {
@@ -14,15 +14,16 @@ export function Me() {
     }
 }
 
-export function UpdateUser() {
+export function useUpdateUser() {
     const [mutate,{loading}]=useMutation(UpdateUserDocument);
     async function updateUser(id:string,input:UpdateUserInput) {
-        const user=mutate({
+        const result=await mutate({
             variables:{
                 id,
                 input
             }
         })
+        return result.data?.updateUser
     }
     return {updateUser,loading}
 }

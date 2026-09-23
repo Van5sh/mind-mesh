@@ -11,9 +11,9 @@ export function useGetMembers(id:string){
             projectId:id
         }
     })
-    const members=useMemo(()=>(data?.projectMembers)?.map((m)=>toProjectMember(m,id)),[data])
+    const members=useMemo(()=>(data?.projectMembers ?? []).map((m)=>toProjectMember(m,id)),[data,id])
     return {
-        data,
+        members,
         loading: loading && !data,
         error
     }
@@ -27,6 +27,7 @@ export function useAddProjectMember(){
                 input
             }
         })
+        return result.data?.addProjectMember
     }
     return {addProjectMember,loading}
 }

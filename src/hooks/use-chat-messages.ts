@@ -1,8 +1,8 @@
 "use client"
 
-import { CreateChatMessageDocument, CreateChatMessageInput, DeleteChatMessageDocument, GetChatMessagesDocument, UpdateChatMessageDocument, UpdateChatMessageInput } from "@/graphql/generated/graphql"
+import { ChatMessageAddedDocument, CreateChatMessageDocument, CreateChatMessageInput, DeleteChatMessageDocument, GetChatMessagesDocument, UpdateChatMessageDocument, UpdateChatMessageInput } from "@/graphql/generated/graphql"
 import { toChatMessage } from "@/lib/mappers/chat";
-import { useMutation, useQuery } from "@apollo/client/react"
+import { useApolloClient, useMutation, useQuery, useSubscription } from "@apollo/client/react"
 import { useMemo } from "react";
 
 export function useGetChatMessages(chatId:string) {
@@ -56,4 +56,21 @@ export function useDeleteChatMessage() {
         return result.data?.deleteChatMessage
     }
     return { deleteChatMessage,loading }
+}
+
+export function useChatMessageAdded(chatId:string) {
+    const client=useApolloClient();
+    useSubscription(ChatMessageAddedDocument,{
+        variables: {chatId},
+        onData: ({data})=>{
+            const message=data.data?.chatMessageAdded
+            if (!message) return;
+            client.cache.updateQuery(
+                {query:GetChatMessagesDocument,variables:{
+                    chatId
+                }},
+                (prev)=>prev?{chatMessages:[...prev.chatMessages,message]}:prev
+            )
+        }
+    })
 }

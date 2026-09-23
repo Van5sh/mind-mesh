@@ -76,15 +76,16 @@ export function useFolderTree(projectId: string, folderId: string) {
   };
 }
 
-export function useRenameFolde() {
+export function useRenameFolder() {
     const [mutate,{loading}]=useMutation(RenameFolderDocument);
     async function renameFolder(name:string,folderId:string) {
-        const rename=await mutate({
+        const result=await mutate({
             variables:{
                 name:name,
                 folderId,
             }
         })
+        return result.data?.renameFolder
     }
     return {
         renameFolder,loading
