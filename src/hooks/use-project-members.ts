@@ -1,7 +1,8 @@
 "use client"
 
-import { AddProjectMemberDocument, AddProjectMemberInput, GetProjectMembersDocument, RemoveProjectMemberDocument, UpdateProjectMemberRoleDocument, UpdateProjectMemberRoleInput } from "@/graphql/generated/graphql"
+import { AddProjectMemberDocument, AddProjectMemberInput, GetAllUsersDocument, GetProjectMembersDocument, RemoveProjectMemberDocument, UpdateProjectMemberRoleDocument, UpdateProjectMemberRoleInput } from "@/graphql/generated/graphql"
 import { toProjectMember } from "@/lib/mappers/project"
+import { toUser } from "@/lib/mappers/user"
 import { useMutation, useQuery } from "@apollo/client/react"
 import { useMemo } from "react"
 
@@ -25,11 +26,22 @@ export function useAddProjectMember(){
         const result=await mutate({
             variables:{
                 input
-            }
+            },
+            // A newly added member isn't already in the cached GetProjectMembers
+            // list, so cache normalization has nothing to splice it into -
+            // refetch that list explicitly.
+            refetchQueries:[{query:GetProjectMembersDocument, variables:{projectId:input.projectId}}],
         })
         return result.data?.addProjectMember
     }
     return {addProjectMember,loading}
+}
+
+/** Every user in the system - used to build the "invite a member" picker. */
+export function useAllUsers(){
+    const {data,loading,error}=useQuery(GetAllUsersDocument);
+    const users=useMemo(()=>(data?.allUsers ?? []).map((u)=>toUser(u)),[data]);
+    return {users,loading:loading && !data,error}
 }
 
 export function useUpdateMemberRole(){
@@ -55,8 +67,11 @@ export function useRemoveProjectMember(){
             variables:{
                 projectId:projectId,
                 userId:userId
-            }
-        })   
+            },
+            // removeProjectMember only returns a boolean, and the removed
+            // member needs to disappear from the list - refetch it.
+            refetchQueries:[{query:GetProjectMembersDocument, variables:{projectId}}],
+        })
         return result.data?.removeProjectMember
     }
     return {

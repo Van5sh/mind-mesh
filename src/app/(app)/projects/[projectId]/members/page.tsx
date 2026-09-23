@@ -26,8 +26,25 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { Project, ProjectMember, ProjectRole, User } from "@/lib/types";
+import type { ProjectRole } from "@/lib/types";
 import { toast } from "sonner";
+import { useAuth } from "@/lib/auth-context";
+import { useProject } from "@/hooks/use-project";
+import {
+  useAddProjectMember,
+  useAllUsers,
+  useGetMembers,
+  useRemoveProjectMember,
+  useUpdateMemberRole,
+} from "@/hooks/use-project-members";
+
+// The invite/role-change mutations take the input-side enum (MEMBER instead
+// of EDITOR - see ProjectMemberRoleToDB on the backend), while everything
+// displayed on this page uses the output-side ProjectRole (which has
+// EDITOR). Convert only at the point of calling a mutation.
+function toMemberRoleInput(role: ProjectRole): "OWNER" | "ADMIN" | "MEMBER" | "VIEWER" {
+  return role === "EDITOR" ? "MEMBER" : role;
+}
 
 const ROLE_LABEL: Record<ProjectRole, string> = {
   OWNER: "Owner",
@@ -38,24 +55,58 @@ const ROLE_LABEL: Record<ProjectRole, string> = {
 
 export default function MembersPage() {
   const { projectId } = useParams<{ projectId: string }>();
-  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
-  // The project layout 404s while there is no project, so this never renders.
-  const project = null as unknown as Project;
-  const members: ProjectMember[] = [];
-  const myRole = null as ProjectRole | null;
-  const noop = (..._args: unknown[]): void => {};
-  const addMember = noop;
-  const updateMemberRole = noop;
-  const removeMember = noop;
-  const mockUsers: User[] = [];
+  const {project}=useProject(projectId)
+  const {members}=useGetMembers(projectId);
+  const { user } = useAuth();
+  const myRole: ProjectRole | null =
+    !user ? null
+    : user.id === project?.ownerId ? "OWNER"
+    : (members.find((m) => m.user.id === user.id)?.role ?? null);
   const canManage = myRole === "OWNER" || myRole === "ADMIN";
+
+  const { addProjectMember, loading: inviting } = useAddProjectMember();
+  const { updateMemberRole: updateMemberRoleMutation } = useUpdateMemberRole();
+  const { removeMember: removeMemberMutation } = useRemoveProjectMember();
+  const { users: allUsers } = useAllUsers();
 
   const [inviteOpen, setInviteOpen] = useState(false);
   const [inviteUserId, setInviteUserId] = useState("");
   const [inviteRole, setInviteRole] = useState<ProjectRole>("VIEWER");
 
   const memberUserIds = new Set(members.map((m) => m.user.id));
-  const invitableUsers = mockUsers.filter((u) => !memberUserIds.has(u.id) && u.id !== project.ownerId);
+  const invitableUsers = allUsers.filter((u) => !memberUserIds.has(u.id) && u.id !== project?.ownerId);
+
+  async function handleUpdateRole(userId: string, role: ProjectRole) {
+    try {
+      await updateMemberRoleMutation({ projectId, userId, role: toMemberRoleInput(role) });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to update role");
+    }
+  }
+
+  async function handleRemove(userId: string, name: string) {
+    try {
+      await removeMemberMutation(projectId, userId);
+      toast("Member removed", { description: name });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to remove member");
+    }
+  }
+
+  async function handleInvite() {
+    try {
+      await addProjectMember({
+        projectId,
+        userId: inviteUserId,
+        role: toMemberRoleInput(inviteRole),
+      });
+      setInviteOpen(false);
+      setInviteUserId("");
+      toast.success("Member invited");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to invite member");
+    }
+  }
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
@@ -74,8 +125,8 @@ export default function MembersPage() {
 
       <div className="mt-6 flex flex-col divide-y divide-border rounded-xl border border-border bg-card">
         {members.map((member) => {
-          const isOwner = member.user.id === project.ownerId;
-          const fullName = `${member.user.firstName ?? ""} ${member.user.lastName ?? ""}`.trim() || member.user.username;
+          const isOwner = member.user.id === project?.ownerId;
+          const fullName = member.user.username;
           return (
             <div key={member.id} className="flex items-center justify-between gap-3 px-4 py-3">
               <div className="flex items-center gap-3 min-w-0">
@@ -97,7 +148,7 @@ export default function MembersPage() {
                 {canManage && !isOwner ? (
                   <Select
                     value={member.role}
-                    onValueChange={(v) => updateMemberRole(projectId, member.user.id, v as ProjectRole)}
+                    onValueChange={(v) => handleUpdateRole(member.user.id, v as ProjectRole)}
                   >
                     <SelectTrigger className="h-8 w-28">
                       <SelectValue />
@@ -121,10 +172,7 @@ export default function MembersPage() {
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem
                         variant="destructive"
-                        onClick={() => {
-                          removeMember(projectId, member.user.id);
-                          toast("Member removed", { description: fullName });
-                        }}
+                        onClick={() => handleRemove(member.user.id, fullName)}
                       >
                         Remove from project
                       </DropdownMenuItem>
@@ -175,15 +223,7 @@ export default function MembersPage() {
             <Button variant="ghost" onClick={() => setInviteOpen(false)}>
               Cancel
             </Button>
-            <Button
-              disabled={!inviteUserId}
-              onClick={() => {
-                addMember(projectId, inviteUserId, inviteRole);
-                setInviteOpen(false);
-                setInviteUserId("");
-                toast.success("Member invited");
-              }}
-            >
+            <Button disabled={!inviteUserId || inviting} onClick={handleInvite}>
               Invite
             </Button>
           </DialogFooter>
