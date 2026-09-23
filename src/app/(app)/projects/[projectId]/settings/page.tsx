@@ -23,23 +23,63 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { Project, ProjectMember, ProjectRole, ProjectVisibility } from "@/lib/types";
+import type { Project, ProjectRole, ProjectVisibility } from "@/lib/types";
 import { toast } from "sonner";
+import { useAuth } from "@/lib/auth-context";
+import { useProject, useUpdateProject, useTransferOwnerShip } from "@/hooks/use-project";
+import { useGetMembers } from "@/hooks/use-project-members";
+import { useArchiveProject, useRestoreProject, useDeleteProject } from "@/hooks/use-projects";
+import type { ProjectMemberRow } from "@/lib/mappers/project";
 
 export default function ProjectSettingsPage() {
   const { projectId } = useParams<{ projectId: string }>();
-  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
-  // The project layout 404s while there is no project, so this never renders.
-  const project = null as unknown as Project;
-  const members: ProjectMember[] = [];
-  const myRole = null as ProjectRole | null;
-  const noop = (..._args: unknown[]): void => {};
-  const updateProject = noop;
-  const archiveProject = noop;
-  const restoreProject = noop;
-  const deleteProject = noop;
-  const transferOwnership = noop;
+  const { project, loading } = useProject(projectId);
+  const { members } = useGetMembers(projectId);
+  const { user } = useAuth();
   const router = useRouter();
+
+  // The project layout 404s while there is no project at all, but this page
+  // can still render before the query resolves - wait for real data before
+  // mounting the form, instead of reading fields off a project that isn't
+  // loaded yet.
+  if (loading || !project) {
+    return <p className="px-4 py-8 text-sm text-muted-foreground">Loading…</p>;
+  }
+
+  const myRole: ProjectRole | null =
+    !user ? null
+    : user.id === project.ownerId ? "OWNER"
+    : (members.find((m) => m.user.id === user.id)?.role ?? null);
+
+  return (
+    <ProjectSettingsForm
+      projectId={projectId}
+      project={project}
+      members={members}
+      myRole={myRole}
+      router={router}
+    />
+  );
+}
+
+function ProjectSettingsForm({
+  projectId,
+  project,
+  members,
+  myRole,
+  router,
+}: {
+  projectId: string;
+  project: Project;
+  members: ProjectMemberRow[];
+  myRole: ProjectRole | null;
+  router: ReturnType<typeof useRouter>;
+}) {
+  const { updateProject, loading: saving } = useUpdateProject();
+  const { archiveProject, loading: archiving } = useArchiveProject();
+  const { restoreProject, loading: restoring } = useRestoreProject();
+  const { deleteProject, loading: deleting } = useDeleteProject();
+  const { transferOwnerShip, loading: transferring } = useTransferOwnerShip();
 
   const isOwner = myRole === "OWNER";
   const canEdit = myRole === "OWNER" || myRole === "ADMIN";
@@ -47,7 +87,6 @@ export default function ProjectSettingsPage() {
   const [name, setName] = useState(project.name);
   const [description, setDescription] = useState(project.description ?? "");
   const [visibility, setVisibility] = useState<ProjectVisibility>(project.visibility);
-  const [saving, setSaving] = useState(false);
 
   const [transferTo, setTransferTo] = useState("");
   const [transferOpen, setTransferOpen] = useState(false);
@@ -56,11 +95,16 @@ export default function ProjectSettingsPage() {
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
-    setSaving(true);
-    await new Promise((r) => setTimeout(r, 500));
-    updateProject(projectId, { name: name.trim(), description: description.trim(), visibility });
-    setSaving(false);
-    toast.success("Project updated");
+    try {
+      await updateProject(projectId, {
+        name: name.trim(),
+        description: description.trim(),
+        visibility,
+      });
+      toast.success("Project updated");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to update project");
+    }
   }
 
   return (
@@ -139,17 +183,23 @@ export default function ProjectSettingsPage() {
           <CardContent>
             <Button
               variant="outline"
-              onClick={() => {
-                if (project.archivedAt) {
-                  restoreProject(projectId);
-                  toast.success("Project restored");
-                } else {
-                  archiveProject(projectId);
-                  toast("Project archived");
-                  router.push("/projects");
+              disabled={archiving || restoring}
+              onClick={async () => {
+                try {
+                  if (project.archivedAt) {
+                    await restoreProject(projectId);
+                    toast.success("Project restored");
+                  } else {
+                    await archiveProject(projectId);
+                    toast("Project archived");
+                    router.push("/projects");
+                  }
+                } catch (err) {
+                  toast.error(err instanceof Error ? err.message : "Failed");
                 }
               }}
             >
+              {(archiving || restoring) && <Loader2 className="h-4 w-4 animate-spin" />}
               <ArchiveRestore className="h-4 w-4" />
               {project.archivedAt ? "Restore" : "Archive"}
             </Button>
@@ -186,7 +236,7 @@ export default function ProjectSettingsPage() {
             <SelectContent>
               {members.filter((m) => m.user.id !== project.ownerId).map((m) => (
                 <SelectItem key={m.id} value={m.user.id}>
-                  {m.user.firstName} {m.user.lastName}
+                  {m.user.username}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -196,14 +246,19 @@ export default function ProjectSettingsPage() {
               Cancel
             </Button>
             <Button
-              disabled={!transferTo}
-              onClick={() => {
-                transferOwnership(projectId, transferTo);
-                setTransferOpen(false);
-                setTransferTo("");
-                toast.success("Ownership transferred");
+              disabled={!transferTo || transferring}
+              onClick={async () => {
+                try {
+                  await transferOwnerShip({ projectId, ownerId: transferTo });
+                  setTransferOpen(false);
+                  setTransferTo("");
+                  toast.success("Ownership transferred");
+                } catch (err) {
+                  toast.error(err instanceof Error ? err.message : "Failed to transfer ownership");
+                }
               }}
             >
+              {transferring && <Loader2 className="h-4 w-4 animate-spin" />}
               Transfer
             </Button>
           </DialogFooter>
@@ -225,12 +280,17 @@ export default function ProjectSettingsPage() {
             </Button>
             <Button
               variant="destructive"
-              disabled={confirmName !== project.name}
-              onClick={() => {
-                deleteProject(projectId);
-                router.push("/projects");
+              disabled={confirmName !== project.name || deleting}
+              onClick={async () => {
+                try {
+                  await deleteProject(projectId);
+                  router.push("/projects");
+                } catch (err) {
+                  toast.error(err instanceof Error ? err.message : "Failed to delete project");
+                }
               }}
             >
+              {deleting && <Loader2 className="h-4 w-4 animate-spin" />}
               Delete project
             </Button>
           </DialogFooter>

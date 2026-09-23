@@ -1,12 +1,12 @@
 "use client";
 
-import { notFound } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 import type { Project } from "@/lib/types";
+import { useProject } from "@/hooks/use-project";
 
 export default function ProjectLayout({ children }: { children: React.ReactNode }) {
-  // TODO(graphql): replace with the real project query (needs the projectId
-  // from useParams). No project yet, so every project route 404s.
-  const project = undefined as Project | undefined;
+  const { projectId } = useParams<{ projectId: string }>();
+  const project =useProject(projectId)
 
   if (!project) {
     notFound();

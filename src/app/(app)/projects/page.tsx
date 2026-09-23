@@ -17,11 +17,12 @@ import {
 } from "@/components/ui/select";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { toast } from "sonner";
+import { useProjects } from "@/hooks/use-projects";
 
 type SortKey = "updated" | "name" | "created";
 
 export default function ProjectsPage() {
-  const myProjects: Project[] = [];
+  const {projects,loading,error}=useProjects();
   const archivedProjects: Project[] = [];
   const noop = (..._args: unknown[]): void => {};
   const restoreProject = noop;
@@ -29,7 +30,7 @@ export default function ProjectsPage() {
   const [sort, setSort] = useState<SortKey>("updated");
 
   const filtered = useMemo(() => {
-    const list = myProjects.filter((p) =>
+    const list = projects.filter((p) =>
       p.name.toLowerCase().includes(query.trim().toLowerCase()),
     );
     const sorted = [...list];
@@ -37,8 +38,8 @@ export default function ProjectsPage() {
     else if (sort === "created") sorted.sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt));
     else sorted.sort((a, b) => +new Date(b.updatedAt) - +new Date(a.updatedAt));
     return sorted;
-  }, [myProjects, query, sort]);
-
+  }, [projects, query, sort]);
+  if (loading) return <p>Loading...</p>
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
@@ -52,7 +53,7 @@ export default function ProjectsPage() {
       <Tabs defaultValue="active" className="mt-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <TabsList>
-            <TabsTrigger value="active">Active ({myProjects.length})</TabsTrigger>
+            <TabsTrigger value="active">Active ({projects.length})</TabsTrigger>
             <TabsTrigger value="archived">Archived ({archivedProjects.length})</TabsTrigger>
           </TabsList>
           <div className="flex gap-2">

@@ -7,6 +7,7 @@ import {
   DeleteProjectDocument,
   GetArchivedProjectsForUserDocument,
   GetDashboardDocument,
+  GetProjectDocument,
   GetProjectsDocument,
   GetProjectsForUserDocument,
   RestoreProjectDocument,
@@ -61,26 +62,28 @@ export function useProjectsForUser(){
 }
 
 export function useArchiveProject() {
-  const [mutate,{loading}]=useMutation(ArchiveProjectDocument,{
-    refetchQueries:[GetProjectsDocument, GetDashboardDocument],
-  });
+  const [mutate,{loading}]=useMutation(ArchiveProjectDocument);
   async function archiveProject(id:string){
-    const result=await mutate({variables:{
-      projectId:id
-    }});
+    const result=await mutate({
+      variables:{ projectId:id },
+      // Also refetch this single project (not just the lists) so a page
+      // like project settings, watching GetProject for this id, sees the
+      // new archivedAt without a manual reload - the mutation itself only
+      // returns a boolean, so Apollo's cache has nothing to merge in.
+      refetchQueries:[GetProjectsDocument, GetDashboardDocument, {query:GetProjectDocument, variables:{id}}],
+    });
     return result.data?.archiveProject
   }
   return {archiveProject,loading}
 }
 
 export function useRestoreProject() {
-  const [mutate,{loading}]=useMutation(RestoreProjectDocument,{
-    refetchQueries:[GetProjectsDocument, GetDashboardDocument],
-  });
+  const [mutate,{loading}]=useMutation(RestoreProjectDocument);
   async function restoreProject(id:string) {
-    const result=await mutate({variables:{
-      projectId:id
-    }});
+    const result=await mutate({
+      variables:{ projectId:id },
+      refetchQueries:[GetProjectsDocument, GetDashboardDocument, {query:GetProjectDocument, variables:{id}}],
+    });
     return result.data?.restoreProject
   }
   return {restoreProject,loading}
