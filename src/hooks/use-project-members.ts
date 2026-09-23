@@ -1,9 +1,9 @@
 "use client"
 
-import { AddProjectMemberDocument, AddProjectMemberInput, GetAllUsersDocument, GetProjectMembersDocument, RemoveProjectMemberDocument, UpdateProjectMemberRoleDocument, UpdateProjectMemberRoleInput } from "@/graphql/generated/graphql"
+import { AddProjectMemberDocument, AddProjectMemberInput, GetAllUsersDocument, GetProjectMembersDocument, RemoveProjectMemberDocument, SearchUsersDocument, UpdateProjectMemberRoleDocument, UpdateProjectMemberRoleInput } from "@/graphql/generated/graphql"
 import { toProjectMember } from "@/lib/mappers/project"
 import { toUser } from "@/lib/mappers/user"
-import { useMutation, useQuery } from "@apollo/client/react"
+import { skipToken, useMutation, useQuery } from "@apollo/client/react"
 import { useMemo } from "react"
 
 export function useGetMembers(id:string){
@@ -37,10 +37,24 @@ export function useAddProjectMember(){
     return {addProjectMember,loading}
 }
 
-/** Every user in the system - used to build the "invite a member" picker. */
+/**
+ * Every user in the system - loads the whole user table. Prefer
+ * useSearchUsers for a picker like "invite a member"; this stays for
+ * anywhere that genuinely needs the full list.
+ */
 export function useAllUsers(){
     const {data,loading,error}=useQuery(GetAllUsersDocument);
     const users=useMemo(()=>(data?.allUsers ?? []).map((u)=>toUser(u)),[data]);
+    return {users,loading:loading && !data,error}
+}
+
+// query empty = skip (don't search on nothing / before the user has typed).
+export function useSearchUsers(query:string,limit?:number){
+    const {data,loading,error}=useQuery(
+        SearchUsersDocument,
+        query.trim() ? {variables:{query:query.trim(),limit}} : skipToken,
+    );
+    const users=useMemo(()=>(data?.searchUsers ?? []).map((u)=>toUser(u)),[data]);
     return {users,loading:loading && !data,error}
 }
 

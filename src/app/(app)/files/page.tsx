@@ -47,6 +47,7 @@ import {
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { toast } from "sonner";
+import { useProjects } from "@/hooks/use-projects";
 
 type Section = "all" | "recent" | "starred" | "trash";
 type SortKey = "name" | "modified" | "size";
@@ -61,10 +62,20 @@ const SECTIONS: { key: Section; label: string; icon: React.ElementType }[] = [
 ];
 
 export default function FilesPage() {
-  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
   const driveFolders: DriveFolder[] = [];
   const driveFiles: DriveFile[] = [];
   const noop = (..._args: unknown[]): void => {};
+
+  // Project filter: which project's files/folders to show, "" = personal
+  // (no project). UI only for now - DriveFile/DriveFolder don't carry a
+  // projectId (this space was built project-independent), and the real
+  // rootFiles/rootFolders/favoriteFiles queries take projectId as a
+  // variable rather than something to filter an already-fetched list by.
+  // TODO(graphql): once the backend route for this is ready, replace
+  // driveFiles/driveFolders above with useRootFiles(projectFilter) /
+  // useRootFolders(projectFilter) (skip the query while projectFilter is "").
+  const { projects } = useProjects();
+  const [projectFilter, setProjectFilter] = useState("");
   const createDriveFolder = noop;
   const renameDriveFolder = noop;
   const trashDriveFolder = noop;
@@ -324,6 +335,19 @@ export default function FilesPage() {
                 <SelectItem value="name">Name</SelectItem>
                 <SelectItem value="modified">Last modified</SelectItem>
                 <SelectItem value="size">Size</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={projectFilter || "none"} onValueChange={(v) => setProjectFilter(v === "none" ? "" : v)}>
+              <SelectTrigger className="h-8 w-44 text-sm">
+                <SelectValue placeholder="Personal" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Personal (no project)</SelectItem>
+                {projects.map((p) => (
+                  <SelectItem key={p.id} value={p.id}>
+                    {p.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

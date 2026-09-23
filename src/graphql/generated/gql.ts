@@ -85,7 +85,7 @@ type Documents = {
     "query GetFolderTree($id: ID!) {\n  folder(id: $id) {\n    ...FolderFields\n    parentFolder {\n      ...FolderFields\n    }\n    childFolders {\n      ...FolderFields\n    }\n  }\n}": typeof types.GetFolderTreeDocument,
     "query GetFolder($id: ID!) {\n  folder(id: $id) {\n    ...FolderFields\n    parentFolder {\n      ...FolderFields\n    }\n  }\n}": typeof types.GetFolderDocument,
     "query GetFolders($projectId: ID) {\n  folders(projectId: $projectId) {\n    ...FolderFields\n  }\n}": typeof types.GetFoldersDocument,
-    "query GetRootFiles($projectId: ID!) {\n  rootFiles(projectId: $projectId) {\n    ...FileFields\n  }\n}": typeof types.GetRootFilesDocument,
+    "query GetRootFiles($projectId: ID) {\n  rootFiles(projectId: $projectId) {\n    ...FileFields\n  }\n}": typeof types.GetRootFilesDocument,
     "query GetRootFolders($projectId: ID!) {\n  rootFolders(projectId: $projectId) {\n    ...FolderFields\n  }\n}": typeof types.GetRootFoldersDocument,
     "query GetSharedWithMe($userId: ID!) {\n  sharedWithMe(userId: $userId) {\n    ...FileShareFields\n  }\n}": typeof types.GetSharedWithMeDocument,
     "query GetFlowchart($id: ID!) {\n  flowchart(id: $id) {\n    ...FlowchartFields\n  }\n}": typeof types.GetFlowchartDocument,
@@ -114,6 +114,7 @@ type Documents = {
     "query GetUser($id: ID!) {\n  user(id: $id) {\n    ...UserFields\n  }\n}": typeof types.GetUserDocument,
     "query GetUsers($ids: [ID!]!) {\n  users(ids: $ids) {\n    ...UserFields\n  }\n}": typeof types.GetUsersDocument,
     "query Me {\n  me {\n    ...UserFields\n  }\n}": typeof types.MeDocument,
+    "query SearchUsers($query: String!, $limit: Int) {\n  searchUsers(query: $query, limit: $limit) {\n    ...UserFields\n  }\n}": typeof types.SearchUsersDocument,
     "subscription ChatMessageAdded($chatId: ID!) {\n  chatMessageAdded(chatId: $chatId) {\n    ...ChatMessageFields\n  }\n}": typeof types.ChatMessageAddedDocument,
 };
 const documents: Documents = {
@@ -188,7 +189,7 @@ const documents: Documents = {
     "query GetFolderTree($id: ID!) {\n  folder(id: $id) {\n    ...FolderFields\n    parentFolder {\n      ...FolderFields\n    }\n    childFolders {\n      ...FolderFields\n    }\n  }\n}": types.GetFolderTreeDocument,
     "query GetFolder($id: ID!) {\n  folder(id: $id) {\n    ...FolderFields\n    parentFolder {\n      ...FolderFields\n    }\n  }\n}": types.GetFolderDocument,
     "query GetFolders($projectId: ID) {\n  folders(projectId: $projectId) {\n    ...FolderFields\n  }\n}": types.GetFoldersDocument,
-    "query GetRootFiles($projectId: ID!) {\n  rootFiles(projectId: $projectId) {\n    ...FileFields\n  }\n}": types.GetRootFilesDocument,
+    "query GetRootFiles($projectId: ID) {\n  rootFiles(projectId: $projectId) {\n    ...FileFields\n  }\n}": types.GetRootFilesDocument,
     "query GetRootFolders($projectId: ID!) {\n  rootFolders(projectId: $projectId) {\n    ...FolderFields\n  }\n}": types.GetRootFoldersDocument,
     "query GetSharedWithMe($userId: ID!) {\n  sharedWithMe(userId: $userId) {\n    ...FileShareFields\n  }\n}": types.GetSharedWithMeDocument,
     "query GetFlowchart($id: ID!) {\n  flowchart(id: $id) {\n    ...FlowchartFields\n  }\n}": types.GetFlowchartDocument,
@@ -217,6 +218,7 @@ const documents: Documents = {
     "query GetUser($id: ID!) {\n  user(id: $id) {\n    ...UserFields\n  }\n}": types.GetUserDocument,
     "query GetUsers($ids: [ID!]!) {\n  users(ids: $ids) {\n    ...UserFields\n  }\n}": types.GetUsersDocument,
     "query Me {\n  me {\n    ...UserFields\n  }\n}": types.MeDocument,
+    "query SearchUsers($query: String!, $limit: Int) {\n  searchUsers(query: $query, limit: $limit) {\n    ...UserFields\n  }\n}": types.SearchUsersDocument,
     "subscription ChatMessageAdded($chatId: ID!) {\n  chatMessageAdded(chatId: $chatId) {\n    ...ChatMessageFields\n  }\n}": types.ChatMessageAddedDocument,
 };
 
@@ -521,7 +523,7 @@ export function graphql(source: "query GetFolders($projectId: ID) {\n  folders(p
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "query GetRootFiles($projectId: ID!) {\n  rootFiles(projectId: $projectId) {\n    ...FileFields\n  }\n}"): (typeof documents)["query GetRootFiles($projectId: ID!) {\n  rootFiles(projectId: $projectId) {\n    ...FileFields\n  }\n}"];
+export function graphql(source: "query GetRootFiles($projectId: ID) {\n  rootFiles(projectId: $projectId) {\n    ...FileFields\n  }\n}"): (typeof documents)["query GetRootFiles($projectId: ID) {\n  rootFiles(projectId: $projectId) {\n    ...FileFields\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -634,6 +636,10 @@ export function graphql(source: "query GetUsers($ids: [ID!]!) {\n  users(ids: $i
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "query Me {\n  me {\n    ...UserFields\n  }\n}"): (typeof documents)["query Me {\n  me {\n    ...UserFields\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query SearchUsers($query: String!, $limit: Int) {\n  searchUsers(query: $query, limit: $limit) {\n    ...UserFields\n  }\n}"): (typeof documents)["query SearchUsers($query: String!, $limit: Int) {\n  searchUsers(query: $query, limit: $limit) {\n    ...UserFields\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

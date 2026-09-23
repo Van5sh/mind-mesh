@@ -1,4 +1,5 @@
-query GetRootFiles($projectId: ID!) {
+# projectId omitted - the current user's personal (project-less) files.
+query GetRootFiles($projectId: ID) {
   rootFiles(projectId: $projectId) {
     ...FileFields
   }

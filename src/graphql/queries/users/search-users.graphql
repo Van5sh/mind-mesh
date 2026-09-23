@@ -1,0 +1,7 @@
+# Prefix search on username, for pickers like "invite a member" - use this
+# instead of GetAllUsers, which loads the entire user table.
+query SearchUsers($query: String!, $limit: Int) {
+  searchUsers(query: $query, limit: $limit) {
+    ...UserFields
+  }
+}

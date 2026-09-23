@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { Crown, MoreHorizontal, UserPlus } from "lucide-react";
+import { Check, Crown, MoreHorizontal, Search, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -29,12 +30,13 @@ import {
 import type { ProjectRole } from "@/lib/types";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
+import { cn } from "@/lib/utils";
 import { useProject } from "@/hooks/use-project";
 import {
   useAddProjectMember,
-  useAllUsers,
   useGetMembers,
   useRemoveProjectMember,
+  useSearchUsers,
   useUpdateMemberRole,
 } from "@/hooks/use-project-members";
 
@@ -67,14 +69,31 @@ export default function MembersPage() {
   const { addProjectMember, loading: inviting } = useAddProjectMember();
   const { updateMemberRole: updateMemberRoleMutation } = useUpdateMemberRole();
   const { removeMember: removeMemberMutation } = useRemoveProjectMember();
-  const { users: allUsers } = useAllUsers();
 
   const [inviteOpen, setInviteOpen] = useState(false);
   const [inviteUserId, setInviteUserId] = useState("");
   const [inviteRole, setInviteRole] = useState<ProjectRole>("VIEWER");
+  const [inviteQuery, setInviteQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+
+  // Apollo re-runs the query on every variable change with no debounce of
+  // its own - wait for a pause in typing before actually searching, so
+  // there isn't a request per keystroke.
+  useEffect(() => {
+    const id = setTimeout(() => setDebouncedQuery(inviteQuery.trim()), 300);
+    return () => clearTimeout(id);
+  }, [inviteQuery]);
+
+  const { users: searchResults, loading: searching } = useSearchUsers(debouncedQuery, 10);
 
   const memberUserIds = new Set(members.map((m) => m.user.id));
-  const invitableUsers = allUsers.filter((u) => !memberUserIds.has(u.id) && u.id !== project?.ownerId);
+  const invitableUsers = searchResults.filter((u) => !memberUserIds.has(u.id) && u.id !== project?.ownerId);
+
+  function resetInvite() {
+    setInviteUserId("");
+    setInviteQuery("");
+    setDebouncedQuery("");
+  }
 
   async function handleUpdateRole(userId: string, role: ProjectRole) {
     try {
@@ -101,7 +120,7 @@ export default function MembersPage() {
         role: toMemberRoleInput(inviteRole),
       });
       setInviteOpen(false);
-      setInviteUserId("");
+      resetInvite();
       toast.success("Member invited");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to invite member");
@@ -185,29 +204,65 @@ export default function MembersPage() {
         })}
       </div>
 
-      <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
+      <Dialog
+        open={inviteOpen}
+        onOpenChange={(open) => {
+          setInviteOpen(open);
+          if (!open) resetInvite();
+        }}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Invite a member</DialogTitle>
           </DialogHeader>
           <div className="flex flex-col gap-4">
-            <Select value={inviteUserId} onValueChange={setInviteUserId}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a person" />
-              </SelectTrigger>
-              <SelectContent>
-                {invitableUsers.map((u) => (
-                  <SelectItem key={u.id} value={u.id}>
-                    {u.firstName} {u.lastName} · {u.email}
-                  </SelectItem>
-                ))}
-                {invitableUsers.length === 0 && (
-                  <SelectItem value="none" disabled>
-                    No more users to invite
-                  </SelectItem>
-                )}
-              </SelectContent>
-            </Select>
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={inviteQuery}
+                onChange={(e) => {
+                  setInviteQuery(e.target.value);
+                  setInviteUserId("");
+                }}
+                placeholder="Search by username…"
+                className="pl-8"
+                autoFocus
+              />
+            </div>
+            <div className="flex max-h-56 flex-col gap-0.5 overflow-y-auto rounded-lg border border-border p-1">
+              {invitableUsers.map((u) => {
+                const selected = inviteUserId === u.id;
+                const name = `${u.firstName ?? ""} ${u.lastName ?? ""}`.trim() || u.username;
+                return (
+                  <button
+                    key={u.id}
+                    type="button"
+                    onClick={() => setInviteUserId(u.id)}
+                    className={cn(
+                      "flex items-center justify-between gap-2 rounded-md px-3 py-2 text-left text-sm transition-colors",
+                      selected
+                        ? "bg-primary/10 text-foreground"
+                        : "text-muted-foreground hover:bg-accent hover:text-foreground",
+                    )}
+                  >
+                    <span className="truncate">
+                      <span className="font-medium text-foreground">{name}</span>{" "}
+                      <span className="text-muted-foreground">· {u.email}</span>
+                    </span>
+                    {selected && <Check className="h-4 w-4 shrink-0 text-primary" />}
+                  </button>
+                );
+              })}
+              {invitableUsers.length === 0 && (
+                <p className="px-3 py-2 text-sm text-muted-foreground">
+                  {!debouncedQuery
+                    ? "Type a username to search"
+                    : searching
+                      ? "Searching…"
+                      : "No matching users"}
+                </p>
+              )}
+            </div>
             <Select value={inviteRole} onValueChange={(v) => setInviteRole(v as ProjectRole)}>
               <SelectTrigger>
                 <SelectValue />

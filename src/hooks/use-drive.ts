@@ -23,14 +23,15 @@ import { toProjectFile } from "@/lib/mappers/file";
 import { useMutation, useQuery } from "@apollo/client/react"
 import { useMemo } from "react";
 
-export function useRootFiles(projectId:string) {
+// projectId omitted - the current user's personal (project-less) files.
+export function useRootFiles(projectId?:string) {
     const {data,loading,error}=useQuery(GetRootFilesDocument,{
         variables:{
             projectId
         }
     });
     const rootFiles=useMemo(
-        ()=>(data?.rootFiles ?? []).map((f)=>toProjectFile(f,{projectId,folderId:null})),
+        ()=>(data?.rootFiles ?? []).map((f)=>toProjectFile(f,{projectId:projectId ?? "",folderId:null})),
         [data,projectId],
     );
     return {
