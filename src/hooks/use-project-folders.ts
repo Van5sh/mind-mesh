@@ -1,18 +1,21 @@
 "use client"
 
-import { DeleteFolderDocument, GetFolderContentsDocument, GetFoldersDocument, GetFolderTreeDocument, GetTrashedFoldersDocument, MoveFolderDocument, RenameFolderDocument, RestoreFolderDocument, TrashFolderDocument } from "@/graphql/generated/graphql";
+import { CreateFolderDocument, DeleteFolderDocument, GetFolderContentsDocument, GetFoldersDocument, GetFolderTreeDocument, GetTrashedFoldersDocument, MoveFolderDocument, RenameFolderDocument, RestoreFolderDocument, TrashFolderDocument, type CreateFolderInput } from "@/graphql/generated/graphql";
 import { toFolder } from "@/lib/mappers/folder";
 import { toProjectFile } from "@/lib/mappers/file";
 import { useMutation, useQuery } from "@apollo/client/react"
 import { useMemo } from "react";
 
-export function useFolders(projectId: string) {
+// projectId omitted - the current user's personal (project-less) folders,
+// flat (every level, not just root - see FolderFields' parentFolder for
+// how a caller reconstructs the tree client-side).
+export function useFolders(projectId?: string) {
   const { data, loading, error } = useQuery(GetFoldersDocument, {
     variables: { projectId },
   });
 
   const folders = useMemo(
-    () => (data?.folders ?? []).map((f) => toFolder(f, { projectId })),
+    () => (data?.folders ?? []).map((f) => toFolder(f, { projectId: projectId ?? "" })),
     [data, projectId],
   );
 
@@ -57,9 +60,9 @@ export function useFolderTree(projectId: string, folderId: string) {
 
   const tree = useMemo(() => {
     if (!data?.folder) return undefined;
-    const { parentFolder, childFolders, ...folder } = data.folder;
+    const { parentFolder, childFolders } = data.folder;
     return {
-      folder: toFolder(folder, { projectId, parentFolderId: parentFolder?.id }),
+      folder: toFolder(data.folder, { projectId }),
       parentFolder: parentFolder
         ? toFolder(parentFolder, { projectId })
         : null,
@@ -76,6 +79,23 @@ export function useFolderTree(projectId: string, folderId: string) {
   };
 }
 
+export function useCreateFolder() {
+    const [mutate,{loading}]=useMutation(CreateFolderDocument);
+    async function createFolder(input:CreateFolderInput) {
+        const result=await mutate({
+            variables:{
+                input
+            },
+            // A newly created folder isn't in the cached GetFolders result
+            // (Apollo won't splice a brand-new entity into an existing list
+            // on its own) - refetch that list explicitly.
+            refetchQueries:[{query:GetFoldersDocument, variables:{projectId:input.projectId}}],
+        })
+        return result.data?.createFolder
+    }
+    return {createFolder,loading}
+}
+
 export function useRenameFolder() {
     const [mutate,{loading}]=useMutation(RenameFolderDocument);
     async function renameFolder(name:string,folderId:string) {
@@ -83,7 +103,8 @@ export function useRenameFolder() {
             variables:{
                 name:name,
                 folderId,
-            }
+            },
+            refetchQueries:["GetFolders"],
         })
         return result.data?.renameFolder
     }
@@ -99,7 +120,8 @@ export function useMoveFolder() {
             variables:{
                 folderId,
                 parentFolderId,
-            }
+            },
+            refetchQueries:["GetFolders"],
         })
         return result.data?.moveFolder
     }
@@ -108,28 +130,31 @@ export function useMoveFolder() {
     }
 }
 
+// Permanent - not reversible. See useTrashFolder for a reversible delete.
 export function useDeleteFolder() {
     const [mutate,{loading}]=useMutation(DeleteFolderDocument);
     async function deleteFolder(folderId:string) {
         const result=await mutate({
             variables:{
                 folderId
-            }
+            },
+            // Deletable from either the normal list or the trash view.
+            refetchQueries:["GetFolders","GetTrashedFolders"],
         })
         return result.data?.deleteFolder
     }
     return {deleteFolder,loading}
 }
 
-// Folders are always project-scoped, so unlike files' trash there's no
-// personal variant.
-export function useTrashedFolders(projectId: string) {
+// projectId omitted - the current user's trashed personal (project-less)
+// folders.
+export function useTrashedFolders(projectId?: string) {
   const { data, loading, error } = useQuery(GetTrashedFoldersDocument, {
     variables: { projectId },
   });
 
   const trashedFolders = useMemo(
-    () => (data?.trashedFolders ?? []).map((f) => toFolder(f, { projectId })),
+    () => (data?.trashedFolders ?? []).map((f) => toFolder(f, { projectId: projectId ?? "" })),
     [data, projectId],
   );
 
@@ -142,15 +167,15 @@ export function useTrashedFolders(projectId: string) {
 
 // Soft delete (reversible via useRestoreFolder) - deleteFolder above is
 // permanent. It does not cascade: contents of a trashed folder aren't
-// themselves trashed. The caller is responsible for refetching whichever
-// list (folders/trashedFolders) it's showing.
+// themselves trashed.
 export function useTrashFolder() {
     const [mutate,{loading}]=useMutation(TrashFolderDocument);
     async function trashFolder(folderId:string) {
         const result=await mutate({
             variables:{
                 folderId
-            }
+            },
+            refetchQueries:["GetFolders","GetTrashedFolders"],
         })
         return result.data?.trashFolder
     }
@@ -163,7 +188,8 @@ export function useRestoreFolder() {
         const result=await mutate({
             variables:{
                 folderId
-            }
+            },
+            refetchQueries:["GetFolders","GetTrashedFolders"],
         })
         return result.data?.restoreFolder
     }

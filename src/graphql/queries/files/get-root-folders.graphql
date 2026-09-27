@@ -1,4 +1,6 @@
-query GetRootFolders($projectId: ID!) {
+# projectId omitted - the current user's top-level personal (project-less)
+# folders.
+query GetRootFolders($projectId: ID) {
   rootFolders(projectId: $projectId) {
     ...FolderFields
   }

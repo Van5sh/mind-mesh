@@ -1,6 +1,6 @@
-# Folders are always project-scoped, so unlike files there's no personal
-# variant.
-query GetTrashedFolders($projectId: ID!) {
+# projectId omitted - the current user's trashed personal (project-less)
+# folders.
+query GetTrashedFolders($projectId: ID) {
   trashedFolders(projectId: $projectId) {
     ...FolderFields
   }

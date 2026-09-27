@@ -17,10 +17,10 @@ type Documents = {
     "fragment ActivityLogFields on ActivityLog {\n  id\n  action\n  entityType\n  entityId\n  user {\n    id\n    username\n    email\n  }\n  createdAt\n}": typeof types.ActivityLogFieldsFragmentDoc,
     "fragment ChatFields on Chat {\n  id\n  title\n  type\n  status\n  lastActivityAt\n  participants {\n    user {\n      id\n      username\n      email\n    }\n    joinedAt\n  }\n  createdAt\n  updatedAt\n}": typeof types.ChatFieldsFragmentDoc,
     "fragment ChatMessageFields on ChatMessage {\n  id\n  role\n  content\n  sender {\n    id\n    username\n    email\n  }\n  aiMetadata {\n    embeddingModel\n    embeddingSynced\n    indexedAt\n  }\n  mentionedUsers {\n    id\n    username\n    email\n  }\n  referencedFiles {\n    id\n    name\n  }\n  createdAt\n  updatedAt\n}": typeof types.ChatMessageFieldsFragmentDoc,
-    "fragment FileFields on File {\n  id\n  name\n  size\n  storage {\n    bucketName\n    objectKey\n    etag\n    versionId\n    checksum\n    mimeType\n    uploadedBy {\n      id\n      username\n      email\n    }\n    downloadUrl\n    createdAt\n    updatedAt\n  }\n  properties {\n    originalName\n    isIndexed\n    deletedAt\n    createdAt\n    updatedAt\n  }\n  aiMetadata {\n    extractedText\n    embeddingModel\n    embeddingSynced\n    indexedAt\n    processingStatus\n    summary\n    errorMessage\n    createdAt\n    updatedAt\n  }\n  createdAt\n  updatedAt\n}": typeof types.FileFieldsFragmentDoc,
+    "fragment FileFields on File {\n  id\n  name\n  size\n  folder {\n    id\n  }\n  storage {\n    bucketName\n    objectKey\n    etag\n    versionId\n    checksum\n    mimeType\n    uploadedBy {\n      id\n      username\n      email\n    }\n    downloadUrl\n    createdAt\n    updatedAt\n  }\n  properties {\n    originalName\n    isIndexed\n    deletedAt\n    createdAt\n    updatedAt\n  }\n  aiMetadata {\n    extractedText\n    embeddingModel\n    embeddingSynced\n    indexedAt\n    processingStatus\n    summary\n    errorMessage\n    createdAt\n    updatedAt\n  }\n  createdAt\n  updatedAt\n}": typeof types.FileFieldsFragmentDoc,
     "fragment FileShareFields on FileShare {\n  id\n  sharedBy {\n    id\n    username\n    email\n  }\n  sharedWith {\n    id\n    username\n    email\n  }\n  permission\n  createdAt\n}": typeof types.FileShareFieldsFragmentDoc,
     "fragment FlowchartFields on Flowchart {\n  id\n  name\n  data\n  generatedBy {\n    id\n    username\n    email\n  }\n  generatedByAI\n  status\n  sourceChat {\n    id\n  }\n  createdAt\n  updatedAt\n}": typeof types.FlowchartFieldsFragmentDoc,
-    "fragment FolderFields on Folder {\n  id\n  name\n  createdAt\n  updatedAt\n}": typeof types.FolderFieldsFragmentDoc,
+    "fragment FolderFields on Folder {\n  id\n  name\n  parentFolder {\n    id\n  }\n  createdAt\n  updatedAt\n}": typeof types.FolderFieldsFragmentDoc,
     "fragment ProjectFields on Project {\n  id\n  name\n  description\n  visibility\n  owner {\n    id\n    username\n    email\n  }\n  archivedAt\n  createdAt\n  updatedAt\n}": typeof types.ProjectFieldsFragmentDoc,
     "fragment ProjectMemberFields on ProjectMember {\n  id\n  role\n  user {\n    id\n    username\n    email\n  }\n  createdAt\n  updatedAt\n}": typeof types.ProjectMemberFieldsFragmentDoc,
     "fragment ReportFields on Report {\n  id\n  title\n  content\n  format\n  properties {\n    generatedBy {\n      id\n      username\n      email\n    }\n    generatedByAI\n    status\n    sourceChat {\n      id\n    }\n  }\n  createdAt\n  updatedAt\n}": typeof types.ReportFieldsFragmentDoc,
@@ -90,10 +90,10 @@ type Documents = {
     "query GetFolder($id: ID!) {\n  folder(id: $id) {\n    ...FolderFields\n    parentFolder {\n      ...FolderFields\n    }\n  }\n}": typeof types.GetFolderDocument,
     "query GetFolders($projectId: ID) {\n  folders(projectId: $projectId) {\n    ...FolderFields\n  }\n}": typeof types.GetFoldersDocument,
     "query GetRootFiles($projectId: ID) {\n  rootFiles(projectId: $projectId) {\n    ...FileFields\n  }\n}": typeof types.GetRootFilesDocument,
-    "query GetRootFolders($projectId: ID!) {\n  rootFolders(projectId: $projectId) {\n    ...FolderFields\n  }\n}": typeof types.GetRootFoldersDocument,
+    "query GetRootFolders($projectId: ID) {\n  rootFolders(projectId: $projectId) {\n    ...FolderFields\n  }\n}": typeof types.GetRootFoldersDocument,
     "query GetSharedWithMe($userId: ID!) {\n  sharedWithMe(userId: $userId) {\n    ...FileShareFields\n  }\n}": typeof types.GetSharedWithMeDocument,
     "query GetTrashedFiles($projectId: ID) {\n  trashedFiles(projectId: $projectId) {\n    ...FileFields\n  }\n}": typeof types.GetTrashedFilesDocument,
-    "query GetTrashedFolders($projectId: ID!) {\n  trashedFolders(projectId: $projectId) {\n    ...FolderFields\n  }\n}": typeof types.GetTrashedFoldersDocument,
+    "query GetTrashedFolders($projectId: ID) {\n  trashedFolders(projectId: $projectId) {\n    ...FolderFields\n  }\n}": typeof types.GetTrashedFoldersDocument,
     "query GetFlowchart($id: ID!) {\n  flowchart(id: $id) {\n    ...FlowchartFields\n  }\n}": typeof types.GetFlowchartDocument,
     "query GetFlowcharts($projectId: ID!) {\n  flowcharts(projectId: $projectId) {\n    ...FlowchartFields\n  }\n}": typeof types.GetFlowchartsDocument,
     "query GetArchivedProjectsByOwner($ownerId: ID!) {\n  archivedProjectsByOwner(ownerId: $ownerId) {\n    ...ProjectFields\n  }\n}": typeof types.GetArchivedProjectsByOwnerDocument,
@@ -127,10 +127,10 @@ const documents: Documents = {
     "fragment ActivityLogFields on ActivityLog {\n  id\n  action\n  entityType\n  entityId\n  user {\n    id\n    username\n    email\n  }\n  createdAt\n}": types.ActivityLogFieldsFragmentDoc,
     "fragment ChatFields on Chat {\n  id\n  title\n  type\n  status\n  lastActivityAt\n  participants {\n    user {\n      id\n      username\n      email\n    }\n    joinedAt\n  }\n  createdAt\n  updatedAt\n}": types.ChatFieldsFragmentDoc,
     "fragment ChatMessageFields on ChatMessage {\n  id\n  role\n  content\n  sender {\n    id\n    username\n    email\n  }\n  aiMetadata {\n    embeddingModel\n    embeddingSynced\n    indexedAt\n  }\n  mentionedUsers {\n    id\n    username\n    email\n  }\n  referencedFiles {\n    id\n    name\n  }\n  createdAt\n  updatedAt\n}": types.ChatMessageFieldsFragmentDoc,
-    "fragment FileFields on File {\n  id\n  name\n  size\n  storage {\n    bucketName\n    objectKey\n    etag\n    versionId\n    checksum\n    mimeType\n    uploadedBy {\n      id\n      username\n      email\n    }\n    downloadUrl\n    createdAt\n    updatedAt\n  }\n  properties {\n    originalName\n    isIndexed\n    deletedAt\n    createdAt\n    updatedAt\n  }\n  aiMetadata {\n    extractedText\n    embeddingModel\n    embeddingSynced\n    indexedAt\n    processingStatus\n    summary\n    errorMessage\n    createdAt\n    updatedAt\n  }\n  createdAt\n  updatedAt\n}": types.FileFieldsFragmentDoc,
+    "fragment FileFields on File {\n  id\n  name\n  size\n  folder {\n    id\n  }\n  storage {\n    bucketName\n    objectKey\n    etag\n    versionId\n    checksum\n    mimeType\n    uploadedBy {\n      id\n      username\n      email\n    }\n    downloadUrl\n    createdAt\n    updatedAt\n  }\n  properties {\n    originalName\n    isIndexed\n    deletedAt\n    createdAt\n    updatedAt\n  }\n  aiMetadata {\n    extractedText\n    embeddingModel\n    embeddingSynced\n    indexedAt\n    processingStatus\n    summary\n    errorMessage\n    createdAt\n    updatedAt\n  }\n  createdAt\n  updatedAt\n}": types.FileFieldsFragmentDoc,
     "fragment FileShareFields on FileShare {\n  id\n  sharedBy {\n    id\n    username\n    email\n  }\n  sharedWith {\n    id\n    username\n    email\n  }\n  permission\n  createdAt\n}": types.FileShareFieldsFragmentDoc,
     "fragment FlowchartFields on Flowchart {\n  id\n  name\n  data\n  generatedBy {\n    id\n    username\n    email\n  }\n  generatedByAI\n  status\n  sourceChat {\n    id\n  }\n  createdAt\n  updatedAt\n}": types.FlowchartFieldsFragmentDoc,
-    "fragment FolderFields on Folder {\n  id\n  name\n  createdAt\n  updatedAt\n}": types.FolderFieldsFragmentDoc,
+    "fragment FolderFields on Folder {\n  id\n  name\n  parentFolder {\n    id\n  }\n  createdAt\n  updatedAt\n}": types.FolderFieldsFragmentDoc,
     "fragment ProjectFields on Project {\n  id\n  name\n  description\n  visibility\n  owner {\n    id\n    username\n    email\n  }\n  archivedAt\n  createdAt\n  updatedAt\n}": types.ProjectFieldsFragmentDoc,
     "fragment ProjectMemberFields on ProjectMember {\n  id\n  role\n  user {\n    id\n    username\n    email\n  }\n  createdAt\n  updatedAt\n}": types.ProjectMemberFieldsFragmentDoc,
     "fragment ReportFields on Report {\n  id\n  title\n  content\n  format\n  properties {\n    generatedBy {\n      id\n      username\n      email\n    }\n    generatedByAI\n    status\n    sourceChat {\n      id\n    }\n  }\n  createdAt\n  updatedAt\n}": types.ReportFieldsFragmentDoc,
@@ -200,10 +200,10 @@ const documents: Documents = {
     "query GetFolder($id: ID!) {\n  folder(id: $id) {\n    ...FolderFields\n    parentFolder {\n      ...FolderFields\n    }\n  }\n}": types.GetFolderDocument,
     "query GetFolders($projectId: ID) {\n  folders(projectId: $projectId) {\n    ...FolderFields\n  }\n}": types.GetFoldersDocument,
     "query GetRootFiles($projectId: ID) {\n  rootFiles(projectId: $projectId) {\n    ...FileFields\n  }\n}": types.GetRootFilesDocument,
-    "query GetRootFolders($projectId: ID!) {\n  rootFolders(projectId: $projectId) {\n    ...FolderFields\n  }\n}": types.GetRootFoldersDocument,
+    "query GetRootFolders($projectId: ID) {\n  rootFolders(projectId: $projectId) {\n    ...FolderFields\n  }\n}": types.GetRootFoldersDocument,
     "query GetSharedWithMe($userId: ID!) {\n  sharedWithMe(userId: $userId) {\n    ...FileShareFields\n  }\n}": types.GetSharedWithMeDocument,
     "query GetTrashedFiles($projectId: ID) {\n  trashedFiles(projectId: $projectId) {\n    ...FileFields\n  }\n}": types.GetTrashedFilesDocument,
-    "query GetTrashedFolders($projectId: ID!) {\n  trashedFolders(projectId: $projectId) {\n    ...FolderFields\n  }\n}": types.GetTrashedFoldersDocument,
+    "query GetTrashedFolders($projectId: ID) {\n  trashedFolders(projectId: $projectId) {\n    ...FolderFields\n  }\n}": types.GetTrashedFoldersDocument,
     "query GetFlowchart($id: ID!) {\n  flowchart(id: $id) {\n    ...FlowchartFields\n  }\n}": types.GetFlowchartDocument,
     "query GetFlowcharts($projectId: ID!) {\n  flowcharts(projectId: $projectId) {\n    ...FlowchartFields\n  }\n}": types.GetFlowchartsDocument,
     "query GetArchivedProjectsByOwner($ownerId: ID!) {\n  archivedProjectsByOwner(ownerId: $ownerId) {\n    ...ProjectFields\n  }\n}": types.GetArchivedProjectsByOwnerDocument,
@@ -263,7 +263,7 @@ export function graphql(source: "fragment ChatMessageFields on ChatMessage {\n  
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "fragment FileFields on File {\n  id\n  name\n  size\n  storage {\n    bucketName\n    objectKey\n    etag\n    versionId\n    checksum\n    mimeType\n    uploadedBy {\n      id\n      username\n      email\n    }\n    downloadUrl\n    createdAt\n    updatedAt\n  }\n  properties {\n    originalName\n    isIndexed\n    deletedAt\n    createdAt\n    updatedAt\n  }\n  aiMetadata {\n    extractedText\n    embeddingModel\n    embeddingSynced\n    indexedAt\n    processingStatus\n    summary\n    errorMessage\n    createdAt\n    updatedAt\n  }\n  createdAt\n  updatedAt\n}"): (typeof documents)["fragment FileFields on File {\n  id\n  name\n  size\n  storage {\n    bucketName\n    objectKey\n    etag\n    versionId\n    checksum\n    mimeType\n    uploadedBy {\n      id\n      username\n      email\n    }\n    downloadUrl\n    createdAt\n    updatedAt\n  }\n  properties {\n    originalName\n    isIndexed\n    deletedAt\n    createdAt\n    updatedAt\n  }\n  aiMetadata {\n    extractedText\n    embeddingModel\n    embeddingSynced\n    indexedAt\n    processingStatus\n    summary\n    errorMessage\n    createdAt\n    updatedAt\n  }\n  createdAt\n  updatedAt\n}"];
+export function graphql(source: "fragment FileFields on File {\n  id\n  name\n  size\n  folder {\n    id\n  }\n  storage {\n    bucketName\n    objectKey\n    etag\n    versionId\n    checksum\n    mimeType\n    uploadedBy {\n      id\n      username\n      email\n    }\n    downloadUrl\n    createdAt\n    updatedAt\n  }\n  properties {\n    originalName\n    isIndexed\n    deletedAt\n    createdAt\n    updatedAt\n  }\n  aiMetadata {\n    extractedText\n    embeddingModel\n    embeddingSynced\n    indexedAt\n    processingStatus\n    summary\n    errorMessage\n    createdAt\n    updatedAt\n  }\n  createdAt\n  updatedAt\n}"): (typeof documents)["fragment FileFields on File {\n  id\n  name\n  size\n  folder {\n    id\n  }\n  storage {\n    bucketName\n    objectKey\n    etag\n    versionId\n    checksum\n    mimeType\n    uploadedBy {\n      id\n      username\n      email\n    }\n    downloadUrl\n    createdAt\n    updatedAt\n  }\n  properties {\n    originalName\n    isIndexed\n    deletedAt\n    createdAt\n    updatedAt\n  }\n  aiMetadata {\n    extractedText\n    embeddingModel\n    embeddingSynced\n    indexedAt\n    processingStatus\n    summary\n    errorMessage\n    createdAt\n    updatedAt\n  }\n  createdAt\n  updatedAt\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -275,7 +275,7 @@ export function graphql(source: "fragment FlowchartFields on Flowchart {\n  id\n
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "fragment FolderFields on Folder {\n  id\n  name\n  createdAt\n  updatedAt\n}"): (typeof documents)["fragment FolderFields on Folder {\n  id\n  name\n  createdAt\n  updatedAt\n}"];
+export function graphql(source: "fragment FolderFields on Folder {\n  id\n  name\n  parentFolder {\n    id\n  }\n  createdAt\n  updatedAt\n}"): (typeof documents)["fragment FolderFields on Folder {\n  id\n  name\n  parentFolder {\n    id\n  }\n  createdAt\n  updatedAt\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -555,7 +555,7 @@ export function graphql(source: "query GetRootFiles($projectId: ID) {\n  rootFil
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "query GetRootFolders($projectId: ID!) {\n  rootFolders(projectId: $projectId) {\n    ...FolderFields\n  }\n}"): (typeof documents)["query GetRootFolders($projectId: ID!) {\n  rootFolders(projectId: $projectId) {\n    ...FolderFields\n  }\n}"];
+export function graphql(source: "query GetRootFolders($projectId: ID) {\n  rootFolders(projectId: $projectId) {\n    ...FolderFields\n  }\n}"): (typeof documents)["query GetRootFolders($projectId: ID) {\n  rootFolders(projectId: $projectId) {\n    ...FolderFields\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -567,7 +567,7 @@ export function graphql(source: "query GetTrashedFiles($projectId: ID) {\n  tras
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "query GetTrashedFolders($projectId: ID!) {\n  trashedFolders(projectId: $projectId) {\n    ...FolderFields\n  }\n}"): (typeof documents)["query GetTrashedFolders($projectId: ID!) {\n  trashedFolders(projectId: $projectId) {\n    ...FolderFields\n  }\n}"];
+export function graphql(source: "query GetTrashedFolders($projectId: ID) {\n  trashedFolders(projectId: $projectId) {\n    ...FolderFields\n  }\n}"): (typeof documents)["query GetTrashedFolders($projectId: ID) {\n  trashedFolders(projectId: $projectId) {\n    ...FolderFields\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

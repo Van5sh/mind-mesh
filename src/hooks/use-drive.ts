@@ -5,6 +5,7 @@ import {
     DeleteFileDocument,
     DeleteFileShareDocument,
     GetFavoriteFilesDocument,
+    GetFilesDocument,
     GetRootFilesDocument,
     GetRootFoldersDocument,
     GetSharedWithMeDocument,
@@ -62,14 +63,16 @@ export function useFavoriteFiles(userId:string,projectId?:string) {
     }
 }
 
-export function useRootFolders(projectId:string) {
+// projectId omitted - the current user's top-level personal (project-less)
+// folders.
+export function useRootFolders(projectId?:string) {
     const {data,loading,error}=useQuery(GetRootFoldersDocument,{
         variables:{
             projectId
         }
     });
     const rootFolders=useMemo(
-        ()=>(data?.rootFolders ?? []).map((f)=>toFolder(f,{projectId,parentFolderId:null})),
+        ()=>(data?.rootFolders ?? []).map((f)=>toFolder(f,{projectId:projectId ?? "",parentFolderId:null})),
         [data,projectId],
     );
     return {
@@ -99,7 +102,12 @@ export function useCreateFile() {
         const result=await mutate({
             variables:{
                 input
-            }
+            },
+            // A newly created file isn't in the cached GetFiles result
+            // (Apollo won't splice a brand-new entity into an existing list
+            // on its own) - refetch the flat listing (folderId omitted,
+            // matching useFiles(projectId)) explicitly.
+            refetchQueries:[{query:GetFilesDocument, variables:{projectId:input.projectId}}],
         })
         return result.data?.createFile
     }
@@ -113,7 +121,8 @@ export function useRenameFile() {
             variables:{
                 fileId,
                 name
-            }
+            },
+            refetchQueries:["GetFiles"],
         })
         return result.data?.renameFile
     }
@@ -126,20 +135,24 @@ export function useMoveFile() {
         const result=await mutate({
             variables:{
                 input
-            }
+            },
+            refetchQueries:["GetFiles"],
         })
         return result.data?.moveFile
     }
     return {moveFile,loading}
 }
 
+// Permanent - not reversible. See useTrashFile for a reversible delete.
 export function useDeleteFile() {
     const [mutate,{loading}]=useMutation(DeleteFileDocument);
     async function deleteFile(fileId:string) {
         const result=await mutate({
             variables:{
                 fileId
-            }
+            },
+            // Deletable from either the normal list or the trash view.
+            refetchQueries:["GetFiles","GetTrashedFiles"],
         })
         return result.data?.deleteFile
     }
@@ -166,17 +179,15 @@ export function useTrashedFiles(projectId?:string) {
 }
 
 // Soft delete (reversible via useRestoreFile) - deleteFile above is
-// permanent. The returned file's properties.deletedAt reflects the new
-// state, but list queries (files/rootFiles/trashedFiles) don't refetch
-// themselves - the caller is responsible for refetching whichever list it's
-// showing.
+// permanent.
 export function useTrashFile() {
     const [mutate,{loading}]=useMutation(TrashFileDocument);
     async function trashFile(fileId:string) {
         const result=await mutate({
             variables:{
                 fileId
-            }
+            },
+            refetchQueries:["GetFiles","GetTrashedFiles"],
         })
         return result.data?.trashFile
     }
@@ -189,7 +200,8 @@ export function useRestoreFile() {
         const result=await mutate({
             variables:{
                 fileId
-            }
+            },
+            refetchQueries:["GetFiles","GetTrashedFiles"],
         })
         return result.data?.restoreFile
     }

@@ -1,6 +1,9 @@
 fragment FolderFields on Folder {
   id
   name
+  parentFolder {
+    id
+  }
   createdAt
   updatedAt
 }

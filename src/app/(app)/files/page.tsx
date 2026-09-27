@@ -47,8 +47,27 @@ import {
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { toast } from "sonner";
+import { useAuth } from "@/lib/auth-context";
 import { useProjects } from "@/hooks/use-projects";
-import { useRootFiles } from "@/hooks/use-drive";
+import {
+  useCreateFile,
+  useDeleteFile,
+  useRenameFile,
+  useRestoreFile,
+  useSetFileFavorite,
+  useTrashedFiles,
+  useTrashFile,
+} from "@/hooks/use-drive";
+import { useFiles } from "@/hooks/use-project-files";
+import {
+  useCreateFolder,
+  useDeleteFolder,
+  useFolders,
+  useRenameFolder,
+  useRestoreFolder,
+  useTrashedFolders,
+  useTrashFolder,
+} from "@/hooks/use-project-folders";
 
 type Section = "all" | "recent" | "starred" | "trash";
 type SortKey = "name" | "modified" | "size";
@@ -63,24 +82,96 @@ const SECTIONS: { key: Section; label: string; icon: React.ElementType }[] = [
 ];
 
 export default function FilesPage() {
-  const driveFolders: DriveFolder[] = [];
-  const {folders}=useRootFiles();
-  const driveFiles: DriveFile[] = [];
-  const noop = (..._args: unknown[]): void => {};
+  const { user } = useAuth();
   const { projects } = useProjects();
   const [projectFilter, setProjectFilter] = useState("");
-  const createDriveFolder = noop;
-  const renameDriveFolder = noop;
-  const trashDriveFolder = noop;
-  const restoreDriveFolder = noop;
-  const deleteDriveFolderForever = noop;
-  const uploadDriveFile = noop;
-  const renameDriveFile = noop;
-  const toggleStarDriveFile = noop;
-  const trashDriveFile = noop;
-  const restoreDriveFile = noop;
-  const deleteDriveFileForever = noop;
-  const emptyDriveTrash = noop;
+
+  // Flat - every folder/file regardless of nesting, not just root-level -
+  // so browsing into a folder (and creating things inside it) has data to
+  // show. Filtered down to one level at a time further below via
+  // parentId/folderId, using the real values the fragments now carry.
+  // Both already exclude trashed items server-side.
+  const { folders: allFolders } = useFolders(projectFilter || undefined);
+  const { files: allFiles } = useFiles(projectFilter || undefined);
+  const { trashedFolders } = useTrashedFolders(projectFilter || undefined);
+  const { trashedFiles } = useTrashedFiles(projectFilter || undefined);
+
+  // starred isn't backed by a real "list my favorites" query yet -
+  // favoriteFiles is an unimplemented backend query (see
+  // FILES_PAGE_INTEGRATION_GUIDE.md §2a). useSetFileFavorite itself does
+  // work, so toggling is real; which files show as starred is tracked
+  // locally (session-only, not synced across devices) rather than faked.
+  const [starredIds, setStarredIds] = useState<Set<string>>(new Set());
+
+  const driveFolders: DriveFolder[] = useMemo(
+    () =>
+      allFolders.map((f) => ({
+        id: f.id,
+        parentId: f.parentFolderId,
+        name: f.name,
+        deletedAt: null,
+        createdAt: f.createdAt,
+        updatedAt: f.updatedAt,
+      })),
+    [allFolders],
+  );
+  const driveFiles: DriveFile[] = useMemo(
+    () =>
+      allFiles.map((f) => ({
+        id: f.id,
+        folderId: f.folderId,
+        name: f.name,
+        size: f.size,
+        mimeType: f.storage?.mimeType ?? "application/octet-stream",
+        downloadUrl: f.storage?.downloadUrl ?? "",
+        starred: starredIds.has(f.id),
+        deletedAt: null,
+        createdAt: f.createdAt,
+        updatedAt: f.updatedAt,
+      })),
+    [allFiles, starredIds],
+  );
+
+  const trashedDriveFolders: DriveFolder[] = useMemo(
+    () =>
+      trashedFolders.map((f) => ({
+        id: f.id,
+        parentId: f.parentFolderId,
+        name: f.name,
+        deletedAt: f.updatedAt,
+        createdAt: f.createdAt,
+        updatedAt: f.updatedAt,
+      })),
+    [trashedFolders],
+  );
+  const trashedDriveFiles: DriveFile[] = useMemo(
+    () =>
+      trashedFiles.map((f) => ({
+        id: f.id,
+        folderId: f.folderId,
+        name: f.name,
+        size: f.size,
+        mimeType: f.storage?.mimeType ?? "application/octet-stream",
+        downloadUrl: f.storage?.downloadUrl ?? "",
+        starred: starredIds.has(f.id),
+        deletedAt: f.deletedAt ?? f.updatedAt,
+        createdAt: f.createdAt,
+        updatedAt: f.updatedAt,
+      })),
+    [trashedFiles, starredIds],
+  );
+
+  const { createFolder } = useCreateFolder();
+  const { renameFolder } = useRenameFolder();
+  const { trashFolder } = useTrashFolder();
+  const { restoreFolder } = useRestoreFolder();
+  const { deleteFolder } = useDeleteFolder();
+  const { createFile } = useCreateFile();
+  const { renameFile } = useRenameFile();
+  const { trashFile } = useTrashFile();
+  const { restoreFile } = useRestoreFile();
+  const { deleteFile } = useDeleteFile();
+  const { setFileFavorite } = useSetFileFavorite();
 
   const [section, setSection] = useState<Section>("all");
   const [folderId, setFolderId] = useState<string | null>(null);
@@ -96,21 +187,18 @@ export default function FilesPage() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const activeFolders = driveFolders.filter((f) => !f.deletedAt);
-  const activeFiles = driveFiles.filter((f) => !f.deletedAt);
-
   const trail = useMemo(() => {
     const path: { id: string | null; name: string }[] = [{ id: null, name: "All Files" }];
     const stack: { id: string; name: string }[] = [];
     let cursor = folderId;
     while (cursor) {
-      const folder = activeFolders.find((f) => f.id === cursor);
+      const folder = driveFolders.find((f) => f.id === cursor);
       if (!folder) break;
       stack.unshift({ id: folder.id, name: folder.name });
       cursor = folder.parentId ?? null;
     }
     return [...path, ...stack];
-  }, [folderId, activeFolders]);
+  }, [folderId, driveFolders]);
 
   function sortItems<T extends { name: string; updatedAt: string }>(items: T[]) {
     const sorted = [...items];
@@ -124,16 +212,16 @@ export default function FilesPage() {
   let isTrash = false;
 
   if (section === "all") {
-    visibleFolders = activeFolders.filter((f) => (f.parentId ?? null) === folderId);
-    visibleFiles = activeFiles.filter((f) => (f.folderId ?? null) === folderId);
+    visibleFolders = driveFolders.filter((f) => (f.parentId ?? null) === folderId);
+    visibleFiles = driveFiles.filter((f) => (f.folderId ?? null) === folderId);
   } else if (section === "recent") {
-    visibleFiles = [...activeFiles].sort((a, b) => +new Date(b.updatedAt) - +new Date(a.updatedAt)).slice(0, 30);
+    visibleFiles = [...driveFiles].sort((a, b) => +new Date(b.updatedAt) - +new Date(a.updatedAt)).slice(0, 30);
   } else if (section === "starred") {
-    visibleFiles = activeFiles.filter((f) => f.starred);
+    visibleFiles = driveFiles.filter((f) => f.starred);
   } else if (section === "trash") {
     isTrash = true;
-    visibleFolders = driveFolders.filter((f) => f.deletedAt);
-    visibleFiles = driveFiles.filter((f) => f.deletedAt);
+    visibleFolders = trashedDriveFolders;
+    visibleFiles = trashedDriveFiles;
   }
 
   if (query.trim()) {
@@ -151,7 +239,7 @@ export default function FilesPage() {
         ? visibleFiles
         : sortItems(visibleFiles);
 
-  const usedBytes = activeFiles.reduce((sum, f) => sum + f.size, 0);
+  const usedBytes = driveFiles.reduce((sum, f) => sum + f.size, 0);
   const usedPct = Math.min(100, (usedBytes / STORAGE_QUOTA_BYTES) * 100);
 
   function openSection(next: Section) {
@@ -160,14 +248,129 @@ export default function FilesPage() {
     setQuery("");
   }
 
-  function handleFilesSelected(fileList: FileList | null) {
-    if (!fileList) return;
-    for (const f of Array.from(fileList)) {
-      const mimeType = f.type || "application/octet-stream";
-      uploadDriveFile({ name: f.name, size: f.size, mimeType }, folderId);
+  async function handleCreateFolder() {
+    try {
+      await createFolder({
+        name: newFolderName.trim(),
+        projectId: projectFilter || undefined,
+        parentFolderId: section === "all" ? folderId : undefined,
+      });
+      setNewFolderName("");
+      setNewFolderOpen(false);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to create folder");
     }
-    if (fileList.length > 0) {
-      toast.success(fileList.length === 1 ? "File uploaded" : `${fileList.length} files uploaded`);
+  }
+
+  async function handleRename() {
+    if (!renaming) return;
+    const name = renaming.name.trim();
+    try {
+      if (renaming.type === "file") await renameFile(renaming.id, name);
+      else await renameFolder(name, renaming.id);
+      setRenaming(null);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : `Failed to rename ${renaming.type}`);
+    }
+  }
+
+  async function handleTrashFolder(folder: DriveFolder) {
+    try {
+      await trashFolder(folder.id);
+      toast("Moved to Trash", { description: folder.name });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to move folder to trash");
+    }
+  }
+
+  async function handleRestoreFolder(folderId: string) {
+    try {
+      await restoreFolder(folderId);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to restore folder");
+    }
+  }
+
+  async function handleDeleteFolderForever(folderId: string) {
+    try {
+      await deleteFolder(folderId);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to delete folder");
+    }
+  }
+
+  async function handleTrashFile(file: DriveFile) {
+    try {
+      await trashFile(file.id);
+      toast("Moved to Trash", { description: file.name });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to move file to trash");
+    }
+  }
+
+  async function handleRestoreFile(fileId: string) {
+    try {
+      await restoreFile(fileId);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to restore file");
+    }
+  }
+
+  async function handleDeleteFileForever(fileId: string) {
+    try {
+      await deleteFile(fileId);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to delete file");
+    }
+  }
+
+  async function handleToggleStar(file: DriveFile) {
+    if (!user) return;
+    const nextStarred = !file.starred;
+    try {
+      await setFileFavorite(file.id, user.id, nextStarred);
+      setStarredIds((prev) => {
+        const next = new Set(prev);
+        if (nextStarred) next.add(file.id);
+        else next.delete(file.id);
+        return next;
+      });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to update favorite");
+    }
+  }
+
+  async function handleEmptyTrash() {
+    try {
+      await Promise.all([
+        ...trashedFolders.map((f) => deleteFolder(f.id)),
+        ...trashedFiles.map((f) => deleteFile(f.id)),
+      ]);
+      toast("Trash emptied");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to empty trash");
+    }
+  }
+
+  async function handleFilesSelected(fileList: FileList | null) {
+    if (!fileList) return;
+    const files = Array.from(fileList);
+    let uploaded = 0;
+    for (const file of files) {
+      try {
+        await createFile({
+          name: file.name,
+          file,
+          projectId: projectFilter || undefined,
+          folderId: section === "all" ? folderId : undefined,
+        });
+        uploaded++;
+      } catch (err) {
+        toast.error(`Failed to upload ${file.name}: ${err instanceof Error ? err.message : "unknown error"}`);
+      }
+    }
+    if (uploaded > 0) {
+      toast.success(uploaded === 1 ? "File uploaded" : `${uploaded} files uploaded`);
     }
   }
 
@@ -277,14 +480,7 @@ export default function FilesPage() {
 
             <div className="flex items-center gap-2">
               {isTrash && (visibleFiles.length > 0 || visibleFolders.length > 0) && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    emptyDriveTrash();
-                    toast("Trash emptied");
-                  }}
-                >
+                <Button variant="outline" size="sm" onClick={handleEmptyTrash}>
                   Empty trash
                 </Button>
               )}
@@ -386,12 +582,9 @@ export default function FilesPage() {
                   <FolderRowActions
                     isTrash={isTrash}
                     onRename={() => setRenaming({ type: "folder", id: folder.id, name: folder.name })}
-                    onTrash={() => {
-                      trashDriveFolder(folder.id);
-                      toast("Moved to Trash", { description: folder.name });
-                    }}
-                    onRestore={() => restoreDriveFolder(folder.id)}
-                    onDeleteForever={() => deleteDriveFolderForever(folder.id)}
+                    onTrash={() => handleTrashFolder(folder)}
+                    onRestore={() => handleRestoreFolder(folder.id)}
+                    onDeleteForever={() => handleDeleteFolderForever(folder.id)}
                   />
                 </div>
               ))}
@@ -412,14 +605,11 @@ export default function FilesPage() {
                   <FileRowActions
                     isTrash={isTrash}
                     starred={file.starred}
-                    onStar={() => toggleStarDriveFile(file.id)}
+                    onStar={() => handleToggleStar(file)}
                     onRename={() => setRenaming({ type: "file", id: file.id, name: file.name })}
-                    onTrash={() => {
-                      trashDriveFile(file.id);
-                      toast("Moved to Trash", { description: file.name });
-                    }}
-                    onRestore={() => restoreDriveFile(file.id)}
-                    onDeleteForever={() => deleteDriveFileForever(file.id)}
+                    onTrash={() => handleTrashFile(file)}
+                    onRestore={() => handleRestoreFile(file.id)}
+                    onDeleteForever={() => handleDeleteFileForever(file.id)}
                   />
                 </div>
               ))}
@@ -453,9 +643,9 @@ export default function FilesPage() {
                           isTrash={isTrash}
                           menuOnly
                           onRename={() => setRenaming({ type: "folder", id: folder.id, name: folder.name })}
-                          onTrash={() => trashDriveFolder(folder.id)}
-                          onRestore={() => restoreDriveFolder(folder.id)}
-                          onDeleteForever={() => deleteDriveFolderForever(folder.id)}
+                          onTrash={() => handleTrashFolder(folder)}
+                          onRestore={() => handleRestoreFolder(folder.id)}
+                          onDeleteForever={() => handleDeleteFolderForever(folder.id)}
                         />
                       </td>
                     </tr>
@@ -474,11 +664,11 @@ export default function FilesPage() {
                           isTrash={isTrash}
                           starred={file.starred}
                           menuOnly
-                          onStar={() => toggleStarDriveFile(file.id)}
+                          onStar={() => handleToggleStar(file)}
                           onRename={() => setRenaming({ type: "file", id: file.id, name: file.name })}
-                          onTrash={() => trashDriveFile(file.id)}
-                          onRestore={() => restoreDriveFile(file.id)}
-                          onDeleteForever={() => deleteDriveFileForever(file.id)}
+                          onTrash={() => handleTrashFile(file)}
+                          onRestore={() => handleRestoreFile(file.id)}
+                          onDeleteForever={() => handleDeleteFileForever(file.id)}
                         />
                       </td>
                     </tr>
@@ -508,14 +698,7 @@ export default function FilesPage() {
             <Button variant="ghost" onClick={() => setNewFolderOpen(false)}>
               Cancel
             </Button>
-            <Button
-              disabled={!newFolderName.trim()}
-              onClick={() => {
-                createDriveFolder(newFolderName.trim(), section === "all" ? folderId : null);
-                setNewFolderName("");
-                setNewFolderOpen(false);
-              }}
-            >
+            <Button disabled={!newFolderName.trim()} onClick={handleCreateFolder}>
               Create
             </Button>
           </DialogFooter>
@@ -535,15 +718,7 @@ export default function FilesPage() {
             <Button variant="ghost" onClick={() => setRenaming(null)}>
               Cancel
             </Button>
-            <Button
-              disabled={!renaming?.name.trim()}
-              onClick={() => {
-                if (!renaming) return;
-                if (renaming.type === "file") renameDriveFile(renaming.id, renaming.name.trim());
-                else renameDriveFolder(renaming.id, renaming.name.trim());
-                setRenaming(null);
-              }}
-            >
+            <Button disabled={!renaming?.name.trim()} onClick={handleRename}>
               Save
             </Button>
           </DialogFooter>
@@ -580,14 +755,18 @@ export default function FilesPage() {
                   <Button
                     variant="outline"
                     onClick={() => {
-                      toggleStarDriveFile(activeFile.id);
+                      handleToggleStar(activeFile);
                       setActiveFile({ ...activeFile, starred: !activeFile.starred });
                     }}
                   >
                     <Star className={cn("h-4 w-4", activeFile.starred && "fill-warning text-warning")} />
                     {activeFile.starred ? "Remove star" : "Add star"}
                   </Button>
-                  <Button variant="outline" onClick={() => toast("Download started (mock)", { description: activeFile.name })}>
+                  <Button
+                    variant="outline"
+                    disabled={!activeFile.downloadUrl}
+                    onClick={() => window.open(activeFile.downloadUrl, "_blank", "noopener,noreferrer")}
+                  >
                     <Upload className="h-4 w-4 rotate-180" />
                     Download
                   </Button>
@@ -595,8 +774,7 @@ export default function FilesPage() {
                     variant="outline"
                     className="text-destructive hover:text-destructive"
                     onClick={() => {
-                      trashDriveFile(activeFile.id);
-                      toast("Moved to Trash", { description: activeFile.name });
+                      handleTrashFile(activeFile);
                       setActiveFile(null);
                     }}
                   >

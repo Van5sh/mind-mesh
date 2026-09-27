@@ -2,6 +2,9 @@ fragment FileFields on File {
   id
   name
   size
+  folder {
+    id
+  }
   storage {
     bucketName
     objectKey

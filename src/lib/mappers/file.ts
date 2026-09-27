@@ -7,6 +7,7 @@ import type { FileAIMetadata, FileStorage, ID, ProjectFile } from "@/lib/types";
  */
 export type ProjectFileRow = Omit<ProjectFile, "storage"> & {
   storage: FileStorage | null;
+  deletedAt: string | null;
 };
 
 type GqlStorage = NonNullable<FileFieldsFragment["storage"]>;
@@ -38,7 +39,12 @@ export function toFileAIMetadata(m: GqlAIMetadata): FileAIMetadata {
   };
 }
 
-/** FileFields has no project or folder; they come from where you fetched it. */
+/**
+ * FileFields has no project; that comes from where you fetched it.
+ * folderId comes from the fragment's own `folder` field when present (e.g.
+ * a flat list from useFiles) - ctx.folderId is a fallback for callers that
+ * already know it and don't select folder (e.g. useRootFiles).
+ */
 export function toProjectFile(
   f: FileFieldsFragment,
   ctx: { projectId: ID; folderId?: ID | null },
@@ -46,11 +52,12 @@ export function toProjectFile(
   return {
     id: f.id,
     projectId: ctx.projectId,
-    folderId: ctx.folderId ?? null,
+    folderId: f.folder?.id ?? ctx.folderId ?? null,
     name: f.name,
     size: f.size,
     storage: f.storage ? toFileStorage(f.storage) : null,
     aiMetadata: toFileAIMetadata(f.aiMetadata),
+    deletedAt: f.properties.deletedAt ?? null,
     createdAt: f.createdAt,
     updatedAt: f.updatedAt,
   };

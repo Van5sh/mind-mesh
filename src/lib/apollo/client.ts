@@ -3,15 +3,20 @@
 import {
   ApolloClient,
   ApolloLink,
-  HttpLink,
   InMemoryCache,
 } from "@apollo/client";
 
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { createClient } from "graphql-ws";
+import UploadHttpLink from "apollo-upload-client/UploadHttpLink.mjs";
 
-const httpLink = new HttpLink({
+// Terminating link: a drop-in replacement for HttpLink that also knows how
+// to send a GraphQL multipart request (the spec CreateFile's `file: Upload!`
+// variable requires) - it sends a normal JSON POST when an operation has no
+// File/Blob in its variables, and only switches to multipart when one is
+// present.
+const httpLink = new UploadHttpLink({
   uri: process.env.NEXT_PUBLIC_GRAPHQL_URL,
   credentials: "include",
 });
