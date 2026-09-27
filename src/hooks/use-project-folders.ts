@@ -1,6 +1,6 @@
 "use client"
 
-import { DeleteFolderDocument, GetFolderContentsDocument, GetFoldersDocument, GetFolderTreeDocument, MoveFolderDocument, RenameFolderDocument } from "@/graphql/generated/graphql";
+import { DeleteFolderDocument, GetFolderContentsDocument, GetFoldersDocument, GetFolderTreeDocument, GetTrashedFoldersDocument, MoveFolderDocument, RenameFolderDocument, RestoreFolderDocument, TrashFolderDocument } from "@/graphql/generated/graphql";
 import { toFolder } from "@/lib/mappers/folder";
 import { toProjectFile } from "@/lib/mappers/file";
 import { useMutation, useQuery } from "@apollo/client/react"
@@ -115,8 +115,57 @@ export function useDeleteFolder() {
             variables:{
                 folderId
             }
-        })        
+        })
         return result.data?.deleteFolder
     }
     return {deleteFolder,loading}
+}
+
+// Folders are always project-scoped, so unlike files' trash there's no
+// personal variant.
+export function useTrashedFolders(projectId: string) {
+  const { data, loading, error } = useQuery(GetTrashedFoldersDocument, {
+    variables: { projectId },
+  });
+
+  const trashedFolders = useMemo(
+    () => (data?.trashedFolders ?? []).map((f) => toFolder(f, { projectId })),
+    [data, projectId],
+  );
+
+  return {
+    trashedFolders,
+    loading: loading && !data,
+    error,
+  };
+}
+
+// Soft delete (reversible via useRestoreFolder) - deleteFolder above is
+// permanent. It does not cascade: contents of a trashed folder aren't
+// themselves trashed. The caller is responsible for refetching whichever
+// list (folders/trashedFolders) it's showing.
+export function useTrashFolder() {
+    const [mutate,{loading}]=useMutation(TrashFolderDocument);
+    async function trashFolder(folderId:string) {
+        const result=await mutate({
+            variables:{
+                folderId
+            }
+        })
+        return result.data?.trashFolder
+    }
+    return {trashFolder,loading}
+}
+
+export function useRestoreFolder() {
+    const [mutate,{loading}]=useMutation(RestoreFolderDocument);
+    async function restoreFolder(folderId:string) {
+        const result=await mutate({
+            variables:{
+                folderId
+            }
+        })
+        return result.data?.restoreFolder
+    }
+    return {restoreFolder,loading}
 }

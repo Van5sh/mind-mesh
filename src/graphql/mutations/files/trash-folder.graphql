@@ -1,0 +1,6 @@
+# Soft delete - reversible via RestoreFolder. deleteFolder is permanent.
+mutation TrashFolder($folderId: ID!) {
+  trashFolder(folderId: $folderId) {
+    ...FolderFields
+  }
+}

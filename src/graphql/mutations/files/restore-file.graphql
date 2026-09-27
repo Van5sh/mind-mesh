@@ -1,0 +1,5 @@
+mutation RestoreFile($fileId: ID!) {
+  restoreFile(fileId: $fileId) {
+    ...FileFields
+  }
+}

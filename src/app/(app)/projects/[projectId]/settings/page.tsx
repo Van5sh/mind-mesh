@@ -38,10 +38,6 @@ export default function ProjectSettingsPage() {
   const { user } = useAuth();
   const router = useRouter();
 
-  // The project layout 404s while there is no project at all, but this page
-  // can still render before the query resolves - wait for real data before
-  // mounting the form, instead of reading fields off a project that isn't
-  // loaded yet.
   if (loading || !project) {
     return <p className="px-4 py-8 text-sm text-muted-foreground">Loading…</p>;
   }

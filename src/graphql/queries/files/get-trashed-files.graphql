@@ -1,0 +1,7 @@
+# projectId omitted - the current user's trashed personal (project-less)
+# files.
+query GetTrashedFiles($projectId: ID) {
+  trashedFiles(projectId: $projectId) {
+    ...FileFields
+  }
+}

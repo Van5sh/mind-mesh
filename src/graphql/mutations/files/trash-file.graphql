@@ -1,0 +1,6 @@
+# Soft delete - reversible via RestoreFile. deleteFile is permanent.
+mutation TrashFile($fileId: ID!) {
+  trashFile(fileId: $fileId) {
+    ...FileFields
+  }
+}

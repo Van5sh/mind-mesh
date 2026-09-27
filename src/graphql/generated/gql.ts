@@ -44,8 +44,12 @@ type Documents = {
     "mutation MoveFolder($folderId: ID!, $parentFolderId: ID) {\n  moveFolder(folderId: $folderId, parentFolderId: $parentFolderId) {\n    ...FolderFields\n  }\n}": typeof types.MoveFolderDocument,
     "mutation RenameFile($fileId: ID!, $name: String!) {\n  renameFile(fileId: $fileId, name: $name) {\n    ...FileFields\n  }\n}": typeof types.RenameFileDocument,
     "mutation RenameFolder($folderId: ID!, $name: String!) {\n  renameFolder(folderId: $folderId, name: $name) {\n    ...FolderFields\n  }\n}": typeof types.RenameFolderDocument,
+    "mutation RestoreFile($fileId: ID!) {\n  restoreFile(fileId: $fileId) {\n    ...FileFields\n  }\n}": typeof types.RestoreFileDocument,
+    "mutation RestoreFolder($folderId: ID!) {\n  restoreFolder(folderId: $folderId) {\n    ...FolderFields\n  }\n}": typeof types.RestoreFolderDocument,
     "mutation SetFileFavorite($input: SetFileFavoriteInput!) {\n  setFileFavorite(input: $input) {\n    user {\n      id\n      username\n      email\n    }\n    file {\n      id\n      name\n    }\n    isFavorite\n    createdAt\n    updatedAt\n  }\n}": typeof types.SetFileFavoriteDocument,
     "mutation ShareFile($input: ShareFileInput!) {\n  shareFile(input: $input) {\n    ...FileShareFields\n  }\n}": typeof types.ShareFileDocument,
+    "mutation TrashFile($fileId: ID!) {\n  trashFile(fileId: $fileId) {\n    ...FileFields\n  }\n}": typeof types.TrashFileDocument,
+    "mutation TrashFolder($folderId: ID!) {\n  trashFolder(folderId: $folderId) {\n    ...FolderFields\n  }\n}": typeof types.TrashFolderDocument,
     "mutation UpdateFileSharePermission($fileShareId: ID!, $permission: FilePermission!) {\n  updateFileSharePermission(fileShareId: $fileShareId, permission: $permission) {\n    ...FileShareFields\n  }\n}": typeof types.UpdateFileSharePermissionDocument,
     "mutation CreateFlowchart($input: CreateFlowchartInput!) {\n  createFlowchart(input: $input) {\n    ...FlowchartFields\n  }\n}": typeof types.CreateFlowchartDocument,
     "mutation DeleteFlowchart($id: ID!) {\n  deleteFlowchart(id: $id)\n}": typeof types.DeleteFlowchartDocument,
@@ -88,6 +92,8 @@ type Documents = {
     "query GetRootFiles($projectId: ID) {\n  rootFiles(projectId: $projectId) {\n    ...FileFields\n  }\n}": typeof types.GetRootFilesDocument,
     "query GetRootFolders($projectId: ID!) {\n  rootFolders(projectId: $projectId) {\n    ...FolderFields\n  }\n}": typeof types.GetRootFoldersDocument,
     "query GetSharedWithMe($userId: ID!) {\n  sharedWithMe(userId: $userId) {\n    ...FileShareFields\n  }\n}": typeof types.GetSharedWithMeDocument,
+    "query GetTrashedFiles($projectId: ID) {\n  trashedFiles(projectId: $projectId) {\n    ...FileFields\n  }\n}": typeof types.GetTrashedFilesDocument,
+    "query GetTrashedFolders($projectId: ID!) {\n  trashedFolders(projectId: $projectId) {\n    ...FolderFields\n  }\n}": typeof types.GetTrashedFoldersDocument,
     "query GetFlowchart($id: ID!) {\n  flowchart(id: $id) {\n    ...FlowchartFields\n  }\n}": typeof types.GetFlowchartDocument,
     "query GetFlowcharts($projectId: ID!) {\n  flowcharts(projectId: $projectId) {\n    ...FlowchartFields\n  }\n}": typeof types.GetFlowchartsDocument,
     "query GetArchivedProjectsByOwner($ownerId: ID!) {\n  archivedProjectsByOwner(ownerId: $ownerId) {\n    ...ProjectFields\n  }\n}": typeof types.GetArchivedProjectsByOwnerDocument,
@@ -148,8 +154,12 @@ const documents: Documents = {
     "mutation MoveFolder($folderId: ID!, $parentFolderId: ID) {\n  moveFolder(folderId: $folderId, parentFolderId: $parentFolderId) {\n    ...FolderFields\n  }\n}": types.MoveFolderDocument,
     "mutation RenameFile($fileId: ID!, $name: String!) {\n  renameFile(fileId: $fileId, name: $name) {\n    ...FileFields\n  }\n}": types.RenameFileDocument,
     "mutation RenameFolder($folderId: ID!, $name: String!) {\n  renameFolder(folderId: $folderId, name: $name) {\n    ...FolderFields\n  }\n}": types.RenameFolderDocument,
+    "mutation RestoreFile($fileId: ID!) {\n  restoreFile(fileId: $fileId) {\n    ...FileFields\n  }\n}": types.RestoreFileDocument,
+    "mutation RestoreFolder($folderId: ID!) {\n  restoreFolder(folderId: $folderId) {\n    ...FolderFields\n  }\n}": types.RestoreFolderDocument,
     "mutation SetFileFavorite($input: SetFileFavoriteInput!) {\n  setFileFavorite(input: $input) {\n    user {\n      id\n      username\n      email\n    }\n    file {\n      id\n      name\n    }\n    isFavorite\n    createdAt\n    updatedAt\n  }\n}": types.SetFileFavoriteDocument,
     "mutation ShareFile($input: ShareFileInput!) {\n  shareFile(input: $input) {\n    ...FileShareFields\n  }\n}": types.ShareFileDocument,
+    "mutation TrashFile($fileId: ID!) {\n  trashFile(fileId: $fileId) {\n    ...FileFields\n  }\n}": types.TrashFileDocument,
+    "mutation TrashFolder($folderId: ID!) {\n  trashFolder(folderId: $folderId) {\n    ...FolderFields\n  }\n}": types.TrashFolderDocument,
     "mutation UpdateFileSharePermission($fileShareId: ID!, $permission: FilePermission!) {\n  updateFileSharePermission(fileShareId: $fileShareId, permission: $permission) {\n    ...FileShareFields\n  }\n}": types.UpdateFileSharePermissionDocument,
     "mutation CreateFlowchart($input: CreateFlowchartInput!) {\n  createFlowchart(input: $input) {\n    ...FlowchartFields\n  }\n}": types.CreateFlowchartDocument,
     "mutation DeleteFlowchart($id: ID!) {\n  deleteFlowchart(id: $id)\n}": types.DeleteFlowchartDocument,
@@ -192,6 +202,8 @@ const documents: Documents = {
     "query GetRootFiles($projectId: ID) {\n  rootFiles(projectId: $projectId) {\n    ...FileFields\n  }\n}": types.GetRootFilesDocument,
     "query GetRootFolders($projectId: ID!) {\n  rootFolders(projectId: $projectId) {\n    ...FolderFields\n  }\n}": types.GetRootFoldersDocument,
     "query GetSharedWithMe($userId: ID!) {\n  sharedWithMe(userId: $userId) {\n    ...FileShareFields\n  }\n}": types.GetSharedWithMeDocument,
+    "query GetTrashedFiles($projectId: ID) {\n  trashedFiles(projectId: $projectId) {\n    ...FileFields\n  }\n}": types.GetTrashedFilesDocument,
+    "query GetTrashedFolders($projectId: ID!) {\n  trashedFolders(projectId: $projectId) {\n    ...FolderFields\n  }\n}": types.GetTrashedFoldersDocument,
     "query GetFlowchart($id: ID!) {\n  flowchart(id: $id) {\n    ...FlowchartFields\n  }\n}": types.GetFlowchartDocument,
     "query GetFlowcharts($projectId: ID!) {\n  flowcharts(projectId: $projectId) {\n    ...FlowchartFields\n  }\n}": types.GetFlowchartsDocument,
     "query GetArchivedProjectsByOwner($ownerId: ID!) {\n  archivedProjectsByOwner(ownerId: $ownerId) {\n    ...ProjectFields\n  }\n}": types.GetArchivedProjectsByOwnerDocument,
@@ -359,11 +371,27 @@ export function graphql(source: "mutation RenameFolder($folderId: ID!, $name: St
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "mutation RestoreFile($fileId: ID!) {\n  restoreFile(fileId: $fileId) {\n    ...FileFields\n  }\n}"): (typeof documents)["mutation RestoreFile($fileId: ID!) {\n  restoreFile(fileId: $fileId) {\n    ...FileFields\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation RestoreFolder($folderId: ID!) {\n  restoreFolder(folderId: $folderId) {\n    ...FolderFields\n  }\n}"): (typeof documents)["mutation RestoreFolder($folderId: ID!) {\n  restoreFolder(folderId: $folderId) {\n    ...FolderFields\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "mutation SetFileFavorite($input: SetFileFavoriteInput!) {\n  setFileFavorite(input: $input) {\n    user {\n      id\n      username\n      email\n    }\n    file {\n      id\n      name\n    }\n    isFavorite\n    createdAt\n    updatedAt\n  }\n}"): (typeof documents)["mutation SetFileFavorite($input: SetFileFavoriteInput!) {\n  setFileFavorite(input: $input) {\n    user {\n      id\n      username\n      email\n    }\n    file {\n      id\n      name\n    }\n    isFavorite\n    createdAt\n    updatedAt\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "mutation ShareFile($input: ShareFileInput!) {\n  shareFile(input: $input) {\n    ...FileShareFields\n  }\n}"): (typeof documents)["mutation ShareFile($input: ShareFileInput!) {\n  shareFile(input: $input) {\n    ...FileShareFields\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation TrashFile($fileId: ID!) {\n  trashFile(fileId: $fileId) {\n    ...FileFields\n  }\n}"): (typeof documents)["mutation TrashFile($fileId: ID!) {\n  trashFile(fileId: $fileId) {\n    ...FileFields\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation TrashFolder($folderId: ID!) {\n  trashFolder(folderId: $folderId) {\n    ...FolderFields\n  }\n}"): (typeof documents)["mutation TrashFolder($folderId: ID!) {\n  trashFolder(folderId: $folderId) {\n    ...FolderFields\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -532,6 +560,14 @@ export function graphql(source: "query GetRootFolders($projectId: ID!) {\n  root
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "query GetSharedWithMe($userId: ID!) {\n  sharedWithMe(userId: $userId) {\n    ...FileShareFields\n  }\n}"): (typeof documents)["query GetSharedWithMe($userId: ID!) {\n  sharedWithMe(userId: $userId) {\n    ...FileShareFields\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query GetTrashedFiles($projectId: ID) {\n  trashedFiles(projectId: $projectId) {\n    ...FileFields\n  }\n}"): (typeof documents)["query GetTrashedFiles($projectId: ID) {\n  trashedFiles(projectId: $projectId) {\n    ...FileFields\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query GetTrashedFolders($projectId: ID!) {\n  trashedFolders(projectId: $projectId) {\n    ...FolderFields\n  }\n}"): (typeof documents)["query GetTrashedFolders($projectId: ID!) {\n  trashedFolders(projectId: $projectId) {\n    ...FolderFields\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

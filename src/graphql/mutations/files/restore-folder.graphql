@@ -1,0 +1,5 @@
+mutation RestoreFolder($folderId: ID!) {
+  restoreFolder(folderId: $folderId) {
+    ...FolderFields
+  }
+}

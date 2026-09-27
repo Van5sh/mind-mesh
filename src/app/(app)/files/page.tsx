@@ -48,6 +48,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { toast } from "sonner";
 import { useProjects } from "@/hooks/use-projects";
+import { useRootFiles } from "@/hooks/use-drive";
 
 type Section = "all" | "recent" | "starred" | "trash";
 type SortKey = "name" | "modified" | "size";
@@ -63,17 +64,9 @@ const SECTIONS: { key: Section; label: string; icon: React.ElementType }[] = [
 
 export default function FilesPage() {
   const driveFolders: DriveFolder[] = [];
+  const {folders}=useRootFiles();
   const driveFiles: DriveFile[] = [];
   const noop = (..._args: unknown[]): void => {};
-
-  // Project filter: which project's files/folders to show, "" = personal
-  // (no project). UI only for now - DriveFile/DriveFolder don't carry a
-  // projectId (this space was built project-independent), and the real
-  // rootFiles/rootFolders/favoriteFiles queries take projectId as a
-  // variable rather than something to filter an already-fetched list by.
-  // TODO(graphql): once the backend route for this is ready, replace
-  // driveFiles/driveFolders above with useRootFiles(projectFilter) /
-  // useRootFolders(projectFilter) (skip the query while projectFilter is "").
   const { projects } = useProjects();
   const [projectFilter, setProjectFilter] = useState("");
   const createDriveFolder = noop;
@@ -196,7 +189,6 @@ export default function FilesPage() {
         handleFilesSelected(e.dataTransfer.files);
       }}
     >
-      {/* Quick-access rail */}
       <div className="flex shrink-0 flex-col gap-4 border-b border-border px-4 py-4 lg:w-56 lg:border-b-0 lg:border-r lg:px-3">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -506,8 +498,6 @@ export default function FilesPage() {
           </div>
         )}
       </div>
-
-      {/* New folder dialog */}
       <Dialog open={newFolderOpen} onOpenChange={setNewFolderOpen}>
         <DialogContent>
           <DialogHeader>
@@ -531,8 +521,6 @@ export default function FilesPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      {/* Rename dialog */}
       <Dialog open={renaming !== null} onOpenChange={(open) => !open && setRenaming(null)}>
         <DialogContent>
           <DialogHeader>
@@ -561,8 +549,6 @@ export default function FilesPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      {/* File details */}
       <Sheet open={activeFile !== null} onOpenChange={(open) => !open && setActiveFile(null)}>
         <SheetContent className="w-full sm:max-w-sm">
           {activeFile && (

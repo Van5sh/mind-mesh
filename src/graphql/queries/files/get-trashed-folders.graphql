@@ -1,0 +1,7 @@
+# Folders are always project-scoped, so unlike files there's no personal
+# variant.
+query GetTrashedFolders($projectId: ID!) {
+  trashedFolders(projectId: $projectId) {
+    ...FolderFields
+  }
+}

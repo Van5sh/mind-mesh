@@ -44,3 +44,4 @@ yarn-error.log*
 next-env.d.ts
 
 GRAPHQL_INTEGRATION_GUIDE.md
+FILES_PAGE_INTEGRATION_GUIDE.md

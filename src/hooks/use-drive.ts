@@ -8,10 +8,13 @@ import {
     GetRootFilesDocument,
     GetRootFoldersDocument,
     GetSharedWithMeDocument,
+    GetTrashedFilesDocument,
     MoveFileDocument,
     RenameFileDocument,
+    RestoreFileDocument,
     SetFileFavoriteDocument,
     ShareFileDocument,
+    TrashFileDocument,
     UpdateFileSharePermissionDocument,
     type CreateFileInput,
     type FilePermission,
@@ -141,6 +144,56 @@ export function useDeleteFile() {
         return result.data?.deleteFile
     }
     return {deleteFile,loading}
+}
+
+// projectId omitted - the current user's trashed personal (project-less)
+// files.
+export function useTrashedFiles(projectId?:string) {
+    const {data,loading,error}=useQuery(GetTrashedFilesDocument,{
+        variables:{
+            projectId
+        }
+    });
+    const trashedFiles=useMemo(
+        ()=>(data?.trashedFiles ?? []).map((f)=>toProjectFile(f,{projectId:projectId ?? "",folderId:null})),
+        [data,projectId],
+    );
+    return {
+        trashedFiles,
+        loading:loading && !data,
+        error
+    }
+}
+
+// Soft delete (reversible via useRestoreFile) - deleteFile above is
+// permanent. The returned file's properties.deletedAt reflects the new
+// state, but list queries (files/rootFiles/trashedFiles) don't refetch
+// themselves - the caller is responsible for refetching whichever list it's
+// showing.
+export function useTrashFile() {
+    const [mutate,{loading}]=useMutation(TrashFileDocument);
+    async function trashFile(fileId:string) {
+        const result=await mutate({
+            variables:{
+                fileId
+            }
+        })
+        return result.data?.trashFile
+    }
+    return {trashFile,loading}
+}
+
+export function useRestoreFile() {
+    const [mutate,{loading}]=useMutation(RestoreFileDocument);
+    async function restoreFile(fileId:string) {
+        const result=await mutate({
+            variables:{
+                fileId
+            }
+        })
+        return result.data?.restoreFile
+    }
+    return {restoreFile,loading}
 }
 
 export function useShareFile() {
