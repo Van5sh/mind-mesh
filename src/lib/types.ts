@@ -123,6 +123,10 @@ export interface ChatMessage {
   role: MessageRole;
   content: string;
   createdAt: string;
+  /** @username tokens resolved at send time - see the @/# picker in the chat page. */
+  mentionedUsers: { id: ID; username: string }[];
+  /** #filename tokens resolved at send time - see the @/# picker in the chat page. */
+  referencedFiles: { id: ID; name: string }[];
   /** Frontend-only: marks an optimistic/pending AI reply being "generated". */
   pending?: boolean;
 }

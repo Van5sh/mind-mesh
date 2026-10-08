@@ -36,6 +36,8 @@ export type CreateChatInput = {
 export type CreateChatMessageInput = {
   chatId: string;
   content: string;
+  mentionedUserIds?: Array<string> | null | undefined;
+  referencedFileIds?: Array<string> | null | undefined;
   role: MessageRole;
 };
 

@@ -27,5 +27,7 @@ export function toChatMessage(m: ChatMessageFieldsFragment, chatId: ID): ChatMes
     role: m.role,
     content: m.content,
     createdAt: m.createdAt,
+    mentionedUsers: m.mentionedUsers.map((u) => ({ id: u.id, username: u.username })),
+    referencedFiles: m.referencedFiles.map((f) => ({ id: f.id, name: f.name })),
   };
 }

@@ -23,7 +23,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
-import type { Chat, ChatType } from "@/lib/types";
+import type { ChatType } from "@/lib/types";
+import { useCreateChat, useGetChats } from "@/hooks/use-project-chats";
+import { toast } from "sonner";
 
 function timeAgo(iso: string) {
   const mins = Math.round((Date.now() - new Date(iso).getTime()) / 60_000);
@@ -35,22 +37,36 @@ function timeAgo(iso: string) {
 
 export default function ChatsPage() {
   const { projectId } = useParams<{ projectId: string }>();
-  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
-  const chats = ([] as Chat[]).sort(
+  const { chats: fetchedChats, loading } = useGetChats(projectId);
+  const { createChat, loading: creating } = useCreateChat();
+  const router = useRouter();
+
+  const chats = [...fetchedChats].sort(
     (a, b) => +new Date(b.lastActivityAt) - +new Date(a.lastActivityAt),
   );
-  const createChat = (_projectId: string, _title: string, _type: ChatType): Pick<Chat, "id"> => ({ id: "" });
-  const router = useRouter();
 
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [type, setType] = useState<ChatType>("AI_ASSISTANT");
 
-  function handleCreate() {
-    const chat = createChat(projectId, title.trim() || "Untitled chat", type);
-    setOpen(false);
-    setTitle("");
-    router.push(`/projects/${projectId}/chats/${chat.id}`);
+  async function handleCreate() {
+    try {
+      const chat = await createChat({
+        projectId,
+        title: title.trim() || "Untitled chat",
+        type,
+      });
+      if (!chat) return;
+      setOpen(false);
+      setTitle("");
+      router.push(`/projects/${projectId}/chats/${chat.id}`);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to create chat");
+    }
+  }
+
+  if (loading) {
+    return <p className="mx-auto max-w-5xl px-4 py-8 text-sm text-muted-foreground sm:px-6 lg:px-8">Loading…</p>;
   }
 
   return (
@@ -95,7 +111,7 @@ export default function ChatsPage() {
                     )}
                   </span>
                   <div className="min-w-0">
-                    <p className="truncate font-medium">{chat.title}</p>
+                    <p className="truncate font-medium">{chat.title || "Untitled chat"}</p>
                     <p className="text-xs text-muted-foreground">
                       {chat.type === "AI_ASSISTANT" ? "AI Assistant" : "Team discussion"} · {timeAgo(chat.lastActivityAt)}
                     </p>
@@ -129,7 +145,9 @@ export default function ChatsPage() {
             <Button variant="ghost" onClick={() => setOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleCreate}>Start chat</Button>
+            <Button onClick={handleCreate} disabled={creating}>
+              Start chat
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
