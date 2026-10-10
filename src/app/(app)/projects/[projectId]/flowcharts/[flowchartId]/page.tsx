@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { StatusBadge } from "@/components/status-badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PageLoader } from "@/components/ui/page-loader";
 import { toast } from "sonner";
 import { useFlowchart, useUpdateFlowchart } from "@/hooks/use-project-flowcharts";
 
@@ -78,8 +79,8 @@ export default function FlowchartEditorPage() {
 
   if (loading || !flowchart) {
     return (
-      <div className="flex h-[calc(100dvh-4rem)] items-center justify-center text-sm text-muted-foreground">
-        Loading…
+      <div className="flex h-[calc(100dvh-4rem)] items-center justify-center">
+        <PageLoader />
       </div>
     );
   }

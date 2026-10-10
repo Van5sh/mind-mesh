@@ -12,9 +12,11 @@ import {
   MoreHorizontal,
   Plus,
   Search,
+  Share2,
   Star,
   Trash2,
   Upload,
+  Users,
   X,
 } from "lucide-react";
 import type { DriveFile, DriveFolder } from "@/lib/types";
@@ -46,6 +48,7 @@ import {
 } from "@/components/ui/dialog";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { ShareDialog, type FileShareRow, type SharePermission } from "@/components/drive/share-dialog";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
 import { useProjects } from "@/hooks/use-projects";
@@ -69,7 +72,7 @@ import {
   useTrashFolder,
 } from "@/hooks/use-project-folders";
 
-type Section = "all" | "recent" | "starred" | "trash";
+type Section = "all" | "recent" | "starred" | "shared" | "trash";
 type SortKey = "name" | "modified" | "size";
 type ViewMode = "grid" | "list";
 
@@ -78,6 +81,7 @@ const SECTIONS: { key: Section; label: string; icon: React.ElementType }[] = [
   { key: "all", label: "All Files", icon: HardDrive },
   { key: "recent", label: "Recent", icon: Clock },
   { key: "starred", label: "Starred", icon: Star },
+  { key: "shared", label: "Shared with me", icon: Users },
   { key: "trash", label: "Trash", icon: Trash2 },
 ];
 
@@ -185,6 +189,16 @@ export default function FilesPage() {
   const [renaming, setRenaming] = useState<{ type: "file" | "folder"; id: string; name: string } | null>(null);
   const [activeFile, setActiveFile] = useState<DriveFile | null>(null);
 
+  // TODO(graphql): sharedWithMe is an unimplemented listing on this page -
+  // useSharedWithMe exists (use-drive.ts) but isn't wired here yet. The
+  // Share dialog below (shareTarget/sharesByFile) is UI-only for the same
+  // reason - ShareFile/UpdateFileSharePermission/DeleteFileShare are all
+  // implemented on the backend, just not called from here.
+  const sharedWithMe: DriveFile[] = [];
+  const [shareTarget, setShareTarget] = useState<DriveFile | null>(null);
+  const [sharesByFile, setSharesByFile] = useState<Record<string, FileShareRow[]>>({});
+  const currentShares = shareTarget ? sharesByFile[shareTarget.id] ?? [] : [];
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const trail = useMemo(() => {
@@ -218,6 +232,8 @@ export default function FilesPage() {
     visibleFiles = [...driveFiles].sort((a, b) => +new Date(b.updatedAt) - +new Date(a.updatedAt)).slice(0, 30);
   } else if (section === "starred") {
     visibleFiles = driveFiles.filter((f) => f.starred);
+  } else if (section === "shared") {
+    visibleFiles = sharedWithMe;
   } else if (section === "trash") {
     isTrash = true;
     visibleFolders = trashedDriveFolders;
@@ -338,6 +354,39 @@ export default function FilesPage() {
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to update favorite");
     }
+  }
+
+  function handleShare(username: string, permission: SharePermission) {
+    // TODO(graphql): call useShareFile() here instead of writing to local
+    // state - this just updates the placeholder list so the dialog has
+    // something to show.
+    if (!shareTarget) return;
+    const share: FileShareRow = { id: crypto.randomUUID(), username, permission };
+    setSharesByFile((prev) => ({
+      ...prev,
+      [shareTarget.id]: [...(prev[shareTarget.id] ?? []), share],
+    }));
+    toast.success(`Shared with ${username}`);
+  }
+
+  function handleUpdateSharePermission(shareId: string, permission: SharePermission) {
+    // TODO(graphql): call useUpdateFileSharePermission() here.
+    if (!shareTarget) return;
+    setSharesByFile((prev) => ({
+      ...prev,
+      [shareTarget.id]: (prev[shareTarget.id] ?? []).map((s) =>
+        s.id === shareId ? { ...s, permission } : s,
+      ),
+    }));
+  }
+
+  function handleRemoveShare(shareId: string) {
+    // TODO(graphql): call useDeleteFileShare() here.
+    if (!shareTarget) return;
+    setSharesByFile((prev) => ({
+      ...prev,
+      [shareTarget.id]: (prev[shareTarget.id] ?? []).filter((s) => s.id !== shareId),
+    }));
   }
 
   async function handleEmptyTrash() {
@@ -546,7 +595,13 @@ export default function FilesPage() {
             <Empty className="border border-dashed border-border">
               <EmptyHeader>
                 <EmptyMedia variant="icon">
-                  {section === "trash" ? <Trash2 className="h-6 w-6" /> : <HardDrive className="h-6 w-6" />}
+                  {section === "trash" ? (
+                    <Trash2 className="h-6 w-6" />
+                  ) : section === "shared" ? (
+                    <Users className="h-6 w-6" />
+                  ) : (
+                    <HardDrive className="h-6 w-6" />
+                  )}
                 </EmptyMedia>
                 <EmptyTitle>
                   {query
@@ -557,10 +612,13 @@ export default function FilesPage() {
                         ? "No starred files"
                         : section === "recent"
                           ? "No recent files"
-                          : "This folder is empty"}
+                          : section === "shared"
+                            ? "Nothing shared with you yet"
+                            : "This folder is empty"}
                 </EmptyTitle>
                 <EmptyDescription>
                   {section === "all" && !query && "Drag and drop files here, or use New to upload."}
+                  {section === "shared" && !query && "Files other people share with you will show up here."}
                 </EmptyDescription>
               </EmptyHeader>
             </Empty>
@@ -606,6 +664,7 @@ export default function FilesPage() {
                     isTrash={isTrash}
                     starred={file.starred}
                     onStar={() => handleToggleStar(file)}
+                    onShare={() => setShareTarget(file)}
                     onRename={() => setRenaming({ type: "file", id: file.id, name: file.name })}
                     onTrash={() => handleTrashFile(file)}
                     onRestore={() => handleRestoreFile(file.id)}
@@ -665,6 +724,7 @@ export default function FilesPage() {
                           starred={file.starred}
                           menuOnly
                           onStar={() => handleToggleStar(file)}
+                          onShare={() => setShareTarget(file)}
                           onRename={() => setRenaming({ type: "file", id: file.id, name: file.name })}
                           onTrash={() => handleTrashFile(file)}
                           onRestore={() => handleRestoreFile(file.id)}
@@ -770,6 +830,10 @@ export default function FilesPage() {
                     <Upload className="h-4 w-4 rotate-180" />
                     Download
                   </Button>
+                  <Button variant="outline" onClick={() => setShareTarget(activeFile)}>
+                    <Share2 className="h-4 w-4" />
+                    Share
+                  </Button>
                   <Button
                     variant="outline"
                     className="text-destructive hover:text-destructive"
@@ -787,6 +851,17 @@ export default function FilesPage() {
           )}
         </SheetContent>
       </Sheet>
+      {shareTarget && (
+        <ShareDialog
+          open={shareTarget !== null}
+          onOpenChange={(open) => !open && setShareTarget(null)}
+          fileName={shareTarget.name}
+          shares={currentShares}
+          onShare={handleShare}
+          onUpdatePermission={handleUpdateSharePermission}
+          onRemove={handleRemoveShare}
+        />
+      )}
     </div>
   );
 }
@@ -845,6 +920,7 @@ function FileRowActions({
   menuOnly,
   starred,
   onStar,
+  onShare,
   onRename,
   onTrash,
   onRestore,
@@ -854,6 +930,7 @@ function FileRowActions({
   menuOnly?: boolean;
   starred?: boolean;
   onStar?: () => void;
+  onShare?: () => void;
   onRename: () => void;
   onTrash: () => void;
   onRestore: () => void;
@@ -886,6 +963,12 @@ function FileRowActions({
               <DropdownMenuItem onClick={onStar}>
                 <Star className="h-4 w-4" />
                 {starred ? "Remove star" : "Add star"}
+              </DropdownMenuItem>
+            )}
+            {onShare && (
+              <DropdownMenuItem onClick={onShare}>
+                <Share2 className="h-4 w-4" />
+                Share
               </DropdownMenuItem>
             )}
             <DropdownMenuItem onClick={onRename}>Rename</DropdownMenuItem>

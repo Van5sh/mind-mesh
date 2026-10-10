@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { Activity as ActivityIcon } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { PageLoader } from "@/components/ui/page-loader";
 import { useActivityLogs } from "@/hooks/use-project-activity";
 import { useGetMembers } from "@/hooks/use-project-members";
 
@@ -25,7 +26,7 @@ export default function ActivityPage() {
   const userById = useMemo(() => new Map(members.map((m) => [m.user.id, m.user])), [members]);
 
   if (loading) {
-    return <p className="mx-auto max-w-3xl px-4 py-8 text-sm text-muted-foreground sm:px-6 lg:px-8">Loading…</p>;
+    return <PageLoader />;
   }
 
   return (

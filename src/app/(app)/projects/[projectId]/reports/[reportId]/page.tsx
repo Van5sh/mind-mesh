@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { StatusBadge } from "@/components/status-badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PageLoader } from "@/components/ui/page-loader";
 import {
   Dialog,
   DialogContent,
@@ -44,9 +45,7 @@ export default function ReportDetailPage() {
   }
 
   if (loading || !report) {
-    return (
-      <div className="mx-auto max-w-3xl px-4 py-8 text-sm text-muted-foreground sm:px-6 lg:px-8">Loading…</div>
-    );
+    return <PageLoader />;
   }
 
   const isGenerating = report.properties.status === "GENERATING";

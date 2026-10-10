@@ -8,6 +8,8 @@ import { ProjectCard } from "@/components/projects/project-card";
 import { Card } from "@/components/ui/card";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { Button } from "@/components/ui/button";
+import { PageLoader } from "@/components/ui/page-loader";
+import { cn } from "@/lib/utils";
 import { useDashboard } from "@/hooks/use-dashboard";
 
 function timeAgo(iso: string) {
@@ -28,13 +30,13 @@ export default function DashboardPage() {
   const chats = projects.reduce((sum, p) => sum + p.chatCount, 0)
   const flowRe = projects.reduce((sum, p) => sum + p.reportCount + p.flowchartCount, 0)
   const recentActivity = projects.flatMap((p) => p.activity).sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt)).slice(0, 8);
-  if (loading) return <p>Loading...</p>
+  if (loading) return <PageLoader />;
   if (error) return <p>Something went wrong: {error.message}</p>;
   const stats = [
-    { label: "Projects", value: projs, icon: FolderKanban, href: "/projects" },
-    { label: "Files", value: files, icon: FileText },
-    { label: "Chats", value: chats, icon: MessagesSquare },
-    { label: "Flowcharts & reports", value: flowRe, icon: Workflow },
+    { label: "Projects", value: projs, icon: FolderKanban, href: "/projects", tint: "text-info bg-info/15" },
+    { label: "Files", value: files, icon: FileText, tint: "text-teal bg-teal/15" },
+    { label: "Chats", value: chats, icon: MessagesSquare, tint: "text-purple bg-purple/15" },
+    { label: "Flowcharts & reports", value: flowRe, icon: Workflow, tint: "text-success bg-success/15" },
   ]
   const firstName = user?.firstName || user?.username || "there";
 
@@ -51,12 +53,19 @@ export default function DashboardPage() {
       <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
         {stats.map((stat) => {
           const content = (
-            <Card className="border-border bg-card p-4">
+            <Card
+              className={cn(
+                "border-border bg-card p-4 transition-all",
+                stat.href && "hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/5",
+              )}
+            >
               <div className="flex items-center justify-between">
                 <p className="text-sm text-muted-foreground">{stat.label}</p>
-                <stat.icon className="h-4 w-4 text-muted-foreground" />
+                <span className={cn("flex h-8 w-8 items-center justify-center rounded-lg", stat.tint)}>
+                  <stat.icon className="h-4 w-4" />
+                </span>
               </div>
-              <p className="mt-2 text-2xl font-semibold">{stat.value}</p>
+              <p className="mt-3 text-3xl font-semibold tracking-tight">{stat.value}</p>
             </Card>
           );
           return stat.href ? (
@@ -105,7 +114,7 @@ export default function DashboardPage() {
 
         <div>
           <h2 className="text-base font-semibold">Recent activity</h2>
-          <div className="mt-4 flex flex-col gap-4 rounded-xl border border-border bg-card p-4">
+          <div className="mac-shadow mt-4 flex flex-col gap-4 rounded-xl border border-border bg-card p-4">
             {recentActivity.length === 0 && (
               <p className="text-sm text-muted-foreground">No activity yet.</p>
             )}

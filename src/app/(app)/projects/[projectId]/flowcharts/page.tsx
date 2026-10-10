@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { PageLoader } from "@/components/ui/page-loader";
 import { toast } from "sonner";
 import { useGetChats } from "@/hooks/use-project-chats";
 import { useCreateFlowchart, useFlowcharts } from "@/hooks/use-project-flowcharts";
@@ -74,7 +75,7 @@ export default function FlowchartsPage() {
   }
 
   if (loading) {
-    return <p className="mx-auto max-w-5xl px-4 py-8 text-sm text-muted-foreground sm:px-6 lg:px-8">Loading…</p>;
+    return <PageLoader />;
   }
 
   return (
@@ -107,7 +108,7 @@ export default function FlowchartsPage() {
         <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
           {flowcharts.map((flow) => (
             <Link key={flow.id} href={`/projects/${projectId}/flowcharts/${flow.id}`}>
-              <Card className="h-full border-border bg-card p-5 transition-colors hover:border-primary/40">
+              <Card className="h-full border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5">
                 <div className="flex items-start justify-between gap-2">
                   <h3 className="font-semibold">{flow.name}</h3>
                   <StatusBadge status={flow.status} />

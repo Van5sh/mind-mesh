@@ -2,10 +2,12 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useRouter, notFound } from "next/navigation";
-import { ArrowLeft, Archive, Bot, Hash, Send, Sparkles, User as UserIcon, X } from "lucide-react";
+import { ArrowLeft, Archive, Bot, Hash, Send, Sparkles, User as UserIcon, Users, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { PageLoader } from "@/components/ui/page-loader";
+import { ParticipantsDialog, type ParticipantRow } from "@/components/chat/participants-dialog";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -104,6 +106,12 @@ export default function ChatConversationPage() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  // TODO(graphql): participants is UI-only local state - CreateChatParticipant
+  // and RemoveChatParticipant are already implemented on the backend
+  // (chat.resolvers.go), just not called from here yet.
+  const [participantsOpen, setParticipantsOpen] = useState(false);
+  const [participants, setParticipants] = useState<ParticipantRow[]>([]);
+
   // Senders are resolved from project membership rather than the chat's own
   // `participants` list - a brand-new chat has no participants until
   // someone is explicitly added (CreateChatParticipant, not wired up yet),
@@ -119,6 +127,14 @@ export default function ChatConversationPage() {
     const q = trigger.query.toLowerCase();
     return members.filter((m) => m.user.username.toLowerCase().includes(q)).slice(0, 6);
   }, [members, trigger]);
+
+  const participantCandidates = useMemo(
+    () =>
+      members
+        .map((m) => ({ id: m.user.id, username: m.user.username }))
+        .filter((m) => !participants.some((p) => p.id === m.id)),
+    [members, participants],
+  );
 
   const filteredFiles = useMemo(() => {
     if (trigger?.kind !== "reference") return [];
@@ -136,8 +152,8 @@ export default function ChatConversationPage() {
 
   if (chatLoading || !chat) {
     return (
-      <div className="mx-auto flex h-[calc(100dvh-4rem)] max-w-3xl items-center justify-center px-4 text-sm text-muted-foreground sm:px-6 lg:px-8">
-        Loading…
+      <div className="mx-auto flex h-[calc(100dvh-4rem)] max-w-3xl items-center justify-center px-4 sm:px-6 lg:px-8">
+        <PageLoader />
       </div>
     );
   }
@@ -208,6 +224,18 @@ export default function ChatConversationPage() {
     }
   }
 
+  function handleAddParticipant(candidate: ParticipantRow) {
+    // TODO(graphql): call useCreateChatParticipant() - this just updates
+    // local placeholder state.
+    setParticipants((prev) => [...prev, candidate]);
+    toast.success(`Added ${candidate.username}`);
+  }
+
+  function handleRemoveParticipant(participantId: string) {
+    // TODO(graphql): call useRemoveChatParticipant() here.
+    setParticipants((prev) => prev.filter((p) => p.id !== participantId));
+  }
+
   const hasMessages = (messages?.length ?? 0) > 0;
   const hasPicker = trigger !== null && (filteredMembers.length > 0 || filteredFiles.length > 0 || trigger.query.length > 0);
 
@@ -227,10 +255,18 @@ export default function ChatConversationPage() {
             </p>
           </div>
         </div>
-        <Button variant="ghost" size="sm" onClick={handleArchive} disabled={chat.status === "ARCHIVED"}>
-          <Archive className="h-4 w-4" />
-          {chat.status === "ARCHIVED" ? "Archived" : "Archive"}
-        </Button>
+        <div className="flex items-center gap-1.5">
+          {!isAiChat && (
+            <Button variant="ghost" size="sm" onClick={() => setParticipantsOpen(true)}>
+              <Users className="h-4 w-4" />
+              Participants{participants.length > 0 ? ` (${participants.length})` : ""}
+            </Button>
+          )}
+          <Button variant="ghost" size="sm" onClick={handleArchive} disabled={chat.status === "ARCHIVED"}>
+            <Archive className="h-4 w-4" />
+            {chat.status === "ARCHIVED" ? "Archived" : "Archive"}
+          </Button>
+        </div>
       </div>
 
       <div ref={scrollRef} className="brand-scrollbar flex-1 overflow-y-auto py-6">
@@ -392,6 +428,14 @@ export default function ChatConversationPage() {
           </Button>
         </div>
       </div>
+      <ParticipantsDialog
+        open={participantsOpen}
+        onOpenChange={setParticipantsOpen}
+        participants={participants}
+        candidates={participantCandidates}
+        onAdd={handleAddParticipant}
+        onRemove={handleRemoveParticipant}
+      />
     </div>
   );
 }

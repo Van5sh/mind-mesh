@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { PageLoader } from "@/components/ui/page-loader";
 import {
   Select,
   SelectContent,
@@ -39,7 +40,7 @@ export default function ProjectSettingsPage() {
   const router = useRouter();
 
   if (loading || !project) {
-    return <p className="px-4 py-8 text-sm text-muted-foreground">Loading…</p>;
+    return <PageLoader />;
   }
 
   const myRole: ProjectRole | null =

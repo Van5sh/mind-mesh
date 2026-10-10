@@ -156,9 +156,11 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
         </div>
       </div>
 
-      <div className="mx-1 mb-1 rounded-lg border border-sidebar-border bg-sidebar-accent/40 p-3">
+      <div className="mx-1 mb-1 rounded-lg border border-sidebar-border bg-[linear-gradient(145deg,var(--sidebar-accent)_0%,transparent_100%)] p-3">
         <div className="flex items-center gap-2 text-xs font-semibold text-sidebar-foreground">
-          <Sparkles className="h-3.5 w-3.5 text-primary" />
+          <span className="flex h-5 w-5 items-center justify-center rounded-md bg-primary/15">
+            <Sparkles className="h-3 w-3 text-primary" />
+          </span>
           AI Assistant
         </div>
         <p className="mt-1 text-[11px] leading-relaxed text-sidebar-foreground/50">

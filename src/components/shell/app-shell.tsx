@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { SidebarNav } from "./sidebar-nav";
 import { Topbar } from "./topbar";
-import { Loader2 } from "lucide-react";
+import { PageLoader } from "@/components/ui/page-loader";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { status } = useAuth();
@@ -21,7 +21,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   if (status !== "authenticated") {
     return (
       <div className="flex h-dvh items-center justify-center bg-background">
-        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+        <PageLoader fullHeight={false} />
       </div>
     );
   }
@@ -44,7 +44,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <div className="flex min-w-0 flex-1 flex-col">
         <Topbar />
-        <main className="flex-1 overflow-y-auto brand-scrollbar">{children}</main>
+        <main className="flex-1 overflow-y-auto brand-scrollbar bg-[radial-gradient(ellipse_90%_40%_at_50%_-10%,var(--muted),transparent)]">
+          {children}
+        </main>
       </div>
     </div>
   );

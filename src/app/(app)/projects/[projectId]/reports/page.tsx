@@ -52,7 +52,7 @@ export default function ReportsPage() {
         <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
           {reports.map((report) => (
             <Link key={report.id} href={`/projects/${projectId}/reports/${report.id}`}>
-              <Card className="h-full border-border bg-card p-5 transition-colors hover:border-primary/40">
+              <Card className="h-full border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5">
                 <div className="flex items-start justify-between gap-2">
                   <h3 className="font-semibold">{report.title}</h3>
                   <StatusBadge status={report.properties.status} />

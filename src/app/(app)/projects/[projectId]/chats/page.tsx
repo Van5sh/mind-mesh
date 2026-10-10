@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { PageLoader } from "@/components/ui/page-loader";
 import type { ChatType } from "@/lib/types";
 import { useCreateChat, useGetChats } from "@/hooks/use-project-chats";
 import { toast } from "sonner";
@@ -66,7 +67,7 @@ export default function ChatsPage() {
   }
 
   if (loading) {
-    return <p className="mx-auto max-w-5xl px-4 py-8 text-sm text-muted-foreground sm:px-6 lg:px-8">Loading…</p>;
+    return <PageLoader />;
   }
 
   return (
@@ -101,7 +102,7 @@ export default function ChatsPage() {
         <div className="mt-6 flex flex-col gap-3">
           {chats.map((chat) => (
             <Link key={chat.id} href={`/projects/${projectId}/chats/${chat.id}`}>
-              <Card className="flex flex-row items-center justify-between gap-3 border-border bg-card p-4 transition-colors hover:border-primary/40">
+              <Card className="flex flex-row items-center justify-between gap-3 border-border bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5">
                 <div className="flex items-center gap-3 min-w-0">
                   <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-secondary">
                     {chat.type === "AI_ASSISTANT" ? (
