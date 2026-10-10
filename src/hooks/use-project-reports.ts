@@ -31,7 +31,7 @@ export function useReports(id:string) {
             projectId:id
         }
     });
-    const reports=useMemo(()=>(data?.reports)?.map((r)=>toReport(r,id)),[data]);
+    const reports=useMemo(()=>(data?.reports ?? []).map((r)=>toReport(r,id)),[data]);
     return {
         reports,
         loading:loading && !data,
@@ -67,7 +67,7 @@ export function useUpdateReport(){
 }
 
 export function useDeleteReport() {
-    const [mutate,loading]=useMutation(DeleteReportDocument);
+    const [mutate,{loading}]=useMutation(DeleteReportDocument);
     async function deleteReport(id:string) {
         const result=await mutate({
             variables:{

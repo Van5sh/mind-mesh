@@ -1,10 +1,12 @@
 "use client";
 
+import { useMemo } from "react";
 import { useParams } from "next/navigation";
 import { Activity as ActivityIcon } from "lucide-react";
-import type { ActivityLog, User } from "@/lib/types";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { useActivityLogs } from "@/hooks/use-project-activity";
+import { useGetMembers } from "@/hooks/use-project-members";
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleString(undefined, {
@@ -17,9 +19,14 @@ function formatDate(iso: string) {
 
 export default function ActivityPage() {
   const { projectId } = useParams<{ projectId: string }>();
-  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
-  const activity: ActivityLog[] = [];
-  const userById = (_id?: string | null): User | undefined => undefined;
+  const { activity, loading } = useActivityLogs(projectId);
+  const { members } = useGetMembers(projectId);
+
+  const userById = useMemo(() => new Map(members.map((m) => [m.user.id, m.user])), [members]);
+
+  if (loading) {
+    return <p className="mx-auto max-w-3xl px-4 py-8 text-sm text-muted-foreground sm:px-6 lg:px-8">Loading…</p>;
+  }
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
@@ -39,8 +46,8 @@ export default function ActivityPage() {
       ) : (
         <ol className="mt-6 flex flex-col gap-6 border-l border-border pl-6">
           {activity.map((a) => {
-            const actor = userById(a.userId);
-            const fullName = actor ? `${actor.firstName ?? ""} ${actor.lastName ?? ""}`.trim() || actor.username : "Someone";
+            const actor = userById.get(a.userId ?? "");
+            const fullName = actor?.username ?? "Someone";
             return (
               <li key={a.id} className="relative">
                 <span className="absolute -left-[29px] top-1 flex h-4 w-4 items-center justify-center rounded-full border-2 border-background bg-primary" />

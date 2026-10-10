@@ -3,12 +3,12 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { FileText, Sparkles, User as UserIcon } from "lucide-react";
-import type { Report } from "@/lib/types";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/status-badge";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
-
+import { useReports } from "@/hooks/use-project-reports";
+const noop = (..._args: unknown[]): void => {};
 function timeAgo(iso: string) {
   const mins = Math.round((Date.now() - new Date(iso).getTime()) / 60_000);
   if (mins < 60) return `${Math.max(mins, 1)}m ago`;
@@ -19,10 +19,7 @@ function timeAgo(iso: string) {
 
 export default function ReportsPage() {
   const { projectId } = useParams<{ projectId: string }>();
-  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
-  const reports = ([] as Report[]).sort(
-    (a, b) => +new Date(b.updatedAt) - +new Date(a.updatedAt),
-  );
+  const { reports } = useReports(projectId);
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">

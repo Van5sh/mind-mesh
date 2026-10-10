@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter, notFound } from "next/navigation";
 import { ArrowLeft, Download, Loader2, Pencil, Sparkles, Trash2 } from "lucide-react";
-import type { Report } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { StatusBadge } from "@/components/status-badge";
@@ -17,6 +16,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { useReport, useUpdateReport, useDeleteReport } from "@/hooks/use-project-reports";
 
 function renderMarkdown(content: string) {
   return content.split("\n").map((line, i) => {
@@ -30,23 +30,45 @@ function renderMarkdown(content: string) {
 
 export default function ReportDetailPage() {
   const { projectId, reportId } = useParams<{ projectId: string; reportId: string }>();
-  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
-  const reports: Report[] = [];
-  const report = reports.find((r) => r.id === reportId);
-  const noop = (..._args: unknown[]): void => {};
-  const updateReport = noop;
-  const deleteReport = noop;
+  const { report, loading } = useReport(projectId, reportId);
+  const { updateReport } = useUpdateReport();
+  const { deleteReport } = useDeleteReport();
   const router = useRouter();
 
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(report?.content ?? "");
   const [deleteOpen, setDeleteOpen] = useState(false);
 
-  if (!report) {
+  if (!loading && !report) {
     notFound();
   }
 
+  if (loading || !report) {
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-8 text-sm text-muted-foreground sm:px-6 lg:px-8">Loading…</div>
+    );
+  }
+
   const isGenerating = report.properties.status === "GENERATING";
+
+  async function handleSave() {
+    try {
+      await updateReport(report.id, { content: draft });
+      setEditing(false);
+      toast.success("Report saved");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to save report");
+    }
+  }
+
+  async function handleDelete() {
+    try {
+      await deleteReport(report.id);
+      router.push(`/projects/${projectId}/reports`);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to delete report");
+    }
+  }
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
@@ -117,15 +139,7 @@ export default function ReportDetailPage() {
               <Button variant="ghost" onClick={() => setEditing(false)}>
                 Cancel
               </Button>
-              <Button
-                onClick={() => {
-                  updateReport(report.id, { content: draft });
-                  setEditing(false);
-                  toast.success("Report saved");
-                }}
-              >
-                Save
-              </Button>
+              <Button onClick={handleSave}>Save</Button>
             </div>
           </div>
         ) : (
@@ -143,13 +157,7 @@ export default function ReportDetailPage() {
             <Button variant="ghost" onClick={() => setDeleteOpen(false)}>
               Cancel
             </Button>
-            <Button
-              variant="destructive"
-              onClick={() => {
-                deleteReport(report.id);
-                router.push(`/projects/${projectId}/reports`);
-              }}
-            >
+            <Button variant="destructive" onClick={handleDelete}>
               Delete
             </Button>
           </DialogFooter>
