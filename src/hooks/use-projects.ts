@@ -46,6 +46,30 @@ export function useProjects() {
   };
 }
 
+// Same GetProjects query as useProjects() (Apollo dedupes the identical
+// request/cache entry) - this just also reads the members/files GetProjects
+// now carries, for ProjectCard's avatar stack and file count on
+// projects/page.tsx. See the GraphQL integration guide, open question 1.
+export function useProjectsWithCounts() {
+  const { data, loading, error } = useQuery(GetProjectsDocument);
+
+  const projects = useMemo(
+    () =>
+      (data?.projects ?? []).map((p) => ({
+        project: toProject(p),
+        members: p.members.map((m) => ({ id: m.user.id, username: m.user.username })),
+        fileCount: p.files.length,
+      })),
+    [data],
+  );
+
+  return {
+    projects,
+    loading: loading && !data,
+    error,
+  };
+}
+
 export function useProjectsForUser(){
   const {user}=useAuth();
   const {data,loading,error}=useQuery(GetProjectsForUserDocument,

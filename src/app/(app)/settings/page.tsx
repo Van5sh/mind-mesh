@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { gql } from "@apollo/client";
-import { useQuery } from "@apollo/client/react"
 import { Loader2, Trash2 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { useMe, useUpdateUserProfile } from "@/hooks/use-user-profile";
+import { toUser } from "@/lib/mappers/user";
 import { AppearancePicker } from "@/components/theme-toggle";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -26,24 +26,52 @@ import {
 import { toast } from "sonner";
 
 export default function SettingsPage() {
-  const { user, signOut } = useAuth();
+  const { user: authUser, signOut } = useAuth();
   const router = useRouter();
+  const { user: meRaw } = useMe();
+  const { updateUserProfile } = useUpdateUserProfile();
+
+  // useMe() is a live, refetchable query (refetchQueries: ["Me"] on save
+  // picks it up immediately) - useAuth().user is a one-off fetch that
+  // can't be refetched by name, so it's only the fallback for the brief
+  // window before useMe() has data of its own.
+  const user = meRaw ? toUser(meRaw) : authUser;
+
   const [firstName, setFirstName] = useState(user?.firstName ?? "");
   const [lastName, setLastName] = useState(user?.lastName ?? "");
   const [bio, setBio] = useState(user?.bio ?? "");
   const [saving, setSaving] = useState(false);
   const [confirmText, setConfirmText] = useState("");
 
+  useEffect(() => {
+    if (!user) return;
+    setFirstName(user.firstName ?? "");
+    setLastName(user.lastName ?? "");
+    setBio(user.bio ?? "");
+  }, [user]);
+
   if (!user) return null;
-  useEffect(()=>{
-    
-  },[])
+
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
+    if (!user) return;
     setSaving(true);
-    await new Promise((r) => setTimeout(r, 600));
-    setSaving(false);
-    toast.success("Profile updated");
+    try {
+      // UpdateUserProfile replaces the whole profile - avatarUrl must be
+      // passed through unchanged, or it would be nulled out (there's no
+      // real upload UI here yet, see the disabled button below).
+      await updateUserProfile(user.id, {
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        bio: bio.trim() || undefined,
+        avatarUrl: user.avatarUrl ?? undefined,
+      });
+      toast.success("Profile updated");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to update profile");
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (

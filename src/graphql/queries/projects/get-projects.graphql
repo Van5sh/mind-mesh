@@ -1,5 +1,18 @@
 query GetProjects {
   projects {
     ...ProjectFields
+    members {
+      id
+      role
+      user {
+        id
+        username
+      }
+    }
+    files {
+      file {
+        id
+      }
+    }
   }
 }

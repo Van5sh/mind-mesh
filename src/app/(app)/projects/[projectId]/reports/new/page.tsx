@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Loader2, Sparkles } from "lucide-react";
+import { ArrowLeft, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,40 +16,48 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Chat, Report, ReportFormat } from "@/lib/types";
+import type { ReportFormat } from "@/lib/types";
 import Link from "next/link";
+import { toast } from "sonner";
+import { useGetChats } from "@/hooks/use-project-chats";
+import { useCreateReport } from "@/hooks/use-project-reports";
 
 export default function NewReportPage() {
   const { projectId } = useParams<{ projectId: string }>();
   const router = useRouter();
-  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
-  const createReport = (..._args: unknown[]): Pick<Report, "id"> => ({ id: "" });
-  const generateAIReport = (..._args: unknown[]): Pick<Report, "id"> => ({ id: "" });
-  const chats: Chat[] = [];
-
+  const { chats } = useGetChats(projectId);
+  const { createReport } = useCreateReport();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [format, setFormat] = useState<ReportFormat>("MARKDOWN");
   const [sourceChatId, setSourceChatId] = useState<string>("none");
   const [submitting, setSubmitting] = useState(false);
 
-  function handleManualSubmit(e: React.FormEvent) {
+  async function handleManualSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!title.trim()) return;
-    const report = createReport(projectId, { title: title.trim(), content, format });
-    router.push(`/projects/${projectId}/reports/${report.id}`);
+    if (!title.trim() || submitting) return;
+    setSubmitting(true);
+    try {
+      const report = await createReport({
+        projectId,
+        title: title.trim(),
+        content,
+        format,
+      });
+      if (!report) return;
+      router.push(`/projects/${projectId}/reports/${report.id}`);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to create report");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   function handleAISubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!title.trim()) return;
-    setSubmitting(true);
-    const report = generateAIReport(
-      projectId,
-      title.trim(),
-      sourceChatId === "none" ? null : sourceChatId,
-    );
-    router.push(`/projects/${projectId}/reports/${report.id}`);
+    toast("AI report generation isn't available yet", {
+      description: "There's no backend endpoint for it - write the report manually for now.",
+    });
   }
 
   return (
@@ -77,7 +85,9 @@ export default function NewReportPage() {
             <CardHeader>
               <CardTitle className="text-base">AI-generated report</CardTitle>
               <CardDescription>
-                The assistant will draft a report from this project&apos;s files and chats.
+                The assistant will draft a report from this project&apos;s files and chats.{" "}
+                <span className="font-medium text-foreground">Coming soon</span> - there&apos;s no
+                backend support for this yet, so generating is disabled below.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -103,9 +113,8 @@ export default function NewReportPage() {
                   </Select>
                 </div>
                 <div className="flex justify-end">
-                  <Button type="submit" disabled={!title.trim() || submitting}>
-                    {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
-                    Generate report
+                  <Button type="submit" disabled={!title.trim()} variant="outline">
+                    Generate report (coming soon)
                   </Button>
                 </div>
               </form>
@@ -149,7 +158,7 @@ export default function NewReportPage() {
                   />
                 </div>
                 <div className="flex justify-end">
-                  <Button type="submit" disabled={!title.trim()}>
+                  <Button type="submit" disabled={!title.trim() || submitting}>
                     Create report
                   </Button>
                 </div>

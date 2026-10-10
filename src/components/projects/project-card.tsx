@@ -5,7 +5,12 @@ import { Lock, Users2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import type { Project, ProjectFile, ProjectMember } from "@/lib/types";
+import type { Project } from "@/lib/types";
+
+export interface ProjectCardMember {
+  id: string;
+  username: string;
+}
 
 function timeAgo(iso: string) {
   const diffMs = Date.now() - new Date(iso).getTime();
@@ -18,10 +23,13 @@ function timeAgo(iso: string) {
   return new Date(iso).toLocaleDateString();
 }
 
-export function ProjectCard({ project }: { project: Project }) {
-  const files: ProjectFile[] = [];
-  const members: ProjectMember[] = [];
+interface ProjectCardProps {
+  project: Project;
+  members?: ProjectCardMember[];
+  fileCount?: number;
+}
 
+export function ProjectCard({ project, members = [], fileCount = 0 }: ProjectCardProps) {
   return (
     <Link href={`/projects/${project.id}`}>
       <Card className="group h-full border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5">
@@ -41,13 +49,13 @@ export function ProjectCard({ project }: { project: Project }) {
             {members.slice(0, 4).map((m) => (
               <Avatar key={m.id} className="h-6 w-6 border-2 border-card">
                 <AvatarFallback className="bg-secondary text-[10px]">
-                  {m.user.username.slice(0, 2).toUpperCase()}
+                  {m.username.slice(0, 2).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
             ))}
           </div>
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
-            <span>{files.length} files</span>
+            <span>{fileCount} files</span>
             <span>·</span>
             <span>Updated {timeAgo(project.updatedAt)}</span>
           </div>

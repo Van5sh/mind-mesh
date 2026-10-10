@@ -104,7 +104,7 @@ type Documents = {
     "query GetProject($id: ID!) {\n  project(id: $id) {\n    ...ProjectFields\n  }\n}": typeof types.GetProjectDocument,
     "query GetProjectsByOwner($ownerId: ID!) {\n  projectsByOwner(ownerId: $ownerId) {\n    ...ProjectFields\n  }\n}": typeof types.GetProjectsByOwnerDocument,
     "query GetProjectsForUser($userId: ID!) {\n  projectsForUser(userId: $userId) {\n    ...ProjectFields\n  }\n}": typeof types.GetProjectsForUserDocument,
-    "query GetProjects {\n  projects {\n    ...ProjectFields\n  }\n}": typeof types.GetProjectsDocument,
+    "query GetProjects {\n  projects {\n    ...ProjectFields\n    members {\n      id\n      role\n      user {\n        id\n        username\n      }\n    }\n    files {\n      file {\n        id\n      }\n    }\n  }\n}": typeof types.GetProjectsDocument,
     "query GetAIReports($projectId: ID!) {\n  aiReports(projectId: $projectId) {\n    ...ReportFields\n  }\n}": typeof types.GetAiReportsDocument,
     "query GetReport($id: ID!) {\n  report(id: $id) {\n    ...ReportFields\n  }\n}": typeof types.GetReportDocument,
     "query GetReportsByChat($sourceChatId: ID!) {\n  reportsByChat(sourceChatId: $sourceChatId) {\n    ...ReportFields\n  }\n}": typeof types.GetReportsByChatDocument,
@@ -214,7 +214,7 @@ const documents: Documents = {
     "query GetProject($id: ID!) {\n  project(id: $id) {\n    ...ProjectFields\n  }\n}": types.GetProjectDocument,
     "query GetProjectsByOwner($ownerId: ID!) {\n  projectsByOwner(ownerId: $ownerId) {\n    ...ProjectFields\n  }\n}": types.GetProjectsByOwnerDocument,
     "query GetProjectsForUser($userId: ID!) {\n  projectsForUser(userId: $userId) {\n    ...ProjectFields\n  }\n}": types.GetProjectsForUserDocument,
-    "query GetProjects {\n  projects {\n    ...ProjectFields\n  }\n}": types.GetProjectsDocument,
+    "query GetProjects {\n  projects {\n    ...ProjectFields\n    members {\n      id\n      role\n      user {\n        id\n        username\n      }\n    }\n    files {\n      file {\n        id\n      }\n    }\n  }\n}": types.GetProjectsDocument,
     "query GetAIReports($projectId: ID!) {\n  aiReports(projectId: $projectId) {\n    ...ReportFields\n  }\n}": types.GetAiReportsDocument,
     "query GetReport($id: ID!) {\n  report(id: $id) {\n    ...ReportFields\n  }\n}": types.GetReportDocument,
     "query GetReportsByChat($sourceChatId: ID!) {\n  reportsByChat(sourceChatId: $sourceChatId) {\n    ...ReportFields\n  }\n}": types.GetReportsByChatDocument,
@@ -611,7 +611,7 @@ export function graphql(source: "query GetProjectsForUser($userId: ID!) {\n  pro
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "query GetProjects {\n  projects {\n    ...ProjectFields\n  }\n}"): (typeof documents)["query GetProjects {\n  projects {\n    ...ProjectFields\n  }\n}"];
+export function graphql(source: "query GetProjects {\n  projects {\n    ...ProjectFields\n    members {\n      id\n      role\n      user {\n        id\n        username\n      }\n    }\n    files {\n      file {\n        id\n      }\n    }\n  }\n}"): (typeof documents)["query GetProjects {\n  projects {\n    ...ProjectFields\n    members {\n      id\n      role\n      user {\n        id\n        username\n      }\n    }\n    files {\n      file {\n        id\n      }\n    }\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

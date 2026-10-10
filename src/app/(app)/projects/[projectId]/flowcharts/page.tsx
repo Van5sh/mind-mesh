@@ -3,8 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { Loader2, Plus, Sparkles, User as UserIcon, Workflow } from "lucide-react";
-import type { Chat, Flowchart } from "@/lib/types";
+import { Plus, Sparkles, User as UserIcon, Workflow } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/status-badge";
@@ -25,6 +24,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { toast } from "sonner";
+import { useGetChats } from "@/hooks/use-project-chats";
+import { useCreateFlowchart, useFlowcharts } from "@/hooks/use-project-flowcharts";
 
 function timeAgo(iso: string) {
   const mins = Math.round((Date.now() - new Date(iso).getTime()) / 60_000);
@@ -36,33 +38,43 @@ function timeAgo(iso: string) {
 
 export default function FlowchartsPage() {
   const { projectId } = useParams<{ projectId: string }>();
-  // TODO(graphql): empty placeholder until the GraphQL hook is wired.
-  const flowcharts = ([] as Flowchart[]).sort(
+  const { flowcharts: fetchedFlowcharts, loading } = useFlowcharts(projectId);
+  const { chats } = useGetChats(projectId);
+  const { createFlowchart, loading: creating } = useCreateFlowchart();
+  const router = useRouter();
+
+  const flowcharts = [...fetchedFlowcharts].sort(
     (a, b) => +new Date(b.updatedAt) - +new Date(a.updatedAt),
   );
-  const chats: Chat[] = [];
-  const createFlowchart = (..._args: unknown[]): Pick<Flowchart, "id"> => ({ id: "" });
-  const generateAIFlowchart = (..._args: unknown[]): Pick<Flowchart, "id"> => ({ id: "" });
-  const router = useRouter();
 
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [sourceChatId, setSourceChatId] = useState("none");
-  const [submittingAI, setSubmittingAI] = useState(false);
 
-  function handleManualCreate() {
-    const flow = createFlowchart(projectId, name.trim() || "Untitled flowchart");
-    setOpen(false);
-    setName("");
-    router.push(`/projects/${projectId}/flowcharts/${flow.id}`);
+  async function handleManualCreate() {
+    try {
+      const flow = await createFlowchart({
+        projectId,
+        name: name.trim() || "Untitled flowchart",
+        data: { nodes: [], edges: [] },
+      });
+      if (!flow) return;
+      setOpen(false);
+      setName("");
+      router.push(`/projects/${projectId}/flowcharts/${flow.id}`);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to create flowchart");
+    }
   }
 
   function handleAICreate() {
-    setSubmittingAI(true);
-    const flow = generateAIFlowchart(projectId, name.trim() || "AI-generated flowchart", sourceChatId === "none" ? null : sourceChatId);
-    setOpen(false);
-    setName("");
-    router.push(`/projects/${projectId}/flowcharts/${flow.id}`);
+    toast("AI flowchart generation isn't available yet", {
+      description: "There's no backend endpoint for it - start blank for now.",
+    });
+  }
+
+  if (loading) {
+    return <p className="mx-auto max-w-5xl px-4 py-8 text-sm text-muted-foreground sm:px-6 lg:px-8">Loading…</p>;
   }
 
   return (
@@ -137,10 +149,14 @@ export default function FlowchartsPage() {
                 <Button variant="ghost" onClick={() => setOpen(false)}>
                   Cancel
                 </Button>
-                <Button onClick={handleManualCreate}>Create</Button>
+                <Button onClick={handleManualCreate} disabled={creating}>Create</Button>
               </DialogFooter>
             </TabsContent>
             <TabsContent value="ai" className="mt-4 flex flex-col gap-4">
+              <p className="text-sm text-muted-foreground">
+                <span className="font-medium text-foreground">Coming soon</span> - there&apos;s no
+                backend support for AI-generated flowcharts yet.
+              </p>
               <div className="grid gap-2">
                 <Select value={sourceChatId} onValueChange={setSourceChatId}>
                   <SelectTrigger>
@@ -160,9 +176,8 @@ export default function FlowchartsPage() {
                 <Button variant="ghost" onClick={() => setOpen(false)}>
                   Cancel
                 </Button>
-                <Button onClick={handleAICreate} disabled={submittingAI}>
-                  {submittingAI && <Loader2 className="h-4 w-4 animate-spin" />}
-                  Generate
+                <Button onClick={handleAICreate} variant="outline">
+                  Generate (coming soon)
                 </Button>
               </DialogFooter>
             </TabsContent>

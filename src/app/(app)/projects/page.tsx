@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import { ArchiveRestore, FolderKanban, Search } from "lucide-react";
-import type { Project } from "@/lib/types";
 import { NewProjectDialog } from "@/components/projects/new-project-dialog";
 import { ProjectCard } from "@/components/projects/project-card";
 import { Input } from "@/components/ui/input";
@@ -17,29 +16,39 @@ import {
 } from "@/components/ui/select";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { toast } from "sonner";
-import { useProjects } from "@/hooks/use-projects";
+import { useArchivedProjectsForUser, useProjectsWithCounts, useRestoreProject } from "@/hooks/use-projects";
 
 type SortKey = "updated" | "name" | "created";
 
 export default function ProjectsPage() {
-  const {projects,loading,error}=useProjects();
-  const archivedProjects: Project[] = [];
-  const noop = (..._args: unknown[]): void => {};
-  const restoreProject = noop;
+  const { projects, loading } = useProjectsWithCounts();
+  const { projects: archivedProjects, loading: archivedLoading } = useArchivedProjectsForUser();
+  const { restoreProject } = useRestoreProject();
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortKey>("updated");
 
   const filtered = useMemo(() => {
     const list = projects.filter((p) =>
-      p.name.toLowerCase().includes(query.trim().toLowerCase()),
+      p.project.name.toLowerCase().includes(query.trim().toLowerCase()),
     );
     const sorted = [...list];
-    if (sort === "name") sorted.sort((a, b) => a.name.localeCompare(b.name));
-    else if (sort === "created") sorted.sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt));
-    else sorted.sort((a, b) => +new Date(b.updatedAt) - +new Date(a.updatedAt));
+    if (sort === "name") sorted.sort((a, b) => a.project.name.localeCompare(b.project.name));
+    else if (sort === "created")
+      sorted.sort((a, b) => +new Date(b.project.createdAt) - +new Date(a.project.createdAt));
+    else sorted.sort((a, b) => +new Date(b.project.updatedAt) - +new Date(a.project.updatedAt));
     return sorted;
   }, [projects, query, sort]);
-  if (loading) return <p>Loading...</p>
+
+  async function handleRestore(projectId: string, name: string) {
+    try {
+      await restoreProject(projectId);
+      toast.success("Project restored", { description: name });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to restore project");
+    }
+  }
+
+  if (loading || archivedLoading) return <p>Loading...</p>;
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
@@ -94,8 +103,8 @@ export default function ProjectsPage() {
             </Empty>
           ) : (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {filtered.map((project) => (
-                <ProjectCard key={project.id} project={project} />
+              {filtered.map(({ project, members, fileCount }) => (
+                <ProjectCard key={project.id} project={project} members={members} fileCount={fileCount} />
               ))}
             </div>
           )}
@@ -126,10 +135,7 @@ export default function ProjectsPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => {
-                      restoreProject(project.id);
-                      toast.success("Project restored", { description: project.name });
-                    }}
+                    onClick={() => handleRestore(project.id, project.name)}
                   >
                     <ArchiveRestore className="h-4 w-4" />
                     Restore

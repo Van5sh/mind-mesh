@@ -36,6 +36,10 @@ export function useUpdateUser() {
     return {updateUser,loading}
 }
 
+// UserProfile has no id field in the schema, so this mutation's result
+// can't be normalized into the cache the way UpdateUser's (which returns
+// ...UserFields) is - refetch Me explicitly, or the settings page (and
+// anywhere else showing name/avatar) would keep showing stale data.
 export function useUpdateUserProfile() {
     const [mutate,{loading}]=useMutation(UpdateUserProfileDocument);
     async function updateUserProfile(id:string,input:UpdateUserProfileInput) {
@@ -43,13 +47,15 @@ export function useUpdateUserProfile() {
             variables:{
                 id,
                 input
-            }
+            },
+            refetchQueries:["Me"],
         })
         return result.data?.updateUserProfile
     }
     return {updateUserProfile,loading}
 }
 
+// Same cache-normalization gap as useUpdateUserProfile above.
 export function useUpdateUserAvatar() {
     const [mutate,{loading}]=useMutation(UpdateUserAvatarDocument);
     async function updateUserAvatar(id:string,input:UpdateUserAvatarInput) {
@@ -57,7 +63,8 @@ export function useUpdateUserAvatar() {
             variables:{
                 id,
                 input
-            }
+            },
+            refetchQueries:["Me"],
         })
         return result.data?.updateUserAvatar
     }

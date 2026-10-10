@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/status-badge";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { useReports } from "@/hooks/use-project-reports";
-const noop = (..._args: unknown[]): void => {};
+
 function timeAgo(iso: string) {
   const mins = Math.round((Date.now() - new Date(iso).getTime()) / 60_000);
   if (mins < 60) return `${Math.max(mins, 1)}m ago`;

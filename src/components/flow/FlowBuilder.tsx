@@ -1,58 +1,26 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import {
-  ReactFlow,
-  useNodesState,
-  useEdgesState,
-  addEdge,
-  Controls,
-  Background,
-  Panel,
-  Connection,
-  Node,
-  Edge,
-} from '@xyflow/react';
-import { ErasableNode } from './ErasbleNode';
-import { ErasableEdge } from './ErasbleEdge';
-import { Eraser } from './Eraser';
-import "./xy-theme.css";
-import '@xyflow/react/dist/style.css';
+"use client";
 
-const fallbackNodes: Node[] = [
-  { id: '1', type: 'erasable-node', position: { x: 0, y: 0 }, data: { label: 'Hello' } },
-  { id: '2', type: 'erasable-node', position: { x: 300, y: 0 }, data: { label: 'World' } },
-];
+import { useCallback, useMemo } from "react";
+import { Excalidraw } from "@excalidraw/excalidraw";
+import type { ExcalidrawInitialDataState } from "@excalidraw/excalidraw/types";
+import "@excalidraw/excalidraw/index.css";
 
-const fallbackEdges: Edge[] = [
-  { id: '1->2', type: 'erasable-edge', source: '1', target: '2' },
-];
-
-function parseGraph(data?: string): { nodes: Node[]; edges: Edge[] } {
-  if (!data) return { nodes: fallbackNodes, edges: fallbackEdges };
+// Free-form drawing canvas (Excalidraw) - the stored `data` is just
+// Excalidraw's own scene JSON (elements + a safe subset of appState), not a
+// custom format. The backend treats `data` as opaque JSON either way, so
+// swapping what's inside this file is the only change this needed.
+function parseScene(data?: string): ExcalidrawInitialDataState {
+  if (!data) return { elements: [], appState: {} };
   try {
     const parsed = JSON.parse(data);
-    const nodes: Node[] = Array.isArray(parsed.nodes)
-      ? parsed.nodes.map((n: Node) => ({ ...n, type: n.type ?? 'erasable-node' }))
-      : fallbackNodes;
-    const edges: Edge[] = Array.isArray(parsed.edges)
-      ? parsed.edges.map((e: Edge) => ({ ...e, type: e.type ?? 'erasable-edge' }))
-      : fallbackEdges;
-    return { nodes, edges };
+    return {
+      elements: Array.isArray(parsed.elements) ? parsed.elements : [],
+      appState: parsed.appState ?? {},
+    };
   } catch {
-    return { nodes: fallbackNodes, edges: fallbackEdges };
+    return { elements: [], appState: {} };
   }
 }
-
-const nodeTypes = {
-  'erasable-node': ErasableNode,
-};
-
-const edgeTypes = {
-  'erasable-edge': ErasableEdge,
-};
-
-const defaultEdgeOptions = {
-  type: 'erasable-edge',
-};
 
 interface FlowBuilderProps {
   initialData?: string;
@@ -61,93 +29,31 @@ interface FlowBuilderProps {
 }
 
 const FlowBuilder = ({ initialData, onChange, readOnly }: FlowBuilderProps) => {
-  const initial = useMemo(() => parseGraph(initialData), []); // eslint-disable-line react-hooks/exhaustive-deps
-  const [nodes, setNodes, onNodesChange] = useNodesState(initial.nodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initial.edges);
-  const idRef = useRef(nodes.length + 1);
+  const initial = useMemo(() => parseScene(initialData), []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const onConnect = useCallback(
-    (params: Connection) => setEdges((els) => addEdge(params, els)),
-    [setEdges],
+  // Excalidraw fires onChange on every pointer move while drawing - the
+  // caller (the flowchart editor page) already debounces the actual save,
+  // so this just forwards the serialized scene on every change.
+  const handleChange = useCallback<NonNullable<Parameters<typeof Excalidraw>[0]["onChange"]>>(
+    (elements, appState) => {
+      if (!onChange) return;
+      onChange(
+        JSON.stringify({
+          elements,
+          appState: { viewBackgroundColor: appState.viewBackgroundColor },
+        }),
+      );
+    },
+    [onChange],
   );
-
-  const [isEraserActive, setIsEraserActive] = useState(false);
-
-  useEffect(() => {
-    if (!onChange) return;
-    const handle = window.setTimeout(() => {
-      onChange(JSON.stringify({ nodes, edges }));
-    }, 400);
-    return () => window.clearTimeout(handle);
-  }, [nodes, edges, onChange]);
-
-  const addNode = useCallback(() => {
-    const id = String(idRef.current++);
-    setNodes((ns) => [
-      ...ns,
-      {
-        id,
-        type: 'erasable-node',
-        position: { x: 80 + Math.random() * 240, y: 80 + Math.random() * 240 },
-        data: { label: 'New step' },
-      },
-    ]);
-  }, [setNodes]);
 
   return (
     <div className="h-full w-full">
-      <ReactFlow
-        nodes={nodes}
-        nodeTypes={nodeTypes}
-        edges={edges}
-        edgeTypes={edgeTypes}
-        onNodesChange={readOnly ? undefined : onNodesChange}
-        onEdgesChange={readOnly ? undefined : onEdgesChange}
-        onConnect={readOnly ? undefined : onConnect}
-        fitView
-        defaultEdgeOptions={defaultEdgeOptions}
-        selectionOnDrag={!isEraserActive && !readOnly}
-        panOnDrag={!readOnly ? false : true}
-        panActivationKeyCode="Space"
-        zoomOnScroll={false}
-        zoomActivationKeyCode="Control"
-        elementsSelectable={!isEraserActive && !readOnly}
-        nodesDraggable={!isEraserActive && !readOnly}
-        nodesConnectable={!readOnly}
-      >
-        <Background />
-        <Controls />
-        {isEraserActive && !readOnly && <Eraser />}
-
-        {!readOnly && (
-          <Panel position="top-left">
-            <div className="xy-theme__button-group">
-              <button className="xy-theme__button" onClick={addNode}>
-                + Add node
-              </button>
-              <button
-                className={`xy-theme__button ${isEraserActive ? 'active' : ''}`}
-                onClick={() => {
-                  setIsEraserActive(true);
-                  setNodes((ns) => ns.map((n) => ({ ...n, selected: false })));
-                  setEdges((es) => es.map((e) => ({ ...e, selected: false })));
-                }}
-              >
-                Eraser Mode
-              </button>
-              <button
-                className={`xy-theme__button ${!isEraserActive ? 'active' : ''}`}
-                onClick={() => {
-                  setIsEraserActive(false);
-                  setNodes((ns) => ns.map((n) => ({ ...n, data: { ...n.data, toBeDeleted: false } })));
-                }}
-              >
-                Selection Mode
-              </button>
-            </div>
-          </Panel>
-        )}
-      </ReactFlow>
+      <Excalidraw
+        initialData={initial}
+        onChange={readOnly ? undefined : handleChange}
+        viewModeEnabled={readOnly}
+      />
     </div>
   );
 };

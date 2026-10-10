@@ -92,7 +92,12 @@ export default function DashboardPage() {
           ) : (
             <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
               {projects.slice(0, 4).map((project) => (
-                <ProjectCard key={project.project.id} project={project.project} />
+                <ProjectCard
+                  key={project.project.id}
+                  project={project.project}
+                  members={project.members}
+                  fileCount={project.fileCount}
+                />
               ))}
             </div>
           )}

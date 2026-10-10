@@ -52,6 +52,7 @@ export default function ReportDetailPage() {
   const isGenerating = report.properties.status === "GENERATING";
 
   async function handleSave() {
+    if (!report) return;
     try {
       await updateReport(report.id, { content: draft });
       setEditing(false);
@@ -62,6 +63,7 @@ export default function ReportDetailPage() {
   }
 
   async function handleDelete() {
+    if (!report) return;
     try {
       await deleteReport(report.id);
       router.push(`/projects/${projectId}/reports`);

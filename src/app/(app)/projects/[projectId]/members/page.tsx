@@ -76,9 +76,6 @@ export default function MembersPage() {
   const [inviteQuery, setInviteQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
 
-  // Apollo re-runs the query on every variable change with no debounce of
-  // its own - wait for a pause in typing before actually searching, so
-  // there isn't a request per keystroke.
   useEffect(() => {
     const id = setTimeout(() => setDebouncedQuery(inviteQuery.trim()), 300);
     return () => clearTimeout(id);
